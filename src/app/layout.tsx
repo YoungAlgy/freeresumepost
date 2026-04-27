@@ -19,16 +19,22 @@ export const metadata: Metadata = {
   description:
     'Upload your resume for free and get matched to healthcare openings. No recruiter pitches, no resume databases sold to spammers. Built by a real staffing team.',
   metadataBase: new URL('https://freeresumepost.co'),
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     siteName: 'Free Resume Post',
     type: 'website',
     locale: 'en_US',
     url: 'https://freeresumepost.co',
+    title: 'Free Resume Post — Upload once, get matched',
+    description: 'Upload your resume free. We match you to real healthcare openings. No recruiter spam.',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Free Resume Post — Upload once, get matched',
     description: 'Upload your resume free. We match you to real openings.',
+    site: '@avahealth',
   },
   robots: {
     index: true,
@@ -41,6 +47,7 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  category: 'business',
 }
 
 export default function RootLayout({
@@ -59,6 +66,52 @@ export default function RootLayout({
         <link
           rel="dns-prefetch"
           href="https://tsruqbodyrmxqzhvxret.supabase.co"
+        />
+        {/* Organization + WebSite schema. Google uses these to surface the
+            sitelinks searchbox and understand brand hierarchy. The sameAs
+            graph cross-links freejobpost + providers + main avahealth.co. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@graph': [
+                {
+                  '@type': 'Organization',
+                  '@id': 'https://avahealth.co#organization',
+                  name: 'Ava Health Partners',
+                  alternateName: 'Free Resume Post',
+                  url: 'https://freeresumepost.co',
+                  description: 'Free candidate-resume platform operated by Ava Health Partners. Upload once, get matched to real healthcare openings, your data is never sold.',
+                  sameAs: [
+                    'https://avahealth.co',
+                    'https://providers.avahealth.co',
+                    'https://freejobpost.co',
+                  ],
+                  contactPoint: {
+                    '@type': 'ContactPoint',
+                    contactType: 'customer support',
+                    email: 'hello@avahealth.co',
+                    areaServed: 'US',
+                    availableLanguage: 'English',
+                  },
+                },
+                {
+                  '@type': 'WebSite',
+                  '@id': 'https://freeresumepost.co#website',
+                  url: 'https://freeresumepost.co',
+                  name: 'Free Resume Post',
+                  description: 'Upload your resume free, get matched to real healthcare openings.',
+                  publisher: { '@id': 'https://avahealth.co#organization' },
+                  potentialAction: {
+                    '@type': 'SearchAction',
+                    target: 'https://freejobpost.co/jobs?q={search_term_string}',
+                    'query-input': 'required name=search_term_string',
+                  },
+                },
+              ],
+            }),
+          }}
         />
       </head>
       <body className={inter.className}>
