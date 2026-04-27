@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { supabase } from '@/lib/supabase'
 
 export const metadata: Metadata = {
   title: 'Free Resume Post — Upload once, get matched',
@@ -7,15 +8,46 @@ export const metadata: Metadata = {
     'Upload your resume free and get matched to real healthcare openings. No recruiter spam, no resume databases sold to the highest bidder. Beta April 2026.',
 }
 
-// Dummy match preview — replaced with real data once public_jobs is live.
-const PREVIEW_MATCHES = [
-  { title: 'Family Medicine Physician', facility: 'Lee Health · Fort Myers, FL', score: 94, pay: '$270K+' },
-  { title: 'Hospitalist (Nocturnist)', facility: 'Tulane Medical Center · New Orleans, LA', score: 88, pay: '$340K+' },
-  { title: 'Urgent Care PA', facility: 'Banner Health · Phoenix, AZ', score: 82, pay: '$120K–$145K' },
-  { title: 'Telemedicine PCP — Remote', facility: 'Ochsner Health · Remote LA', score: 78, pay: '$225K+' },
-]
+// ISR refresh every 5 min — keeps the live preview fresh without per-request cost
+export const revalidate = 300
 
-export default function Home() {
+interface PreviewJob {
+  slug: string
+  title: string
+  city: string | null
+  state: string | null
+  role: string | null
+  remote_hybrid: 'remote' | 'hybrid' | 'onsite' | null
+  salary_min: number | null
+  salary_max: number | null
+}
+
+function formatSalary(min: number | null, max: number | null): string | null {
+  if (!min && !max) return null
+  const fmt = (n: number) => (n >= 1000 ? `$${Math.round(n / 1000)}K` : `$${n}`)
+  if (min && max && min !== max) return `${fmt(min)}–${fmt(max)}`
+  return fmt(min ?? max ?? 0) + (min && !max ? '+' : '')
+}
+
+function compactLocation(job: Pick<PreviewJob, 'city' | 'state' | 'remote_hybrid'>): string {
+  if (job.remote_hybrid === 'remote') return 'Remote' + (job.state ? ` · ${job.state}` : '')
+  return [job.city, job.state].filter(Boolean).join(', ')
+}
+
+export default async function Home() {
+  // Pull 4 real recent jobs to anchor the hero preview card. Falls back to
+  // dummy data only if the Supabase fetch fails (deploy-time / connectivity).
+  const { data: liveJobs } = await supabase
+    .from('public_jobs')
+    .select('slug, title, city, state, role, remote_hybrid, salary_min, salary_max')
+    .eq('status', 'active')
+    .is('deleted_at', null)
+    .gt('expires_at', new Date().toISOString())
+    .order('created_at', { ascending: false })
+    .limit(4)
+
+  const previewJobs = (liveJobs ?? []) as PreviewJob[]
+
   return (
     <main className="min-h-screen bg-white text-gray-900">
       {/* Nav */}
@@ -86,29 +118,60 @@ export default function Home() {
             — free job posts, no credit card.
           </p>
 
-          {/* Hero product preview */}
+          {/* Hero product preview — live data from public_jobs */}
           <div className="mt-16 max-w-3xl mx-auto">
             <div className="rounded-2xl border border-gray-200 bg-white shadow-xl shadow-blue-500/5 p-6 text-left">
               <div className="flex items-center justify-between text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
-                <span>Your top matches</span>
-                <span className="text-blue-600">updated just now</span>
+                <span className="flex items-center gap-2">
+                  Live healthcare openings
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" aria-hidden="true" />
+                </span>
+                <a href="https://freejobpost.co/jobs" className="text-blue-600 hover:text-blue-700 normal-case tracking-normal font-medium text-[11px]">
+                  See all &rarr;
+                </a>
               </div>
-              <div className="divide-y divide-gray-100">
-                {PREVIEW_MATCHES.map((m) => (
-                  <div key={m.title} className="flex items-center justify-between py-3">
-                    <div className="min-w-0">
-                      <div className="font-semibold text-gray-900 truncate">{m.title}</div>
-                      <div className="text-sm text-gray-500 truncate">{m.facility}</div>
-                    </div>
-                    <div className="flex items-center gap-3 shrink-0 ml-4">
-                      <span className="text-sm font-medium text-gray-700 hidden sm:inline">{m.pay}</span>
-                      <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 text-blue-700 border border-blue-100 px-2.5 py-0.5 text-xs font-semibold">
-                        {m.score}% match
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              {previewJobs.length === 0 ? (
+                <div className="py-6 text-center text-sm text-gray-500">
+                  Live openings load when you upload your resume.
+                </div>
+              ) : (
+                <div className="divide-y divide-gray-100">
+                  {previewJobs.map((job) => {
+                    const salary = formatSalary(job.salary_min, job.salary_max)
+                    const loc = compactLocation(job)
+                    return (
+                      <a
+                        key={job.slug}
+                        href={`https://freejobpost.co/jobs/${job.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between py-3 -mx-2 px-2 rounded-lg hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="min-w-0">
+                          <div className="font-semibold text-gray-900 truncate">{job.title}</div>
+                          <div className="text-sm text-gray-500 truncate">{loc || 'Multiple locations'}</div>
+                        </div>
+                        <div className="flex items-center gap-3 shrink-0 ml-4">
+                          {salary && <span className="text-sm font-medium text-gray-700 hidden sm:inline tabular-nums">{salary}</span>}
+                          {job.remote_hybrid === 'remote' ? (
+                            <span className="inline-flex items-center rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 px-2.5 py-0.5 text-xs font-semibold">
+                              Remote
+                            </span>
+                          ) : job.remote_hybrid === 'hybrid' ? (
+                            <span className="inline-flex items-center rounded-full bg-blue-50 text-blue-700 border border-blue-100 px-2.5 py-0.5 text-xs font-semibold">
+                              Hybrid
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center rounded-full bg-gray-50 text-gray-700 border border-gray-200 px-2.5 py-0.5 text-xs font-semibold">
+                              Onsite
+                            </span>
+                          )}
+                        </div>
+                      </a>
+                    )
+                  })}
+                </div>
+              )}
             </div>
           </div>
         </div>
