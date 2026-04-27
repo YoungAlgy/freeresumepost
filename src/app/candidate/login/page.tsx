@@ -4,7 +4,7 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Candidate sign-in',
   description: 'Edit your freeresumepost.co profile. We sent you an edit link when you uploaded your resume.',
-  alternates: { canonical: 'https://freeresumepost.co/candidate/login' },
+  alternates: { canonical: 'https://www.freeresumepost.co/candidate/login' },
   // Don't index — auth-adjacent + user-specific destination
   robots: { index: false, follow: false },
 }

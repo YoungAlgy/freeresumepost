@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   description:
     'Upload your resume for free and get matched to healthcare openings. No recruiter pitches, no resume databases sold to spammers. Built by a real staffing team.',
-  metadataBase: new URL('https://freeresumepost.co'),
+  metadataBase: new URL('https://www.freeresumepost.co'),
   alternates: {
     canonical: '/',
   },
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     siteName: 'Free Resume Post',
     type: 'website',
     locale: 'en_US',
-    url: 'https://freeresumepost.co',
+    url: 'https://www.freeresumepost.co',
     title: 'Free Resume Post — Upload once, get matched',
     description: 'Upload your resume free. We match you to real healthcare openings. No recruiter spam.',
   },
@@ -81,7 +81,7 @@ export default function RootLayout({
                   '@id': 'https://avahealth.co#organization',
                   name: 'Ava Health Partners',
                   alternateName: 'Free Resume Post',
-                  url: 'https://freeresumepost.co',
+                  url: 'https://www.freeresumepost.co',
                   description: 'Free candidate-resume platform operated by Ava Health Partners. Upload once, get matched to real healthcare openings, your data is never sold.',
                   sameAs: [
                     'https://avahealth.co',
@@ -98,8 +98,8 @@ export default function RootLayout({
                 },
                 {
                   '@type': 'WebSite',
-                  '@id': 'https://freeresumepost.co#website',
-                  url: 'https://freeresumepost.co',
+                  '@id': 'https://www.freeresumepost.co#website',
+                  url: 'https://www.freeresumepost.co',
                   name: 'Free Resume Post',
                   description: 'Upload your resume free, get matched to real healthcare openings.',
                   publisher: { '@id': 'https://avahealth.co#organization' },

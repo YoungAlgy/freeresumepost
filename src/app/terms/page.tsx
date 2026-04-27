@@ -4,7 +4,7 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Terms of Use',
   description: 'Free Resume Post terms of use. Free candidate-resume platform operated by Ava Health Partners LLC.',
-  alternates: { canonical: 'https://freeresumepost.co/terms' },
+  alternates: { canonical: 'https://www.freeresumepost.co/terms' },
   robots: { index: true, follow: true },
 }
 

@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase'
 export const revalidate = 3600
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = 'https://freeresumepost.co'
+  const base = 'https://www.freeresumepost.co'
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${base}/`, changeFrequency: 'daily', priority: 1.0 },

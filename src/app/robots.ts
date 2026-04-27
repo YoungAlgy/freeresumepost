@@ -11,7 +11,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/', '/profile/*?*'],
       },
     ],
-    sitemap: 'https://freeresumepost.co/sitemap.xml',
-    host: 'https://freeresumepost.co',
+    sitemap: 'https://www.freeresumepost.co/sitemap.xml',
+    host: 'https://www.freeresumepost.co',
   }
 }

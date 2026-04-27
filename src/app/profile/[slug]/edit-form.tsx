@@ -70,7 +70,7 @@ export default function ProfileEditForm({
     })
   }
 
-  const publicUrl = `https://freeresumepost.co/profile/${candidate.slug}`
+  const publicUrl = `https://www.freeresumepost.co/profile/${candidate.slug}`
 
   return (
     <main className="min-h-screen bg-white text-slate-900">

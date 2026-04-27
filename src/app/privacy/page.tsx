@@ -4,7 +4,7 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description: 'Free Resume Post privacy policy. Your resume is yours; we never sell candidate data. Operated by Ava Health Partners LLC.',
-  alternates: { canonical: 'https://freeresumepost.co/privacy' },
+  alternates: { canonical: 'https://www.freeresumepost.co/privacy' },
   robots: { index: true, follow: true },
 }
 

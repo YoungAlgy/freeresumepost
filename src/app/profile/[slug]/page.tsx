@@ -72,8 +72,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description: `${title} profile on freeresumepost.co. ${loc ? 'Based in ' + loc + '. ' : ''}Open to healthcare job opportunities.`,
-    alternates: { canonical: `https://freeresumepost.co/profile/${slug}` },
-    openGraph: { title, type: 'profile', url: `https://freeresumepost.co/profile/${slug}` },
+    alternates: { canonical: `https://www.freeresumepost.co/profile/${slug}` },
+    openGraph: { title, type: 'profile', url: `https://www.freeresumepost.co/profile/${slug}` },
   }
 }
 
@@ -108,7 +108,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
           addressCountry: 'US',
         }
       : undefined,
-    url: `https://freeresumepost.co/profile/${c.slug}`,
+    url: `https://www.freeresumepost.co/profile/${c.slug}`,
   }
 
   return (
