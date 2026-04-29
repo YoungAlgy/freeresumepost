@@ -245,6 +245,33 @@ export const CANDIDATE_SPECIALTIES: CandidateSpecialty[] = [
     commonCredentials: ['CGC', 'MS in Genetic Counseling'],
     exampleRoles: ['Oncology Genetic Counselor', 'Prenatal Genetic Counselor', 'Cardiac Genetic Counselor', 'Pediatric Genetic Counselor', 'Laboratory Genetic Counselor', 'Telehealth Genetic Counselor'],
   },
+  {
+    slug: 'paramedic',
+    name: 'Paramedic / EMT',
+    title: 'Paramedic / EMT resume upload',
+    metaDescription: 'Free Paramedic + EMT resume upload. NREMT-certified paramedics and EMTs matched to 911, hospital, ER tech, and critical-care transport openings.',
+    shortDescription: 'Paramedic + EMT roles across 911 EMS, hospital ER tech, IFT, and critical-care transport.',
+    commonCredentials: ['Paramedic', 'NREMT-P', 'EMT', 'AEMT', 'CCP-C', 'FP-C'],
+    exampleRoles: ['911 Paramedic', 'Hospital ER Tech', 'IFT Paramedic', 'Critical Care Paramedic', 'Flight Paramedic', 'Tactical EMS'],
+  },
+  {
+    slug: 'medical-laboratory-scientist',
+    name: 'Medical Laboratory Scientist',
+    title: 'MLS / Medical Lab Scientist resume upload',
+    metaDescription: 'Free MLS resume upload. Medical Laboratory Scientists (MLS, MT, CLS, MLT) matched to hospital lab, blood bank, and molecular openings.',
+    shortDescription: 'MLS / MT / CLS roles across hospital labs, blood banks, molecular diagnostics, and reference labs.',
+    commonCredentials: ['MLS (ASCP)', 'MT (ASCP)', 'CLS', 'MLT'],
+    exampleRoles: ['Hospital Lab MLS', 'Blood Bank MLS', 'Molecular Lab MLS', 'Microbiology MLS', 'Reference Lab MLS', 'Lab Manager'],
+  },
+  {
+    slug: 'sonographer',
+    name: 'Sonographer',
+    title: 'Sonographer / Ultrasound Tech resume upload',
+    metaDescription: 'Free RDMS / RDCS / RVT resume upload. Diagnostic Medical Sonographers and Cardiac/Vascular Sonographers matched to hospital + outpatient openings.',
+    shortDescription: 'Sonographer roles across hospital imaging, outpatient centers, OB/GYN, cardiac, vascular, and pediatric ultrasound.',
+    commonCredentials: ['RDMS', 'RDCS', 'RVT', 'ARDMS'],
+    exampleRoles: ['Diagnostic Medical Sonographer', 'Cardiac Sonographer', 'Vascular Sonographer', 'OB/GYN Sonographer', 'Pediatric Sonographer', 'Lead Echo Sonographer'],
+  },
 ]
 
 export function getCandidateSpecialty(slug: string): CandidateSpecialty | undefined {
