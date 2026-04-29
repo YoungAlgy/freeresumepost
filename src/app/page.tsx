@@ -249,6 +249,25 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Specialty hub discovery */}
+      <section className="border-t border-gray-100 bg-slate-50">
+        <div className="max-w-4xl mx-auto px-6 py-16 text-center">
+          <p className="text-xs font-semibold tracking-wider text-blue-600 uppercase mb-3">Browse by specialty</p>
+          <p className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-900 mb-4">
+            29 healthcare roles, one upload.
+          </p>
+          <p className="text-lg text-slate-600 leading-relaxed max-w-xl mx-auto mb-8">
+            Physicians, NPs, PAs, RNs, CRNAs, therapists (PT/OT/SLP), pharmacists, MAs, RDNs, sonographers, and more — pick yours and the parser handles the rest.
+          </p>
+          <Link
+            href="/specialty"
+            className="inline-flex items-center px-6 py-3 border border-slate-300 rounded-full text-base font-semibold text-slate-900 hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-colors"
+          >
+            See all specialties →
+          </Link>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section className="border-t border-gray-100">
         <div className="max-w-3xl mx-auto px-6 py-20">
