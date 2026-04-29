@@ -97,6 +97,38 @@ export default function HowItWorksPage() {
           <Link href="/privacy" className="underline text-blue-600 hover:text-blue-700">privacy policy</Link> for the specifics on what we collect and don&apos;t.
         </p>
 
+        <h2 className="text-xl font-semibold mt-12 mb-4">FAQ</h2>
+        <div className="space-y-6 mb-12">
+          <div>
+            <h3 className="font-semibold text-slate-900 mb-1">Is it really free?</h3>
+            <p className="text-slate-600">Yes. We don&apos;t charge candidates anything — not for upload, not for matches, not to apply. Hiring employers pay our placement fee when a match converts.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-slate-900 mb-1">Will my resume be sold to recruiters?</h3>
+            <p className="text-slate-600">No. We don&apos;t sell, license, or share your data with third parties. Only verified employers with active job posts on our network can see profiles that match their roles.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-slate-900 mb-1">What healthcare roles can I upload as?</h3>
+            <p className="text-slate-600">Physicians (MD/DO), Nurse Practitioners, Physician Assistants, Registered Nurses, CRNAs, LPNs, therapists (PT, OT, SLP, AuD), pharmacists (PharmD/RPh), and most allied health roles.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-slate-900 mb-1">How fast will I get matched?</h3>
+            <p className="text-slate-600">Initial matches typically surface within 24-48 hours of upload. Florida + Texas + California candidates see the highest match volume.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-slate-900 mb-1">Can I delete my profile later?</h3>
+            <p className="text-slate-600">Yes — at any time. Delete from your profile page and we wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-slate-900 mb-1">Do I need to make my profile public?</h3>
+            <p className="text-slate-600">No. Most candidates keep profiles private. Public profiles get an indexed page on our site, which can help passive job-seeking.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-slate-900 mb-1">Is my license info verified?</h3>
+            <p className="text-slate-600">We cross-reference NPI numbers and state board lookups during the parse step but don&apos;t do full credential verification. Employers verify credentials independently before hiring.</p>
+          </div>
+        </div>
+
         <div className="border border-slate-200 rounded-2xl bg-slate-50 p-8 text-center">
           <p className="text-2xl font-semibold mb-3 text-slate-900">Ready when you are</p>
           <Link href="/upload" className="inline-block bg-slate-900 text-white font-semibold px-6 py-3 rounded-full hover:bg-slate-700">
@@ -104,6 +136,26 @@ export default function HowItWorksPage() {
           </Link>
         </div>
       </article>
+
+      {/* FAQPage schema — eligible for FAQ rich results in SERP */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              { '@type': 'Question', name: 'Is it really free?', acceptedAnswer: { '@type': 'Answer', text: "Yes. We don't charge candidates anything — not for upload, not for matches, not to apply. Hiring employers pay our placement fee when a match converts." } },
+              { '@type': 'Question', name: 'Will my resume be sold to recruiters?', acceptedAnswer: { '@type': 'Answer', text: "No. We don't sell, license, or share your data with third parties. Only verified employers with active job posts on our network can see profiles that match their roles." } },
+              { '@type': 'Question', name: 'What healthcare roles can I upload as?', acceptedAnswer: { '@type': 'Answer', text: 'Physicians (MD/DO), Nurse Practitioners, Physician Assistants, Registered Nurses, CRNAs, LPNs, therapists (PT, OT, SLP, AuD), pharmacists (PharmD/RPh), and most allied health roles.' } },
+              { '@type': 'Question', name: 'How fast will I get matched?', acceptedAnswer: { '@type': 'Answer', text: 'Initial matches typically surface within 24-48 hours of upload. Florida + Texas + California candidates see the highest match volume.' } },
+              { '@type': 'Question', name: 'Can I delete my profile later?', acceptedAnswer: { '@type': 'Answer', text: 'Yes — at any time. Delete from your profile page and we wipe both the resume file and parsed data within 30 days, including from any active employer match queues.' } },
+              { '@type': 'Question', name: 'Do I need to make my profile public?', acceptedAnswer: { '@type': 'Answer', text: "No. Most candidates keep profiles private. Public profiles get an indexed page on our site, which can help passive job-seeking." } },
+              { '@type': 'Question', name: 'Is my license info verified?', acceptedAnswer: { '@type': 'Answer', text: "We cross-reference NPI numbers and state board lookups during the parse step but don't do full credential verification. Employers verify credentials independently before hiring." } },
+            ],
+          }),
+        }}
+      />
     </main>
   )
 }
