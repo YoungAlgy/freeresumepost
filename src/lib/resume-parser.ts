@@ -16,14 +16,43 @@ export type ParsedResume = {
 }
 
 const CREDENTIAL_TOKENS = [
-  'MD', 'DO', 'PA-C', 'PA', 'NP', 'FNP', 'ARNP', 'CRNA', 'CNM',
-  'RN', 'BSN', 'LPN', 'LVN', 'CNA',
-  'LCSW', 'LMHC', 'LMFT', 'LPC', 'PsyD', 'PhD', 'PharmD',
-  'PT', 'DPT', 'OT', 'OTR', 'SLP', 'CCC-SLP',
+  // Physician + APP
+  'MD', 'DO', 'PA-C', 'PA', 'NP', 'FNP', 'FNP-BC', 'AGNP', 'AGNP-BC',
+  'AGACNP', 'AGACNP-BC', 'PMHNP', 'PMHNP-BC', 'ACNP', 'ACNP-BC',
+  'WHNP', 'NNP', 'ARNP', 'CRNA', 'CNM',
+  // Nursing + nursing certs
+  'RN', 'RN-BC', 'BSN', 'MSN', 'LPN', 'LVN', 'CNA',
+  'CCRN', 'CMSRN', 'CEN', 'TCRN', 'CNRN', 'OCN', 'CHPN', 'CNOR', 'CRRN',
+  // Behavioral health + therapy
+  'LCSW', 'LMHC', 'LMFT', 'LPC', 'LCMHC', 'LBA',
+  'BCBA', 'BCABA', 'BCBA-D',
+  'PSYD', 'PHD', 'PHARMD',
+  // Rehab
+  'PT', 'DPT', 'PTA', 'OT', 'OTR', 'COTA', 'SLP', 'CCC-SLP',
+  // Allied health — imaging, lab, sleep, cath lab
+  'ARRT', 'ARDMS', 'RDMS', 'RDCS', 'RVT', 'ARMRIT',
+  'RPSGT', 'RST', 'CPSGT',
+  'RCIS', 'RCES', 'CVT',
+  'CPT', 'PBT', 'RDH',
+  'MLS', 'MT', 'CLS', 'MLT',
+  // Dental
   'DDS', 'DMD',
 ]
 
 const SPECIALTY_HINTS: Array<[RegExp, string]> = [
+  // Order matters: more specific hints first, so allied health doesn't get
+  // shadowed by broad terms like "radiology" matching "MRI tech".
+  [/\b(MRI tech|magnetic resonance imag|ARRT.{0,4}MR)\b/i, 'MRI Tech'],
+  [/\b(cath\s*lab|RCIS|RCES|electrophysiology|EP\s*lab)\b/i, 'Cath Lab Tech'],
+  [/\b(BCBA|BCaBA|behavior analyst|ABA therap|applied behavior analysis)\b/i, 'BCBA'],
+  [/\b(mental health tech|behavioral health tech|psych tech\b|MHT\b|BHT\b)\b/i, 'Mental Health Tech'],
+  [/\b(dental hygienist|RDH\b|registered dental hygien)\b/i, 'Dental Hygienist'],
+  [/\b(sleep tech|polysomnograph|RPSGT|sleep lab)\b/i, 'Sleep Tech'],
+  [/\b(patient care tech|PCT\b|nurse aide|CNA tech|ED tech|dialysis tech)\b/i, 'Patient Care Tech'],
+  [/\b(phlebotom)\b/i, 'Phlebotomist'],
+  [/\b(occupational therapy assistant|COTA\b)\b/i, 'Occupational Therapy Assistant'],
+  [/\b(physical therapy assistant|PTA\b)\b/i, 'Physical Therapy Assistant'],
+  // Existing hints continue
   [/\b(psychiatr(y|ist)|behavioral health)\b/i, 'Psychiatry'],
   [/\b(family medicine|family practice|FP|primary care)\b/i, 'Family Medicine'],
   [/\b(internal medicine|IM)\b/i, 'Internal Medicine'],
