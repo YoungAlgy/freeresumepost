@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import { buildOrganizationGraph } from '@/lib/organization-schema'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -69,78 +70,22 @@ export default function RootLayout({
         />
         {/* Organization + WebSite schema. Google uses these to surface the
             sitelinks searchbox and understand brand hierarchy. The sameAs
-            graph cross-links freejobpost + providers + main avahealth.co. */}
+            graph cross-links freejobpost + providers + main avahealth.co.
+            Schema source: src/lib/organization-schema.ts (mirrored to freejobpost). */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@graph': [
-                {
-                  '@type': 'Organization',
-                  '@id': 'https://avahealth.co#organization',
-                  legalName: 'Ava Health Partners LLC',
-                  name: 'Ava Health',
-                  alternateName: ['Ava Health Partners', 'Ava Health Partners LLC'],
-                  url: 'https://avahealth.co',
-                  logo: 'https://avahealth.co/logo.png',
-                  description: 'Healthcare staffing and recruiting firm connecting physicians, nurses, and therapists with US healthcare employers. Operates freeresumepost.co — a free candidate-resume platform that matches healthcare professionals to open roles without selling resume data.',
-                  telephone: '+1-904-343-9449',
-                  email: 'info@avahealth.co',
-                  sameAs: [
-                    'https://avahealth.co',
-                    'https://www.avahealth.co',
-                    'https://providers.avahealth.co',
-                    'https://app.avahealth.co',
-                    'https://freejobpost.co',
-                    'https://www.freeresumepost.co',
-                    'https://www.linkedin.com/company/ava-health1/',
-                  ],
-                  address: {
-                    '@type': 'PostalAddress',
-                    streetAddress: '1314 7th Street South',
-                    addressLocality: 'St. Petersburg',
-                    addressRegion: 'FL',
-                    postalCode: '33701',
-                    addressCountry: 'US',
-                  },
-                  contactPoint: [
-                    {
-                      '@type': 'ContactPoint',
-                      contactType: 'customer service',
-                      telephone: '+1-904-343-9449',
-                      email: 'info@avahealth.co',
-                      areaServed: 'US',
-                      availableLanguage: 'English',
-                    },
-                  ],
-                  openingHoursSpecification: [
-                    {
-                      '@type': 'OpeningHoursSpecification',
-                      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-                      opens: '09:00',
-                      closes: '17:00',
-                    },
-                  ],
-                  areaServed: { '@type': 'Country', name: 'United States' },
-                  industry: 'Staffing and Recruiting',
-                  naics: '561311',
-                },
-                {
-                  '@type': 'WebSite',
-                  '@id': 'https://www.freeresumepost.co#website',
-                  url: 'https://www.freeresumepost.co',
-                  name: 'Free Resume Post',
-                  description: 'Upload your resume free, get matched to real healthcare openings.',
-                  publisher: { '@id': 'https://avahealth.co#organization' },
-                  potentialAction: {
-                    '@type': 'SearchAction',
-                    target: 'https://freejobpost.co/jobs?q={search_term_string}',
-                    'query-input': 'required name=search_term_string',
-                  },
-                },
-              ],
-            }),
+            __html: JSON.stringify(
+              buildOrganizationGraph({
+                websiteUrl: 'https://www.freeresumepost.co',
+                websiteName: 'Free Resume Post',
+                websiteDescription:
+                  'Upload your resume free, get matched to real healthcare openings.',
+                organizationDescription:
+                  'Healthcare staffing and recruiting firm connecting physicians, nurses, and therapists with US healthcare employers. Operates freeresumepost.co — a free candidate-resume platform that matches healthcare professionals to open roles without selling resume data.',
+                searchActionTarget: 'https://freejobpost.co/jobs?q={search_term_string}',
+              })
+            ),
           }}
         />
       </head>

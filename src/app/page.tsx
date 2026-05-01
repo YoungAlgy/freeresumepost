@@ -88,29 +88,37 @@ export default async function Home() {
             Beta opening April 2026
           </div>
           <h1 className="text-5xl md:text-7xl font-semibold tracking-[-0.03em] leading-[1.02] text-gray-900 max-w-4xl mx-auto">
-            Upload once. <span className="text-blue-600">Get matched.</span>
+            Browse jobs first. <span className="text-blue-600">Upload when ready.</span>
           </h1>
           <p className="mt-6 text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto">
-            Drop your resume once and we&apos;ll match you to real healthcare openings.
-            No recruiter spam, no resume databases sold, no re-uploading for every application.
+            See real healthcare openings before you commit a resume. When something fits, drop your
+            PDF once and we&apos;ll match you to the rest. No recruiter spam, no resume databases
+            sold, no re-uploading for every application.
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
-            <Link
-              href="/upload"
+            <a
+              href="https://freejobpost.co/jobs"
               className="inline-flex items-center justify-center px-6 py-3.5 bg-gray-900 text-white font-semibold rounded-full hover:bg-gray-700 transition-colors shadow-sm"
             >
-              Upload your resume →
-            </Link>
+              Browse healthcare jobs →
+            </a>
             <Link
-              href="/candidate/login"
+              href="/upload"
               className="inline-flex items-center justify-center px-6 py-3.5 bg-white text-gray-900 font-semibold rounded-full border border-gray-200 hover:border-gray-300 transition-colors"
             >
-              I have an account
+              Upload resume to match
             </Link>
           </div>
 
-          <p className="mt-8 text-sm text-gray-500">
+          <p className="mt-6 text-sm text-gray-500">
+            Already have an account?{' '}
+            <Link href="/candidate/login" className="text-blue-600 font-medium hover:underline">
+              Sign in
+            </Link>
+          </p>
+
+          <p className="mt-2 text-sm text-gray-500">
             Employer?{' '}
             <a href="https://freejobpost.co" className="text-blue-600 font-medium hover:underline">
               freejobpost.co

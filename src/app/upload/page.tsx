@@ -83,10 +83,19 @@ export default async function UploadPage() {
         <h1 className="text-4xl md:text-5xl font-semibold leading-tight tracking-tight text-slate-900 mb-4">
           Upload your resume.
         </h1>
-        <p className="text-lg text-slate-600 max-w-2xl mb-6 leading-relaxed">
+        <p className="text-lg text-slate-600 max-w-2xl mb-4 leading-relaxed">
           We parse it locally in your browser — your file never leaves your
           machine until you review and approve what we extracted. Takes 30
           seconds.
+        </p>
+        <p className="text-sm text-slate-500 mb-6">
+          Not ready to upload?{' '}
+          <a
+            href="https://freejobpost.co/jobs"
+            className="text-blue-600 font-medium hover:underline"
+          >
+            Browse the {activeJobs.toLocaleString()} live healthcare openings first →
+          </a>
         </p>
 
         {/* Live trust strip — gives visitors a real reason to upload now */}

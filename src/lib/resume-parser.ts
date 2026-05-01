@@ -129,15 +129,22 @@ export function parseFields(raw: string): ParsedResume {
   const phoneMatch = text.match(/(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\b/)
   const phone = phoneMatch?.[0]?.trim() ?? null
 
-  // Name — take the first non-email, non-phone line that has 2-4 Title-Case tokens
+  // Name — take the first non-email, non-phone line that has 2-4 Title-Case tokens.
+  // Strip trailing punctuation BEFORE the regex test (so "Mitchell," still matches),
+  // and exclude credential tokens (so "Sarah Mitchell, RN" doesn't pick "RN" as the last name).
   let firstName: string | null = null
   let lastName: string | null = null
   for (const line of lines.slice(0, 8)) {
     if (/[@\d]/.test(line)) continue
-    const tokens = line.split(/\s+/).filter((t) => /^[A-Z][a-zA-Z'-]{1,20}\.?$/.test(t))
+    const cleaned = line.split(/\s+/).map((t) => t.replace(/[.,;]+$/, ''))
+    const tokens = cleaned.filter(
+      (t) =>
+        /^[A-Z][a-zA-Z'-]{1,20}$/.test(t) &&
+        !CREDENTIAL_TOKENS.includes(t.toUpperCase())
+    )
     if (tokens.length >= 2 && tokens.length <= 5) {
-      firstName = tokens[0].replace(/\.$/, '')
-      lastName = tokens[tokens.length - 1].replace(/\.$/, '')
+      firstName = tokens[0]
+      lastName = tokens[tokens.length - 1]
       break
     }
   }
@@ -160,13 +167,15 @@ export function parseFields(raw: string): ParsedResume {
     }
   }
 
-  // State + city — last ", XX ZIP?" pattern wins (likely current address)
+  // State + city — last "City, XX ZIP?" pattern wins (likely current address).
+  // Restrict the city span to single-line characters (no \s inside the class)
+  // so e.g. "Urgent Care\nTampa, FL" doesn't capture "Urgent CareTampa" as the city.
   let state: string | null = null
   let city: string | null = null
-  const addressMatches = text.match(/\b([A-Z][a-zA-Z\s.-]+?),\s+([A-Z]{2})\b\s*\d{0,5}/g)
+  const addressMatches = text.match(/\b([A-Z][a-zA-Z .'-]+?),\s+([A-Z]{2})\b\s*\d{0,5}/g)
   if (addressMatches?.length) {
     const last = addressMatches[addressMatches.length - 1]
-    const m = last.match(/\b([A-Z][a-zA-Z\s.-]+?),\s+([A-Z]{2})\b/)
+    const m = last.match(/\b([A-Z][a-zA-Z .'-]+?),\s+([A-Z]{2})\b/)
     if (m) {
       const st = m[2]
       if (STATE_CODES.includes(st)) {
