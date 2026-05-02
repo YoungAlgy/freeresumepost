@@ -33,6 +33,21 @@ type Candidate = {
   created_at: string
 }
 
+export type CandidateMatch = {
+  job_id: string
+  job_slug: string
+  job_title: string
+  job_city: string | null
+  job_state: string | null
+  job_specialty: string | null
+  job_remote_hybrid: 'remote' | 'hybrid' | 'onsite' | null
+  job_employment_type: string | null
+  salary_min: number | null
+  salary_max: number | null
+  score: number
+  reasons: Record<string, unknown> | null
+}
+
 async function getPublicCandidate(slug: string): Promise<Candidate | null> {
   if (!SLUG_RE.test(slug)) return null
   const { data } = await supabase
@@ -51,14 +66,15 @@ async function getPublicCandidate(slug: string): Promise<Candidate | null> {
 async function getEditableCandidate(
   candidateId: string,
   nonce: string
-): Promise<Candidate | null> {
+): Promise<{ candidate: Candidate; matches: CandidateMatch[] } | null> {
   const { data, error } = await supabase.rpc('consume_candidate_edit_rpc', {
     p_candidate_id: candidateId,
     p_nonce: nonce,
   })
   if (error) return null
-  const r = data as { success: boolean; candidate?: Candidate }
-  return r.success ? r.candidate ?? null : null
+  const r = data as { success: boolean; candidate?: Candidate; matches?: CandidateMatch[] }
+  if (!r.success || !r.candidate) return null
+  return { candidate: r.candidate, matches: r.matches ?? [] }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -81,13 +97,13 @@ export default async function ProfilePage({ params, searchParams }: Props) {
   const { slug } = await params
   const { t, id } = await searchParams
 
-  // Edit mode — a valid token unlocks the private profile
+  // Edit mode — a valid token unlocks the private profile + the candidate's
+  // top job matches. Falls through to public view if token invalid.
   if (t && id) {
-    const c = await getEditableCandidate(id, t)
-    if (c && c.slug === slug) {
-      return <EditMode candidate={c} nonce={t} />
+    const result = await getEditableCandidate(id, t)
+    if (result && result.candidate.slug === slug) {
+      return <EditMode candidate={result.candidate} nonce={t} matches={result.matches} />
     }
-    // Fall through to public view if token invalid
   }
 
   const c = await getPublicCandidate(slug)
@@ -183,6 +199,14 @@ export default async function ProfilePage({ params, searchParams }: Props) {
 }
 
 // Client component for the edit-mode form
-function EditMode({ candidate, nonce }: { candidate: Candidate; nonce: string }) {
-  return <ProfileEditForm candidate={candidate} nonce={nonce} />
+function EditMode({
+  candidate,
+  nonce,
+  matches,
+}: {
+  candidate: Candidate
+  nonce: string
+  matches: CandidateMatch[]
+}) {
+  return <ProfileEditForm candidate={candidate} nonce={nonce} matches={matches} />
 }

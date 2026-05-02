@@ -57,7 +57,7 @@ export default function HowItWorksPage() {
               <div className="font-semibold text-slate-900 mb-1">Pick public or private</div>
               <div className="text-slate-600 leading-relaxed">
                 <strong>Public:</strong> first name, last initial, specialty, state, and years of experience are visible at /profile/[your-slug] — discoverable by employers.<br />
-                <strong>Private:</strong> only the matching engine sees you. We email you when a strong match opens up; nobody else can find you.
+                <strong>Private:</strong> only the matching engine sees you. New matches surface on your private profile page (the edit URL we send when you upload); nobody else can find you.
               </div>
             </div>
           </li>
@@ -66,7 +66,7 @@ export default function HowItWorksPage() {
             <div>
               <div className="font-semibold text-slate-900 mb-1">Get matched</div>
               <div className="text-slate-600 leading-relaxed">
-                Our matching engine scores you against every active job on freejobpost.co (specialty trigram, state, city, credential, experience, salary, certifications). When a 70%+ match opens, we email you. You decide whether to apply — never automatic.
+                Our matching engine scores you against every active job on freejobpost.co (specialty trigram, state, city, credential, experience, salary, certifications). Your top matches appear on your private profile page, refreshed every few hours. You decide whether to apply — never automatic.
               </div>
             </div>
           </li>

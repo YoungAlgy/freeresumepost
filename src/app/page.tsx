@@ -229,7 +229,7 @@ export default async function Home() {
             {[
               { n: '1', h: 'Upload PDF', p: 'Drop your resume. Any format — PDF, DOCX, whatever.' },
               { n: '2', h: 'We parse', p: 'We auto-extract your specialty, credential, experience, location. Review in 30 seconds.' },
-              { n: '3', h: 'Get matched', p: 'New matching jobs surface on your dashboard. Apply with one click.' },
+              { n: '3', h: 'Get matched', p: 'Your top matches surface on your private profile page, refreshed every few hours. Apply directly from each listing.' },
             ].map((step) => (
               <div key={step.n} className="text-center">
                 <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white font-semibold mb-4">
@@ -298,7 +298,7 @@ export default async function Home() {
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">How fast will I get matched?</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">Initial matches typically surface within 24-48 hours of upload. Florida + Texas + California candidates see the highest match volume. You&apos;re notified by email — never automatic application.</p>
+              <p className="text-slate-600 leading-relaxed text-sm">Initial matches typically surface within a few hours of upload. Your top matches appear on your private profile page (the edit URL we send on submit). Florida + Texas + California candidates see the highest match volume. Never automatic application.</p>
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Can I delete my profile?</h3>
@@ -345,7 +345,7 @@ export default async function Home() {
               { '@type': 'Question', name: 'Is uploading my resume actually free?', acceptedAnswer: { '@type': 'Answer', text: 'Yes — for candidates, always. We never charge for upload, matches, or applying. Hiring employers pay our placement fee.' } },
               { '@type': 'Question', name: 'Will my resume be sold to recruiters?', acceptedAnswer: { '@type': 'Answer', text: "No. We don't sell, license, or share your data with third parties. Only verified employers with active job posts on freejobpost.co can see profiles that match their roles." } },
               { '@type': 'Question', name: 'What healthcare roles can I upload as?', acceptedAnswer: { '@type': 'Answer', text: 'Physicians (MD/DO), NPs, PAs, RNs, CRNAs, LPNs, therapists (PT/OT/SLP/AuD), pharmacists (PharmD/RPh), MAs, sonographers, lab techs, paramedics, and most allied health roles.' } },
-              { '@type': 'Question', name: 'How fast will I get matched?', acceptedAnswer: { '@type': 'Answer', text: 'Initial matches typically surface within 24-48 hours of upload. Florida + Texas + California candidates see the highest match volume.' } },
+              { '@type': 'Question', name: 'How fast will I get matched?', acceptedAnswer: { '@type': 'Answer', text: 'Initial matches typically surface within a few hours of upload. Your top matches appear on your private profile page (the edit URL we send on submit). Florida + Texas + California candidates see the highest match volume.' } },
               { '@type': 'Question', name: 'Can I delete my profile?', acceptedAnswer: { '@type': 'Answer', text: 'Yes — at any time. We wipe both the resume file and parsed data within 30 days, including from any active employer match queues.' } },
               { '@type': 'Question', name: 'Do I have to make my profile public?', acceptedAnswer: { '@type': 'Answer', text: 'No. Most candidates keep profiles private. Public profiles get an indexed page (first name + last initial only).' } },
               { '@type': 'Question', name: 'Is my license info verified?', acceptedAnswer: { '@type': 'Answer', text: "We cross-reference NPI numbers and state board lookups during the parse step but don't do full credential verification. Employers verify credentials independently." } },

@@ -141,7 +141,7 @@ export default async function UploadPage() {
               <div className="shrink-0 w-7 h-7 rounded-full bg-blue-600 text-white text-xs font-semibold flex items-center justify-center mt-0.5">3</div>
               <div>
                 <div className="font-medium text-slate-900">We match you to live openings</div>
-                <div className="text-sm text-slate-600 mt-0.5">Our matching engine scores you against every active job. We email you when a 70%+ match opens up — never spam.</div>
+                <div className="text-sm text-slate-600 mt-0.5">Our matching engine scores you against every active job. Your top matches appear on your private profile page (the edit URL you get on submit), refreshed every few hours. No spam, no auto-apply.</div>
               </div>
             </li>
           </ol>

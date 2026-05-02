@@ -179,7 +179,7 @@ export default async function CandidateSpecialtyPage(
               <div className="shrink-0 w-7 h-7 rounded-full bg-blue-600 text-white text-sm font-semibold flex items-center justify-center">3</div>
               <div>
                 <div className="font-semibold text-slate-900 mb-1">Get matched</div>
-                <div className="text-slate-600 leading-relaxed text-sm">When a 70%+ match opens on freejobpost.co, we email you. You decide whether to apply.</div>
+                <div className="text-slate-600 leading-relaxed text-sm">Your top matches surface on your private profile page (the edit URL we send on submit), refreshed every few hours. You decide whether to apply.</div>
               </div>
             </li>
           </ol>
