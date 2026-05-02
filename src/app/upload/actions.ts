@@ -75,6 +75,30 @@ export async function submitCandidate(input: SubmitCandidateInput): Promise<Subm
     return { success: false, error: result.error || 'Submission rejected.' }
   }
 
+  // Fire the upload notification to alex@avahealth.co. Don't block the
+  // confirmation flow on email-send failure — the candidate still gets
+  // their edit URL even if Resend hiccups. Mirrors the apply-notify pattern.
+  try {
+    const notifyRes = await fetch(`${SUPABASE_URL}/functions/v1/resume-uploaded-notify`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      },
+      body: JSON.stringify({
+        candidate_id: result.candidate_id,
+        nonce: result.nonce,
+      }),
+    })
+    if (!notifyRes.ok) {
+      const txt = await notifyRes.text()
+      console.error('resume-uploaded-notify failed:', notifyRes.status, txt.slice(0, 200))
+    }
+  } catch (e) {
+    console.error('resume-uploaded-notify fetch error:', e instanceof Error ? e.message : 'unknown')
+  }
+
   const editUrl = `/profile/${result.candidate_slug}?t=${result.nonce}&id=${result.candidate_id}`
   return {
     success: true,
