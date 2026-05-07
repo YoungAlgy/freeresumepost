@@ -1,6 +1,8 @@
 'use server'
 
 import { createClient } from '@supabase/supabase-js'
+import { headers } from 'next/headers'
+import { verifyTurnstileToken } from '@/lib/turnstile'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -27,7 +29,19 @@ export type SubmitCandidateResult =
   | { success: true; candidate_slug: string; edit_url: string }
   | { success: false; error: string }
 
-export async function submitCandidate(input: SubmitCandidateInput): Promise<SubmitCandidateResult> {
+export async function submitCandidate(
+  input: SubmitCandidateInput,
+  turnstileToken?: string
+): Promise<SubmitCandidateResult> {
+  // Cloudflare Turnstile bot check — fail-open when not configured (see
+  // src/lib/turnstile.ts), strict otherwise.
+  const hdrs = await headers()
+  const remoteIp = hdrs.get('x-forwarded-for')?.split(',')[0].trim() || hdrs.get('x-real-ip') || null
+  const turnstile = await verifyTurnstileToken(turnstileToken, remoteIp)
+  if (!turnstile.ok) {
+    return { success: false, error: turnstile.reason }
+  }
+
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } })
 
   const normalizedEmail = (input.email ?? '').trim().toLowerCase()

@@ -9,6 +9,7 @@ import {
   type ParsedResume,
 } from '@/lib/resume-parser'
 import { submitCandidate, type SubmitCandidateInput } from './actions'
+import TurnstileWidget from '@/components/TurnstileWidget'
 
 const STATES = [
   'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID',
@@ -29,6 +30,8 @@ export default function UploadForm() {
   const [fileName, setFileName] = useState<string>('')
   const [parsed, setParsed] = useState<ParsedResume | null>(null)
   const [, startTransition] = useTransition()
+  // Cloudflare Turnstile token — see TurnstileWidget.tsx. null until challenge passes.
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
 
   // Fields shown in review step (prefilled from parsed, user-editable)
   const [form, setForm] = useState<SubmitCandidateInput>({
@@ -109,7 +112,7 @@ export default function UploadForm() {
     if (!canSubmit()) return
     setPhase('submitting')
     startTransition(async () => {
-      const res = await submitCandidate(form)
+      const res = await submitCandidate(form, turnstileToken ?? '')
       if (res.success) {
         setPhase('done')
         router.push(res.edit_url)
@@ -390,6 +393,13 @@ export default function UploadForm() {
           </label>
         </div>
       </section>
+
+      <TurnstileWidget
+        onSuccess={setTurnstileToken}
+        onError={() => setTurnstileToken(null)}
+        onExpired={() => setTurnstileToken(null)}
+        action="upload-resume"
+      />
 
       {parseErr && (
         <div className="rounded-xl border border-red-300 bg-red-50 p-4 text-red-800 font-medium text-sm">
