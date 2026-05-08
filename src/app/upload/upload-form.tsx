@@ -490,7 +490,7 @@ function Field({
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </span>
-        {hint && <span className="text-xs text-slate-400">{hint}</span>}
+        {hint && <span className="text-xs text-slate-500">{hint}</span>}
       </div>
       {children}
     </label>

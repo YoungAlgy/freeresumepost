@@ -8,7 +8,7 @@ import { notFound } from 'next/navigation'
 import { CANDIDATE_SPECIALTIES, getCandidateSpecialty } from '@/lib/specialty-slugs'
 
 import { safeJsonLd } from '@/lib/safe-jsonld'
-export const revalidate = 3600
+export const revalidate = 600
 
 export async function generateStaticParams() {
   return CANDIDATE_SPECIALTIES.map((s) => ({ slug: s.slug }))

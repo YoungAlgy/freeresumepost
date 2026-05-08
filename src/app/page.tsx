@@ -243,7 +243,7 @@ export default async function Home() {
                         {range} typical
                       </div>
                     ) : (
-                      <div className="text-xs text-gray-400">
+                      <div className="text-xs text-gray-600">
                         {b.count === 1 ? '1 active role' : `${b.count} active`}
                       </div>
                     )}

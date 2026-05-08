@@ -9,6 +9,7 @@
 import { ImageResponse } from 'next/og'
 import { supabase } from '@/lib/supabase'
 
+export const runtime = 'edge'
 export const alt = 'Healthcare candidate on freeresumepost.co'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
