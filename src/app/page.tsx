@@ -9,7 +9,15 @@ import { safeJsonLd } from '@/lib/safe-jsonld'
 export const metadata: Metadata = {
   title: 'Free Resume Post — Upload once, get matched',
   description:
-    'Upload your resume free and get matched to real healthcare openings. No recruiter spam, no resume databases sold to the highest bidder. Beta April 2026.',
+    'Upload your resume free and get matched to real healthcare openings. No recruiter spam, no resume databases sold to the highest bidder.',
+  alternates: { canonical: 'https://www.freeresumepost.co' },
+  openGraph: {
+    title: 'Free Resume Post — Upload once, get matched',
+    description:
+      'Upload your resume free. We match you to real healthcare openings. No recruiter spam.',
+    url: 'https://www.freeresumepost.co',
+    type: 'website',
+  },
 }
 
 // ISR refresh every 5 min — keeps the live preview fresh without per-request cost

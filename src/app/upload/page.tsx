@@ -10,6 +10,13 @@ export const metadata: Metadata = {
   description:
     'Drag-drop your PDF resume and get matched to real healthcare jobs. No account, no cold-call recruiters. Your resume stays on your device until you click submit.',
   alternates: { canonical: 'https://www.freeresumepost.co/upload' },
+  openGraph: {
+    title: 'Upload your resume — free healthcare job matching',
+    description:
+      'Drop your resume once and get matched to real healthcare openings. No account, no recruiter spam.',
+    url: 'https://www.freeresumepost.co/upload',
+    type: 'website',
+  },
 }
 
 // ISR: refresh every 5 min so live counts stay accurate without per-request DB hits.
