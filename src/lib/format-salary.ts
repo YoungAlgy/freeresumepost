@@ -19,7 +19,9 @@ export function formatSalary(
   if (min && max && min !== max) return `${fmt(min)}–${fmt(max)}`
   // When only one side of the range is set, append "+" to signal it's an
   // open-ended floor / ceiling rather than an exact figure. e.g. "$200K+".
-  const single = fmt(min ?? max ?? 0)
+  // Use || (not ??) so explicit-zero is treated as "missing" — matches the
+  // top-of-fn `!min && !max` semantics. A zero-salary input is a sham value.
+  const single = fmt(min || max || 0)
   if (min && !max) return `${single}+`
   if (!min && max) return single
   return single
