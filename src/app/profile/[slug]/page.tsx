@@ -163,7 +163,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
             <h1 className="text-3xl md:text-4xl font-semibold leading-tight tracking-tight mb-2">
               {c.first_name} {c.last_name?.charAt(0) ?? ''}.
               {c.credential && (
-                <span className="text-slate-400 font-normal">, {c.credential}</span>
+                <span className="text-slate-500 font-normal">, {c.credential}</span>
               )}
             </h1>
             {c.specialty && (

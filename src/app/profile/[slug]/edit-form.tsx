@@ -194,7 +194,7 @@ export default function ProfileEditForm({
                           <p className="text-sm text-slate-600 mt-0.5 truncate">
                             {loc || '—'}
                             {m.job_specialty && m.job_specialty !== m.job_title && (
-                              <span className="text-slate-400"> · {m.job_specialty}</span>
+                              <span className="text-slate-500"> · {m.job_specialty}</span>
                             )}
                           </p>
                         </div>
