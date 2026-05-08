@@ -49,8 +49,8 @@ export default function TermsPage() {
           <p>
             Once your profile is saved, our matching engine scores you against active jobs on
             freejobpost.co. We email you when a high-match (70%+) opening is posted that fits your
-            specialty + state. You can apply with one click; your application goes directly to the
-            posting employer.
+            specialty + state. Your matches appear on your private profile page. You decide whether
+            to apply; your application goes directly to the posting employer.
           </p>
 
           <h2 className="text-xl font-semibold mt-8 mb-2">4. Account-free access</h2>

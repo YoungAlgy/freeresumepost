@@ -248,7 +248,7 @@ export default async function UploadPage() {
               })}
             </div>
             <p className="text-xs text-slate-500 mt-4">
-              Upload your resume to apply with one click. We&apos;ll only show you roles that match your specialty + state.
+              Upload your resume to see roles matched to your specialty + state. Apply directly from your matches dashboard.
             </p>
           </div>
         )}
