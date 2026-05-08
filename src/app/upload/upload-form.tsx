@@ -32,6 +32,9 @@ export default function UploadForm() {
   const [, startTransition] = useTransition()
   // Cloudflare Turnstile token — see TurnstileWidget.tsx. null until challenge passes.
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
+  // Incrementing key forces TurnstileWidget to remount after a failed submit
+  // so the user gets a fresh challenge (Turnstile tokens are single-use).
+  const [turnstileKey, setTurnstileKey] = useState(0)
 
   // Fields shown in review step (prefilled from parsed, user-editable)
   const [form, setForm] = useState<SubmitCandidateInput>({
@@ -119,6 +122,10 @@ export default function UploadForm() {
       } else {
         setParseErr(res.error)
         setPhase('review')
+        // Token is single-use. Clear it and remount the widget so the user
+        // solves a fresh challenge before retrying.
+        setTurnstileToken(null)
+        setTurnstileKey((k) => k + 1)
       }
     })
   }
@@ -395,6 +402,7 @@ export default function UploadForm() {
       </section>
 
       <TurnstileWidget
+        key={turnstileKey}
         onSuccess={setTurnstileToken}
         onError={() => setTurnstileToken(null)}
         onExpired={() => setTurnstileToken(null)}
