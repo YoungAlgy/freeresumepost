@@ -42,7 +42,7 @@ export default function TermsPage() {
             <li>Your resume is parsed in your browser before any data reaches our servers.</li>
             <li>You review every extracted field and approve before saving.</li>
             <li>You may make your profile public (discoverable by employers) or private (matching only).</li>
-            <li>You may delete your profile at any time via the edit link emailed to you.</li>
+            <li>You may delete your profile at any time by emailing <a href="mailto:hello@avahealth.co?subject=Delete%20my%20profile" className="underline text-blue-600 hover:text-blue-700">hello@avahealth.co</a> with subject &quot;Delete my profile&quot;.</li>
           </ul>
 
           <h2 className="text-xl font-semibold mt-8 mb-2">3. Matching engine</h2>
