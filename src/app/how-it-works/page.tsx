@@ -126,7 +126,7 @@ export default function HowItWorksPage() {
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Is my license info verified?</h3>
-            <p className="text-slate-600">We cross-reference NPI numbers and state board lookups during the parse step but don&apos;t do full credential verification. Employers verify credentials independently before hiring.</p>
+            <p className="text-slate-600">We auto-detect credential tokens (RN, CRNA, PA-C, PharmD, etc.) from your resume text. We don&apos;t do full credential verification — employers verify independently before hiring.</p>
           </div>
         </div>
 
@@ -152,7 +152,7 @@ export default function HowItWorksPage() {
               { '@type': 'Question', name: 'How fast will I get matched?', acceptedAnswer: { '@type': 'Answer', text: 'Initial matches typically surface within 24-48 hours of upload. Florida + Texas + California candidates see the highest match volume.' } },
               { '@type': 'Question', name: 'Can I delete my profile later?', acceptedAnswer: { '@type': 'Answer', text: "Yes — at any time. Email hello@avahealth.co with the subject 'Delete my profile' and we'll wipe both the resume file and parsed data within 30 days, including from any active employer match queues." } },
               { '@type': 'Question', name: 'Do I need to make my profile public?', acceptedAnswer: { '@type': 'Answer', text: "No. Most candidates keep profiles private. Public profiles get an indexed page on our site, which can help passive job-seeking." } },
-              { '@type': 'Question', name: 'Is my license info verified?', acceptedAnswer: { '@type': 'Answer', text: "We cross-reference NPI numbers and state board lookups during the parse step but don't do full credential verification. Employers verify credentials independently before hiring." } },
+              { '@type': 'Question', name: 'Is my license info verified?', acceptedAnswer: { '@type': 'Answer', text: "We auto-detect credential tokens (RN, CRNA, PA-C, PharmD, etc.) from your resume text. We don't do full credential verification — employers verify independently before hiring." } },
             ],
           }),
         }}
