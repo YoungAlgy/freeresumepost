@@ -49,7 +49,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
 
     if (data) {
       const c = data as PublicProfile
-      name = `${c.first_name} ${c.last_name}`.trim() || name
+      name = `${c.first_name} ${c.last_name?.charAt(0) ?? ''}.`.trim() || name
       credential = c.credential || ''
       specialty = c.specialty || ''
       location = [c.city, c.state].filter(Boolean).join(', ')
