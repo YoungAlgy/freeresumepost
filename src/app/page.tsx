@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
+import { formatSalary } from '@/lib/format-salary'
 
 export const metadata: Metadata = {
   title: 'Free Resume Post — Upload once, get matched',
@@ -20,13 +21,6 @@ interface PreviewJob {
   remote_hybrid: 'remote' | 'hybrid' | 'onsite' | null
   salary_min: number | null
   salary_max: number | null
-}
-
-function formatSalary(min: number | null, max: number | null): string | null {
-  if (!min && !max) return null
-  const fmt = (n: number) => (n >= 1000 ? `$${Math.round(n / 1000)}K` : `$${n}`)
-  if (min && max && min !== max) return `${fmt(min)}–${fmt(max)}`
-  return fmt(min ?? max ?? 0) + (min && !max ? '+' : '')
 }
 
 function compactLocation(job: Pick<PreviewJob, 'city' | 'state' | 'remote_hybrid'>): string {

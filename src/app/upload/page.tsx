@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
 import UploadForm from './upload-form'
+import { formatSalary } from '@/lib/format-salary'
 
 export const metadata: Metadata = {
   title: 'Upload your resume — free healthcare job matching',
@@ -22,13 +23,6 @@ interface JobRow {
   salary_min: number | null
   salary_max: number | null
   remote_hybrid: 'remote' | 'hybrid' | 'onsite' | null
-}
-
-function formatSalary(min: number | null, max: number | null): string | null {
-  if (!min && !max) return null
-  const fmt = (n: number) => (n >= 1000 ? `$${Math.round(n / 1000)}K` : `$${n}`)
-  if (min && max && min !== max) return `${fmt(min)}–${fmt(max)}`
-  return fmt(min ?? max ?? 0) + (min && !max ? '+' : '')
 }
 
 export default async function UploadPage() {

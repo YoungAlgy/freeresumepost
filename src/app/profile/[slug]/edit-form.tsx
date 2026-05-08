@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useState, useTransition } from 'react'
 import { updateCandidate } from './actions'
 import type { CandidateMatch } from './page'
+import { formatSalary } from '@/lib/format-salary'
 
 const STATES = [
   'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID',
@@ -31,12 +32,6 @@ type Candidate = {
   is_public: boolean
 }
 
-function formatSalary(min: number | null, max: number | null): string | null {
-  if (!min && !max) return null
-  const fmt = (n: number) => (n >= 1000 ? `$${Math.round(n / 1000)}K` : `$${n}`)
-  if (min && max && min !== max) return `${fmt(min)}–${fmt(max)}`
-  return fmt(min ?? max ?? 0)
-}
 
 function jobLocation(m: CandidateMatch): string {
   if (m.job_remote_hybrid === 'remote') {
