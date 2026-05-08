@@ -7,6 +7,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { CANDIDATE_SPECIALTIES, getCandidateSpecialty } from '@/lib/specialty-slugs'
 
+import { safeJsonLd } from '@/lib/safe-jsonld'
 export const revalidate = 3600
 
 export async function generateStaticParams() {
@@ -93,11 +94,11 @@ export default async function CandidateSpecialtyPage(
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbJsonLd) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(faqJsonLd) }}
       />
 
       <main className="min-h-screen bg-white text-slate-900">

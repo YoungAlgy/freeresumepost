@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
 import { formatSalary } from '@/lib/format-salary'
 
+import { safeJsonLd } from '@/lib/safe-jsonld'
 export const metadata: Metadata = {
   title: 'Free Resume Post — Upload once, get matched',
   description:
@@ -332,7 +333,7 @@ export default async function Home() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: safeJsonLd({
             '@context': 'https://schema.org',
             '@type': 'FAQPage',
             mainEntity: [

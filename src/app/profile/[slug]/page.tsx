@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
 import ProfileEditForm from './edit-form'
 
+import { safeJsonLd } from '@/lib/safe-jsonld'
 const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,120}$/
 
 type Props = {
@@ -131,7 +132,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(personJsonLd) }}
       />
       <main className="min-h-screen bg-white text-slate-900">
         <nav className="border-b border-slate-200">

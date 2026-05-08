@@ -6,6 +6,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { CANDIDATE_SPECIALTIES } from '@/lib/specialty-slugs'
 
+import { safeJsonLd } from '@/lib/safe-jsonld'
 export const metadata: Metadata = {
   title: 'Healthcare resume upload by specialty',
   description: 'Free resume upload for healthcare candidates — physicians, NPs, PAs, RNs, CRNAs, LPNs, therapists, pharmacists, MAs, and more. Get matched, no recruiter spam.',
@@ -67,7 +68,7 @@ export default function CandidateSpecialtyIndexPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: safeJsonLd({
             '@context': 'https://schema.org',
             '@type': 'BreadcrumbList',
             itemListElement: [

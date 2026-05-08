@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
+import { safeJsonLd } from '@/lib/safe-jsonld'
 export const metadata: Metadata = {
   title: 'How it works',
   description: 'How freeresumepost.co works — upload your resume free, get matched to real healthcare openings, no recruiter spam, no resume databases sold.',
@@ -141,7 +142,7 @@ export default function HowItWorksPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: safeJsonLd({
             '@context': 'https://schema.org',
             '@type': 'FAQPage',
             mainEntity: [
