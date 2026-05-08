@@ -56,6 +56,14 @@ export default function UploadForm() {
 
   async function processFile(file: File) {
     setParseErr(null)
+    // Guard: reject files above 5 MB before they hit the parser.
+    // DOCX parsing is synchronous on the main thread; a 10 MB blob can
+    // block it for several seconds on mobile.
+    const MAX_BYTES = 5 * 1024 * 1024
+    if (file.size > MAX_BYTES) {
+      setParseErr(`That file is ${(file.size / 1024 / 1024).toFixed(1)} MB — please keep it under 5 MB. Most resumes are under 500 KB.`)
+      return
+    }
     setFileName(file.name)
     setPhase('parsing')
     try {
