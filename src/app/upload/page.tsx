@@ -25,9 +25,68 @@ interface JobRow {
   remote_hybrid: 'remote' | 'hybrid' | 'onsite' | null
 }
 
+// Buckets used to aggregate the freeform `role` field into recognizable
+// candidate-facing categories. Order = display priority. ILIKE patterns
+// matched against role + title fields (specialty rolls into the matched
+// role too — "Cardiology" jobs show up under "Physician" because that's
+// who applies). Mirrors specialty-slugs.ts but at a higher abstraction
+// level (role, not specialty).
+const ROLE_BUCKETS: ReadonlyArray<{
+  label: string
+  patterns: readonly string[]
+  emoji: string
+}> = [
+  { label: 'Physician', patterns: ['physician', ' md ', ' md,', '/md', 'md/', 'do/', '/do', ' do '], emoji: '🩺' },
+  { label: 'Nurse Practitioner', patterns: [' np ', ' np,', 'nurse practitioner', 'np/'], emoji: '👩‍⚕️' },
+  { label: 'Physician Assistant', patterns: [' pa ', 'physician assistant', 'pa-c'], emoji: '🧑‍⚕️' },
+  { label: 'Registered Nurse', patterns: [' rn ', ' rn,', 'registered nurse', 'rn/'], emoji: '👨‍⚕️' },
+  { label: 'CRNA', patterns: ['crna', 'nurse anesthetist'], emoji: '💉' },
+  { label: 'Therapist', patterns: ['therapist', 'physical therapy', 'occupational therapy', ' pt ', ' ot ', ' slp ', 'speech-language'], emoji: '🤲' },
+  { label: 'Pharmacist', patterns: ['pharmacist', 'pharmd'], emoji: '💊' },
+  { label: 'Allied Health', patterns: ['technician', 'tech ', 'medical assistant', ' ma ', 'ma,', 'rad tech', 'phlebot', 'sonograph'], emoji: '🧑‍🔬' },
+]
+
+type RoleBucket = {
+  label: string
+  emoji: string
+  count: number
+  salaryFloor: number | null
+  salaryCeiling: number | null
+}
+
+function bucketize(jobs: JobRow[]): RoleBucket[] {
+  const buckets = ROLE_BUCKETS.map((b) => ({
+    label: b.label,
+    emoji: b.emoji,
+    count: 0,
+    salaryFloor: null as number | null,
+    salaryCeiling: null as number | null,
+  }))
+  for (const job of jobs) {
+    const haystack = ` ${(job.role || '').toLowerCase()} ${(job.title || '').toLowerCase()} `
+    const idx = ROLE_BUCKETS.findIndex((b) =>
+      b.patterns.some((p) => haystack.includes(p))
+    )
+    if (idx === -1) continue
+    const bucket = buckets[idx]
+    bucket.count += 1
+    if (job.salary_min != null && job.salary_min > 0) {
+      bucket.salaryFloor =
+        bucket.salaryFloor == null ? job.salary_min : Math.min(bucket.salaryFloor, job.salary_min)
+    }
+    if (job.salary_max != null && job.salary_max > 0) {
+      bucket.salaryCeiling =
+        bucket.salaryCeiling == null ? job.salary_max : Math.max(bucket.salaryCeiling, job.salary_max)
+    }
+  }
+  return buckets.filter((b) => b.count > 0).sort((a, b) => b.count - a.count)
+}
+
 export default async function UploadPage() {
-  // Live signal — pull active job count + 6 most-recent jobs in one render.
-  const [countRes, recentRes] = await Promise.all([
+  // Live signal — pull active job count + 6 most-recent jobs + a wider slice
+  // for role-bucket aggregation in one render. The 500-row aggregation slice
+  // is tiny (~30KB) and runs at ISR revalidate (every 5 min), not per-request.
+  const [countRes, recentRes, aggRes] = await Promise.all([
     supabase
       .from('public_jobs')
       .select('id', { count: 'exact', head: true })
@@ -42,9 +101,18 @@ export default async function UploadPage() {
       .gt('expires_at', new Date().toISOString())
       .order('created_at', { ascending: false })
       .limit(6),
+    supabase
+      .from('public_jobs')
+      .select('slug, title, city, state, role, salary_min, salary_max, remote_hybrid')
+      .eq('status', 'active')
+      .is('deleted_at', null)
+      .gt('expires_at', new Date().toISOString())
+      .limit(500),
   ])
   const activeJobs = countRes.count ?? 0
   const recentJobs = (recentRes.data ?? []) as JobRow[]
+  const aggJobs = (aggRes.data ?? []) as JobRow[]
+  const roleBuckets = bucketize(aggJobs).slice(0, 6)
 
   return (
     <main className="min-h-screen bg-white text-slate-900">
@@ -140,6 +208,66 @@ export default async function UploadPage() {
             </li>
           </ol>
         </div>
+
+        {/* Specialty preview — show role-level counts so candidates see demand
+           specific to their specialty BEFORE committing to upload. Highest-
+           leverage candidate-side conversion lever per the strategic plan. */}
+        {roleBuckets.length > 0 && (
+          <div className="mt-14 mb-6 border-t border-slate-200 pt-10">
+            <div className="flex items-baseline justify-between mb-5">
+              <h2 className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
+                Open roles by specialty
+              </h2>
+              <a
+                href="https://freejobpost.co/jobs"
+                className="text-xs font-medium text-blue-600 hover:text-blue-700"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Browse all {activeJobs.toLocaleString()} →
+              </a>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {roleBuckets.map((b) => {
+                const fmtK = (n: number) =>
+                  n >= 1000 ? `$${Math.round(n / 1000)}K` : `$${n}`
+                const range =
+                  b.salaryFloor && b.salaryCeiling
+                    ? b.salaryFloor === b.salaryCeiling
+                      ? fmtK(b.salaryFloor)
+                      : `${fmtK(b.salaryFloor)}–${fmtK(b.salaryCeiling)}`
+                    : null
+                return (
+                  <a
+                    key={b.label}
+                    href="https://freejobpost.co/jobs"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-200/60 px-4 py-4"
+                  >
+                    <div className="flex items-baseline justify-between gap-2 mb-1.5">
+                      <span className="text-sm font-medium text-slate-900 truncate">
+                        <span className="mr-1.5" aria-hidden="true">{b.emoji}</span>
+                        {b.label}
+                      </span>
+                      <span className="text-xs font-semibold text-slate-500 tabular-nums shrink-0">
+                        {b.count}
+                      </span>
+                    </div>
+                    {range ? (
+                      <div className="text-xs text-slate-600 tabular-nums">{range} typical</div>
+                    ) : (
+                      <div className="text-xs text-slate-400">{b.count === 1 ? '1 role' : `${b.count} active`}</div>
+                    )}
+                  </a>
+                )
+              })}
+            </div>
+            <p className="text-xs text-slate-500 mt-4">
+              Upload your resume above to be matched with roles in your specialty + state. Or browse openings on freejobpost.co first if you want to see what&apos;s out there.
+            </p>
+          </div>
+        )}
 
         {/* Live jobs preview — most recent active roles, demonstrates real demand */}
         {recentJobs.length > 0 && (
