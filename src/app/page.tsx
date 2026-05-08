@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
 import { formatSalary } from '@/lib/format-salary'
+import { bucketizeRoles } from '@/lib/role-buckets'
 
 import { safeJsonLd } from '@/lib/safe-jsonld'
 export const metadata: Metadata = {
@@ -30,18 +31,30 @@ function compactLocation(job: Pick<PreviewJob, 'city' | 'state' | 'remote_hybrid
 }
 
 export default async function Home() {
-  // Pull 4 real recent jobs to anchor the hero preview card. Falls back to
-  // dummy data only if the Supabase fetch fails (deploy-time / connectivity).
-  const { data: liveJobs } = await supabase
-    .from('public_jobs')
-    .select('slug, title, city, state, role, remote_hybrid, salary_min, salary_max')
-    .eq('status', 'active')
-    .is('deleted_at', null)
-    .gt('expires_at', new Date().toISOString())
-    .order('created_at', { ascending: false })
-    .limit(4)
+  // Pull recent jobs for the hero preview AND a wider slice for role-bucket
+  // aggregation. The 500-row slice (~30KB) runs at ISR revalidate (every 5
+  // min), not per-request, so the cost is negligible.
+  const [recentRes, aggRes] = await Promise.all([
+    supabase
+      .from('public_jobs')
+      .select('slug, title, city, state, role, remote_hybrid, salary_min, salary_max')
+      .eq('status', 'active')
+      .is('deleted_at', null)
+      .gt('expires_at', new Date().toISOString())
+      .order('created_at', { ascending: false })
+      .limit(4),
+    supabase
+      .from('public_jobs')
+      .select('slug, title, city, state, role, remote_hybrid, salary_min, salary_max')
+      .eq('status', 'active')
+      .is('deleted_at', null)
+      .gt('expires_at', new Date().toISOString())
+      .limit(500),
+  ])
 
-  const previewJobs = (liveJobs ?? []) as PreviewJob[]
+  const previewJobs = (recentRes.data ?? []) as PreviewJob[]
+  const aggJobs = (aggRes.data ?? []) as PreviewJob[]
+  const roleBuckets = bucketizeRoles(aggJobs).slice(0, 6)
 
   return (
     <main className="min-h-screen bg-white text-gray-900">
@@ -179,6 +192,67 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* Browse-by-specialty entry — surfaces concrete role counts at the
+         top of funnel so candidates can self-identify a path before deciding
+         between Browse vs Upload. Cards deep-link to the filtered /jobs view
+         on freejobpost.co. Mirrored from /upload's same-named section. */}
+      {roleBuckets.length > 0 && (
+        <section className="border-t border-gray-100">
+          <div className="max-w-6xl mx-auto px-6 py-16">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-gray-900 mb-3">
+                Browse by specialty
+              </h2>
+              <p className="text-gray-600 leading-relaxed max-w-xl mx-auto">
+                Concrete demand for your role, before you commit a resume.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+              {roleBuckets.map((b) => {
+                const fmtK = (n: number) =>
+                  n >= 1000 ? `$${Math.round(n / 1000)}K` : `$${n}`
+                const range =
+                  b.salaryFloor && b.salaryCeiling
+                    ? b.salaryFloor === b.salaryCeiling
+                      ? fmtK(b.salaryFloor)
+                      : `${fmtK(b.salaryFloor)}–${fmtK(b.salaryCeiling)}`
+                    : null
+                return (
+                  <a
+                    key={b.label}
+                    href={`https://freejobpost.co/jobs?q=${encodeURIComponent(b.searchKeyword)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block rounded-2xl bg-white hover:bg-blue-50/50 transition-colors border border-gray-200 hover:border-blue-200 px-5 py-5"
+                  >
+                    <div className="flex items-baseline justify-between gap-2 mb-1.5">
+                      <span className="text-base font-semibold text-gray-900 truncate">
+                        <span className="mr-1.5" aria-hidden="true">
+                          {b.emoji}
+                        </span>
+                        {b.label}
+                      </span>
+                      <span className="text-sm font-semibold text-blue-600 tabular-nums shrink-0">
+                        {b.count}
+                      </span>
+                    </div>
+                    {range ? (
+                      <div className="text-xs text-gray-600 tabular-nums">
+                        {range} typical
+                      </div>
+                    ) : (
+                      <div className="text-xs text-gray-400">
+                        {b.count === 1 ? '1 active role' : `${b.count} active`}
+                      </div>
+                    )}
+                  </a>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Three promises */}
       <section className="border-t border-gray-100">
