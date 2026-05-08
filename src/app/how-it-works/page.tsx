@@ -7,6 +7,13 @@ export const metadata: Metadata = {
   description: 'How freeresumepost.co works — upload your resume free, get matched to real healthcare openings, no recruiter spam, no resume databases sold.',
   alternates: { canonical: 'https://www.freeresumepost.co/how-it-works' },
   robots: { index: true, follow: true },
+  openGraph: {
+    title: 'How freeresumepost.co works',
+    description:
+      'Upload free, get matched to real healthcare openings. No recruiter spam, no resume databases sold.',
+    url: 'https://www.freeresumepost.co/how-it-works',
+    type: 'website',
+  },
 }
 
 export default function HowItWorksPage() {
