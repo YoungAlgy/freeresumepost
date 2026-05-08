@@ -140,7 +140,7 @@ export default async function CandidateSpecialtyPage(
                 Upload resume →
               </Link>
               <a
-                href={`https://freejobpost.co/specialty/${hub.slug}`}
+                href={`https://freejobpost.co/jobs?q=${encodeURIComponent(hub.name.split(' /')[0].trim())}`}
                 className="inline-block border border-slate-300 text-slate-700 font-semibold px-6 py-3 rounded-full hover:bg-slate-900 hover:text-white hover:border-slate-900"
               >
                 Browse {hub.name} jobs →
@@ -233,7 +233,7 @@ export default async function CandidateSpecialtyPage(
                 Upload your {hub.name.toLowerCase()} resume →
               </Link>
               <a
-                href={`https://freejobpost.co/specialty/${hub.slug}`}
+                href={`https://freejobpost.co/jobs?q=${encodeURIComponent(hub.name.split(' /')[0].trim())}`}
                 className="inline-block border border-slate-300 text-slate-700 font-semibold px-6 py-3 rounded-full hover:bg-slate-900 hover:text-white hover:border-slate-900"
               >
                 Browse {hub.name} jobs
