@@ -72,7 +72,7 @@ export default async function UploadPage() {
             </span>
           </Link>
           <div className="hidden md:flex items-center gap-6 text-sm text-slate-600">
-            <a href="https://freejobpost.co" className="hover:text-slate-900">
+            <a href="https://freejobpost.co/for-employers" className="hover:text-slate-900">
               For employers
             </a>
             <Link href="/" className="hover:text-slate-900">

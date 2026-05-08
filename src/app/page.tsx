@@ -72,7 +72,7 @@ export default async function Home() {
           </Link>
           <div className="hidden md:flex items-center gap-7 text-[14px] font-medium text-gray-700">
             <Link href="/how-it-works" className="hover:text-gray-900">How it works</Link>
-            <a href="https://freejobpost.co" className="hover:text-gray-900">For employers</a>
+            <a href="https://freejobpost.co/for-employers" className="hover:text-gray-900">For employers</a>
             <Link href="/candidate/login" className="hover:text-gray-900">Sign in</Link>
             <Link
               href="/upload"
