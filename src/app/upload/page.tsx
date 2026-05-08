@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
 import UploadForm from './upload-form'
 import { formatSalary } from '@/lib/format-salary'
+import { bucketizeRoles } from '@/lib/role-buckets'
 
 export const metadata: Metadata = {
   title: 'Upload your resume — free healthcare job matching',
@@ -23,70 +24,6 @@ interface JobRow {
   salary_min: number | null
   salary_max: number | null
   remote_hybrid: 'remote' | 'hybrid' | 'onsite' | null
-}
-
-// Buckets used to aggregate the freeform `role` field into recognizable
-// candidate-facing categories. Order = display priority. ILIKE patterns
-// matched against role + title fields (specialty rolls into the matched
-// role too — "Cardiology" jobs show up under "Physician" because that's
-// who applies). Mirrors specialty-slugs.ts but at a higher abstraction
-// level (role, not specialty).
-const ROLE_BUCKETS: ReadonlyArray<{
-  label: string
-  patterns: readonly string[]
-  emoji: string
-  // Search keyword passed to /jobs?q=... when the candidate clicks. Picks the
-  // shortest unambiguous token so the substring search on /jobs catches the
-  // most matches (the q field hits across title + role + city + state +
-  // specialty).
-  searchKeyword: string
-}> = [
-  { label: 'Physician', patterns: ['physician', ' md ', ' md,', '/md', 'md/', 'do/', '/do', ' do '], emoji: '🩺', searchKeyword: 'physician' },
-  { label: 'Nurse Practitioner', patterns: [' np ', ' np,', 'nurse practitioner', 'np/'], emoji: '👩‍⚕️', searchKeyword: 'nurse practitioner' },
-  { label: 'Physician Assistant', patterns: [' pa ', 'physician assistant', 'pa-c'], emoji: '🧑‍⚕️', searchKeyword: 'physician assistant' },
-  { label: 'Registered Nurse', patterns: [' rn ', ' rn,', 'registered nurse', 'rn/'], emoji: '👨‍⚕️', searchKeyword: 'registered nurse' },
-  { label: 'CRNA', patterns: ['crna', 'nurse anesthetist'], emoji: '💉', searchKeyword: 'CRNA' },
-  { label: 'Therapist', patterns: ['therapist', 'physical therapy', 'occupational therapy', ' pt ', ' ot ', ' slp ', 'speech-language'], emoji: '🤲', searchKeyword: 'therapist' },
-  { label: 'Pharmacist', patterns: ['pharmacist', 'pharmd'], emoji: '💊', searchKeyword: 'pharmacist' },
-  { label: 'Allied Health', patterns: ['technician', 'tech ', 'medical assistant', ' ma ', 'ma,', 'rad tech', 'phlebot', 'sonograph'], emoji: '🧑‍🔬', searchKeyword: 'tech' },
-]
-
-type RoleBucket = {
-  label: string
-  emoji: string
-  searchKeyword: string
-  count: number
-  salaryFloor: number | null
-  salaryCeiling: number | null
-}
-
-function bucketize(jobs: JobRow[]): RoleBucket[] {
-  const buckets = ROLE_BUCKETS.map((b) => ({
-    label: b.label,
-    emoji: b.emoji,
-    searchKeyword: b.searchKeyword,
-    count: 0,
-    salaryFloor: null as number | null,
-    salaryCeiling: null as number | null,
-  }))
-  for (const job of jobs) {
-    const haystack = ` ${(job.role || '').toLowerCase()} ${(job.title || '').toLowerCase()} `
-    const idx = ROLE_BUCKETS.findIndex((b) =>
-      b.patterns.some((p) => haystack.includes(p))
-    )
-    if (idx === -1) continue
-    const bucket = buckets[idx]
-    bucket.count += 1
-    if (job.salary_min != null && job.salary_min > 0) {
-      bucket.salaryFloor =
-        bucket.salaryFloor == null ? job.salary_min : Math.min(bucket.salaryFloor, job.salary_min)
-    }
-    if (job.salary_max != null && job.salary_max > 0) {
-      bucket.salaryCeiling =
-        bucket.salaryCeiling == null ? job.salary_max : Math.max(bucket.salaryCeiling, job.salary_max)
-    }
-  }
-  return buckets.filter((b) => b.count > 0).sort((a, b) => b.count - a.count)
 }
 
 export default async function UploadPage() {
@@ -119,7 +56,7 @@ export default async function UploadPage() {
   const activeJobs = countRes.count ?? 0
   const recentJobs = (recentRes.data ?? []) as JobRow[]
   const aggJobs = (aggRes.data ?? []) as JobRow[]
-  const roleBuckets = bucketize(aggJobs).slice(0, 6)
+  const roleBuckets = bucketizeRoles(aggJobs).slice(0, 6)
 
   return (
     <main className="min-h-screen bg-white text-slate-900">
