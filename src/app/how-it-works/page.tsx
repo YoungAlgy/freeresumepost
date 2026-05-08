@@ -114,7 +114,7 @@ export default function HowItWorksPage() {
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">How fast will I get matched?</h3>
-            <p className="text-slate-600">Initial matches typically surface within 24-48 hours of upload. Florida + Texas + California candidates see the highest match volume.</p>
+            <p className="text-slate-600">Initial matches typically surface within a few hours of upload. Florida + Texas + California candidates see the highest match volume.</p>
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Can I delete my profile later?</h3>
@@ -149,7 +149,7 @@ export default function HowItWorksPage() {
               { '@type': 'Question', name: 'Is it really free?', acceptedAnswer: { '@type': 'Answer', text: "Yes. We don't charge candidates anything — not for upload, not for matches, not to apply. Hiring employers pay our placement fee when a match converts." } },
               { '@type': 'Question', name: 'Will my resume be sold to recruiters?', acceptedAnswer: { '@type': 'Answer', text: "No. We don't sell, license, or share your data with third parties. Only verified employers with active job posts on our network can see profiles that match their roles." } },
               { '@type': 'Question', name: 'What healthcare roles can I upload as?', acceptedAnswer: { '@type': 'Answer', text: 'Physicians (MD/DO), Nurse Practitioners, Physician Assistants, Registered Nurses, CRNAs, LPNs, therapists (PT, OT, SLP, AuD), pharmacists (PharmD/RPh), and most allied health roles.' } },
-              { '@type': 'Question', name: 'How fast will I get matched?', acceptedAnswer: { '@type': 'Answer', text: 'Initial matches typically surface within 24-48 hours of upload. Florida + Texas + California candidates see the highest match volume.' } },
+              { '@type': 'Question', name: 'How fast will I get matched?', acceptedAnswer: { '@type': 'Answer', text: 'Initial matches typically surface within a few hours of upload. Florida + Texas + California candidates see the highest match volume.' } },
               { '@type': 'Question', name: 'Can I delete my profile later?', acceptedAnswer: { '@type': 'Answer', text: "Yes — at any time. Email hello@avahealth.co with the subject 'Delete my profile' and we'll wipe both the resume file and parsed data within 30 days, including from any active employer match queues." } },
               { '@type': 'Question', name: 'Do I need to make my profile public?', acceptedAnswer: { '@type': 'Answer', text: "No. Most candidates keep profiles private. Public profiles get an indexed page on our site, which can help passive job-seeking." } },
               { '@type': 'Question', name: 'Is my license info verified?', acceptedAnswer: { '@type': 'Answer', text: "We auto-detect credential tokens (RN, CRNA, PA-C, PharmD, etc.) from your resume text. We don't do full credential verification — employers verify independently before hiring." } },
