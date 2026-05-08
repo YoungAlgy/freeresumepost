@@ -85,7 +85,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: 'Profile', robots: { index: false, follow: false } }
   }
   const loc = [c.city, c.state].filter(Boolean).join(', ')
-  const title = `${c.first_name} ${c.last_name}${c.credential ? ', ' + c.credential : ''} — ${c.specialty ?? 'Healthcare'}`
+  const lastInitial = c.last_name?.charAt(0) ?? ''
+  const title = `${c.first_name} ${lastInitial}.${c.credential ? ', ' + c.credential : ''} — ${c.specialty ?? 'Healthcare'}`
   return {
     title,
     description: `${title} profile on freeresumepost.co. ${loc ? 'Based in ' + loc + '. ' : ''}Open to healthcare job opportunities.`,
@@ -115,7 +116,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
   const personJsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: `${c.first_name} ${c.last_name}`,
+    name: `${c.first_name} ${c.last_name?.charAt(0) ?? ''}.`,
     jobTitle: c.specialty || c.credential || 'Healthcare professional',
     address: loc
       ? {
@@ -160,7 +161,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
               Open to opportunities
             </p>
             <h1 className="text-3xl md:text-4xl font-semibold leading-tight tracking-tight mb-2">
-              {c.first_name} {c.last_name}
+              {c.first_name} {c.last_name?.charAt(0) ?? ''}.
               {c.credential && (
                 <span className="text-slate-400 font-normal">, {c.credential}</span>
               )}
@@ -189,8 +190,14 @@ export default async function ProfilePage({ params, searchParams }: Props) {
             </div>
 
             <div className="mt-8 pt-6 border-t border-slate-200 text-sm text-slate-500">
-              Contact this candidate via freejobpost.co — post a matching role
-              and they&apos;ll see it in their dashboard.
+              Contact this candidate via{' '}
+              <a
+                href="https://freejobpost.co/post-job"
+                className="underline hover:text-blue-600"
+              >
+                freejobpost.co
+              </a>{' '}
+              — post a matching role and they&apos;ll see it in their dashboard.
             </div>
           </div>
         </div>
