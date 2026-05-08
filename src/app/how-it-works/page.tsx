@@ -138,6 +138,21 @@ export default function HowItWorksPage() {
         </div>
       </article>
 
+      {/* BreadcrumbList */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: safeJsonLd({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.freeresumepost.co' },
+              { '@type': 'ListItem', position: 2, name: 'How it works', item: 'https://www.freeresumepost.co/how-it-works' },
+            ],
+          }),
+        }}
+      />
+
       {/* FAQPage schema — eligible for FAQ rich results in SERP */}
       <script
         type="application/ld+json"
