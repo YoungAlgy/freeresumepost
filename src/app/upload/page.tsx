@@ -201,7 +201,7 @@ export default async function UploadPage() {
                     {range ? (
                       <div className="text-xs text-slate-600 tabular-nums">{range} typical</div>
                     ) : (
-                      <div className="text-xs text-slate-400">{b.count === 1 ? '1 role' : `${b.count} active`}</div>
+                      <div className="text-xs text-slate-500">{b.count === 1 ? '1 role' : `${b.count} active`}</div>
                     )}
                   </a>
                 )

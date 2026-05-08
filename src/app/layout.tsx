@@ -110,6 +110,14 @@ export default function RootLayout({
                 Upload resume
               </Link>
               <span className="text-gray-300">|</span>
+              <Link href="/specialty" className="hover:text-gray-900">
+                By specialty
+              </Link>
+              <span className="text-gray-300">|</span>
+              <Link href="/how-it-works" className="hover:text-gray-900">
+                How it works
+              </Link>
+              <span className="text-gray-300">|</span>
               <Link href="/candidate/login" className="hover:text-gray-900">
                 Candidate login
               </Link>
