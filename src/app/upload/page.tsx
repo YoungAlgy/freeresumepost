@@ -35,20 +35,26 @@ const ROLE_BUCKETS: ReadonlyArray<{
   label: string
   patterns: readonly string[]
   emoji: string
+  // Search keyword passed to /jobs?q=... when the candidate clicks. Picks the
+  // shortest unambiguous token so the substring search on /jobs catches the
+  // most matches (the q field hits across title + role + city + state +
+  // specialty).
+  searchKeyword: string
 }> = [
-  { label: 'Physician', patterns: ['physician', ' md ', ' md,', '/md', 'md/', 'do/', '/do', ' do '], emoji: '🩺' },
-  { label: 'Nurse Practitioner', patterns: [' np ', ' np,', 'nurse practitioner', 'np/'], emoji: '👩‍⚕️' },
-  { label: 'Physician Assistant', patterns: [' pa ', 'physician assistant', 'pa-c'], emoji: '🧑‍⚕️' },
-  { label: 'Registered Nurse', patterns: [' rn ', ' rn,', 'registered nurse', 'rn/'], emoji: '👨‍⚕️' },
-  { label: 'CRNA', patterns: ['crna', 'nurse anesthetist'], emoji: '💉' },
-  { label: 'Therapist', patterns: ['therapist', 'physical therapy', 'occupational therapy', ' pt ', ' ot ', ' slp ', 'speech-language'], emoji: '🤲' },
-  { label: 'Pharmacist', patterns: ['pharmacist', 'pharmd'], emoji: '💊' },
-  { label: 'Allied Health', patterns: ['technician', 'tech ', 'medical assistant', ' ma ', 'ma,', 'rad tech', 'phlebot', 'sonograph'], emoji: '🧑‍🔬' },
+  { label: 'Physician', patterns: ['physician', ' md ', ' md,', '/md', 'md/', 'do/', '/do', ' do '], emoji: '🩺', searchKeyword: 'physician' },
+  { label: 'Nurse Practitioner', patterns: [' np ', ' np,', 'nurse practitioner', 'np/'], emoji: '👩‍⚕️', searchKeyword: 'nurse practitioner' },
+  { label: 'Physician Assistant', patterns: [' pa ', 'physician assistant', 'pa-c'], emoji: '🧑‍⚕️', searchKeyword: 'physician assistant' },
+  { label: 'Registered Nurse', patterns: [' rn ', ' rn,', 'registered nurse', 'rn/'], emoji: '👨‍⚕️', searchKeyword: 'registered nurse' },
+  { label: 'CRNA', patterns: ['crna', 'nurse anesthetist'], emoji: '💉', searchKeyword: 'CRNA' },
+  { label: 'Therapist', patterns: ['therapist', 'physical therapy', 'occupational therapy', ' pt ', ' ot ', ' slp ', 'speech-language'], emoji: '🤲', searchKeyword: 'therapist' },
+  { label: 'Pharmacist', patterns: ['pharmacist', 'pharmd'], emoji: '💊', searchKeyword: 'pharmacist' },
+  { label: 'Allied Health', patterns: ['technician', 'tech ', 'medical assistant', ' ma ', 'ma,', 'rad tech', 'phlebot', 'sonograph'], emoji: '🧑‍🔬', searchKeyword: 'tech' },
 ]
 
 type RoleBucket = {
   label: string
   emoji: string
+  searchKeyword: string
   count: number
   salaryFloor: number | null
   salaryCeiling: number | null
@@ -58,6 +64,7 @@ function bucketize(jobs: JobRow[]): RoleBucket[] {
   const buckets = ROLE_BUCKETS.map((b) => ({
     label: b.label,
     emoji: b.emoji,
+    searchKeyword: b.searchKeyword,
     count: 0,
     salaryFloor: null as number | null,
     salaryCeiling: null as number | null,
@@ -240,7 +247,7 @@ export default async function UploadPage() {
                 return (
                   <a
                     key={b.label}
-                    href="https://freejobpost.co/jobs"
+                    href={`https://freejobpost.co/jobs?q=${encodeURIComponent(b.searchKeyword)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group block rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-200/60 px-4 py-4"
