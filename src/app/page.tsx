@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
 import { formatSalary } from '@/lib/format-salary'
 import { bucketizeRoles } from '@/lib/role-buckets'
+import { CANDIDATE_SPECIALTIES } from '@/lib/specialty-slugs'
 
 import { safeJsonLd } from '@/lib/safe-jsonld'
 export const metadata: Metadata = {
@@ -331,7 +332,7 @@ export default async function Home() {
         <div className="max-w-4xl mx-auto px-6 py-16 text-center">
           <p className="text-xs font-semibold tracking-wider text-blue-600 uppercase mb-3">Browse by specialty</p>
           <p className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-900 mb-4">
-            38 healthcare roles, one upload.
+            {CANDIDATE_SPECIALTIES.length} healthcare roles, one upload.
           </p>
           <p className="text-lg text-slate-600 leading-relaxed max-w-xl mx-auto mb-8">
             Physicians, NPs, PAs, RNs, CRNAs, therapists (PT/OT/SLP), pharmacists, MAs, RDNs, sonographers, and more — pick yours and the parser handles the rest.

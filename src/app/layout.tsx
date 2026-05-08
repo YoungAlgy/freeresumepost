@@ -114,9 +114,9 @@ export default function RootLayout({
                 Candidate login
               </Link>
               <span className="text-gray-300">|</span>
-              <Link href="https://freejobpost.co" className="hover:text-gray-900">
+              <a href="https://freejobpost.co" className="hover:text-gray-900">
                 Employers
-              </Link>
+              </a>
               <span className="text-gray-300">|</span>
               <Link href="/terms" className="hover:text-gray-900">
                 Terms
