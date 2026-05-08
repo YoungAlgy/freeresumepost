@@ -135,9 +135,17 @@ export default async function CandidateSpecialtyPage(
           <div className="border border-slate-200 rounded-2xl bg-slate-50 p-8 mb-12">
             <p className="text-sm font-semibold text-slate-900 mb-2">Drop your {hub.name.toLowerCase()} resume</p>
             <p className="text-sm text-slate-600 mb-4">PDF, DOCX, or text. Up to 5 MB. ~90 seconds end-to-end.</p>
-            <Link href="/upload" className="inline-block bg-slate-900 text-white font-semibold px-6 py-3 rounded-full hover:bg-slate-700">
-              Upload resume →
-            </Link>
+            <div className="flex flex-wrap gap-3">
+              <Link href="/upload" className="inline-block bg-slate-900 text-white font-semibold px-6 py-3 rounded-full hover:bg-slate-700">
+                Upload resume →
+              </Link>
+              <a
+                href={`https://freejobpost.co/specialty/${hub.slug}`}
+                className="inline-block border border-slate-300 text-slate-700 font-semibold px-6 py-3 rounded-full hover:bg-slate-900 hover:text-white hover:border-slate-900"
+              >
+                Browse {hub.name} jobs →
+              </a>
+            </div>
           </div>
 
           <h2 className="text-xl font-semibold mb-4">{hub.name} roles we match to</h2>
@@ -220,9 +228,17 @@ export default async function CandidateSpecialtyPage(
 
           <div className="border border-slate-200 rounded-2xl bg-slate-50 p-8 text-center">
             <p className="text-2xl font-semibold mb-3 text-slate-900">Ready when you are</p>
-            <Link href="/upload" className="inline-block bg-slate-900 text-white font-semibold px-6 py-3 rounded-full hover:bg-slate-700">
-              Upload your {hub.name.toLowerCase()} resume →
-            </Link>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link href="/upload" className="inline-block bg-slate-900 text-white font-semibold px-6 py-3 rounded-full hover:bg-slate-700">
+                Upload your {hub.name.toLowerCase()} resume →
+              </Link>
+              <a
+                href={`https://freejobpost.co/specialty/${hub.slug}`}
+                className="inline-block border border-slate-300 text-slate-700 font-semibold px-6 py-3 rounded-full hover:bg-slate-900 hover:text-white hover:border-slate-900"
+              >
+                Browse {hub.name} jobs
+              </a>
+            </div>
           </div>
         </article>
       </main>

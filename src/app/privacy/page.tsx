@@ -97,6 +97,21 @@ export default function PrivacyPage() {
             basic analytics (Vercel Analytics, page views). No advertising cookies. No cross-site trackers.
           </p>
 
+          <h2 className="text-xl font-semibold mt-8 mb-2">Bot protection (Cloudflare Turnstile)</h2>
+          <p>
+            We use{' '}
+            <a href="https://www.cloudflare.com/products/turnstile/" className="underline text-blue-600 hover:text-blue-700" rel="noopener noreferrer">
+              Cloudflare Turnstile
+            </a>{' '}
+            on resume uploads and form submissions to detect bots and prevent spam. Turnstile may
+            use browser signals (cookies, local storage, browser characteristics) to assess whether
+            a submission is human. No data collected by Turnstile is used for advertising. See{' '}
+            <a href="https://www.cloudflare.com/privacypolicy/" className="underline text-blue-600 hover:text-blue-700" rel="noopener noreferrer">
+              Cloudflare&apos;s Privacy Policy
+            </a>{' '}
+            for details.
+          </p>
+
           <h2 className="text-xl font-semibold mt-8 mb-2">Security</h2>
           <p>
             We use industry-standard encryption in transit (TLS 1.2+) and at rest. Our database is hosted
