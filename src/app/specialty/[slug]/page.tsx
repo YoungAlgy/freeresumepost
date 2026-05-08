@@ -129,7 +129,7 @@ export default async function CandidateSpecialtyPage(
             <span className="text-blue-600">— free, private by default.</span>
           </h1>
           <p className="text-lg text-slate-600 leading-relaxed mb-10">
-            {hub.shortDescription} Upload once, get matched, decide whether to apply. We don&apos;t sell your data and you can delete your profile any time.
+            {hub.shortDescription} Upload once, get matched, decide whether to apply. We don&apos;t sell your data — email us any time to delete your profile.
           </p>
 
           <div className="border border-slate-200 rounded-2xl bg-slate-50 p-8 mb-12">
@@ -209,7 +209,7 @@ export default async function CandidateSpecialtyPage(
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Can I delete my profile?</h3>
-              <p className="text-slate-600 text-sm leading-relaxed">Yes — at any time. We wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
+              <p className="text-slate-600 text-sm leading-relaxed">Yes — at any time. Email <a href="mailto:hello@avahealth.co?subject=Delete%20my%20profile" className="text-blue-600 hover:underline">hello@avahealth.co</a> with subject &ldquo;Delete my profile&rdquo; and we&apos;ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
             </div>
           </div>
 

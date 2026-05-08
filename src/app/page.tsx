@@ -372,7 +372,7 @@ export default async function Home() {
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Can I delete my profile?</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">Yes — at any time. We wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
+              <p className="text-slate-600 leading-relaxed text-sm">Yes — at any time. Email <a href="mailto:hello@avahealth.co?subject=Delete%20my%20profile" className="text-blue-600 hover:underline">hello@avahealth.co</a> with subject &ldquo;Delete my profile&rdquo; and we&apos;ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Do I have to make my profile public?</h3>
@@ -416,7 +416,7 @@ export default async function Home() {
               { '@type': 'Question', name: 'Will my resume be sold to recruiters?', acceptedAnswer: { '@type': 'Answer', text: "No. We don't sell, license, or share your data with third parties. Only verified employers with active job posts on freejobpost.co can see profiles that match their roles." } },
               { '@type': 'Question', name: 'What healthcare roles can I upload as?', acceptedAnswer: { '@type': 'Answer', text: 'Physicians (MD/DO), NPs, PAs, RNs, CRNAs, LPNs, therapists (PT/OT/SLP/AuD), pharmacists (PharmD/RPh), MAs, sonographers, lab techs, paramedics, and most allied health roles.' } },
               { '@type': 'Question', name: 'How fast will I get matched?', acceptedAnswer: { '@type': 'Answer', text: 'Initial matches typically surface within a few hours of upload. Your top matches appear on your private profile page (the edit URL we send on submit). Florida + Texas + California candidates see the highest match volume.' } },
-              { '@type': 'Question', name: 'Can I delete my profile?', acceptedAnswer: { '@type': 'Answer', text: 'Yes — at any time. We wipe both the resume file and parsed data within 30 days, including from any active employer match queues.' } },
+              { '@type': 'Question', name: 'Can I delete my profile?', acceptedAnswer: { '@type': 'Answer', text: 'Yes — at any time. Email hello@avahealth.co with subject "Delete my profile" and we wipe both the resume file and parsed data within 30 days, including from any active employer match queues.' } },
               { '@type': 'Question', name: 'Do I have to make my profile public?', acceptedAnswer: { '@type': 'Answer', text: 'No. Most candidates keep profiles private. Public profiles get an indexed page (first name + last initial only).' } },
               { '@type': 'Question', name: 'Is my license info verified?', acceptedAnswer: { '@type': 'Answer', text: "We cross-reference NPI numbers and state board lookups during the parse step but don't do full credential verification. Employers verify credentials independently." } },
             ],
