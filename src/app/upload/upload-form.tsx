@@ -134,6 +134,9 @@ export default function UploadForm() {
   if (phase === 'drop') {
     return (
       <div>
+        {/* Drag-drop zone. The visually-hidden file input is the true interactive
+            element; the drop zone is a visual affordance only. A visible "Browse"
+            button provides a keyboard-accessible alternative per WCAG 2.5.3. */}
         <div
           onDragOver={(e) => {
             e.preventDefault()
@@ -141,11 +144,11 @@ export default function UploadForm() {
           }}
           onDragLeave={() => setDragOver(false)}
           onDrop={onDrop}
-          onClick={() => fileInputRef.current?.click()}
-          className={`cursor-pointer rounded-2xl border-2 border-dashed p-12 md:p-16 text-center transition-all ${
+          aria-hidden="true"
+          className={`rounded-2xl border-2 border-dashed p-12 md:p-16 text-center transition-all ${
             dragOver
               ? 'border-blue-500 bg-blue-50'
-              : 'border-slate-300 hover:border-slate-400 bg-slate-50/50'
+              : 'border-slate-300 bg-slate-50/50'
           }`}
         >
           <div className="mx-auto mb-4 w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center">
@@ -159,6 +162,7 @@ export default function UploadForm() {
               strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
+              aria-hidden="true"
             >
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
               <polyline points="17 8 12 3 7 8" />
@@ -171,16 +175,24 @@ export default function UploadForm() {
           <p className="text-slate-500 text-sm">
             PDF, DOCX, or TXT · Up to 5 MB · Parsed locally in your browser
           </p>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
-            className="hidden"
-            onChange={onFileChange}
-          />
+        </div>
+        {/* Keyboard-accessible file picker. visually centered below the drop zone. */}
+        <div className="mt-4 flex justify-center">
+          <label className="cursor-pointer inline-flex items-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 text-sm transition-colors focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2">
+            <input
+              ref={fileInputRef}
+              id="resume-file-input"
+              type="file"
+              accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+              className="sr-only"
+              onChange={onFileChange}
+              aria-label="Upload your resume — PDF, DOCX, or TXT"
+            />
+            Browse files
+          </label>
         </div>
         {parseErr && (
-          <p className="mt-4 text-sm text-red-600 font-medium">{parseErr}</p>
+          <p role="alert" className="mt-4 text-sm text-red-600 font-medium">{parseErr}</p>
         )}
         <div className="mt-6 text-sm text-slate-500 flex flex-wrap gap-x-4 gap-y-1">
           <span>· We extract: name, email, phone, credentials, specialty, state</span>
@@ -410,7 +422,7 @@ export default function UploadForm() {
       />
 
       {parseErr && (
-        <div className="rounded-xl border border-red-300 bg-red-50 p-4 text-red-800 font-medium text-sm">
+        <div role="alert" className="rounded-xl border border-red-300 bg-red-50 p-4 text-red-800 font-medium text-sm">
           {parseErr}
         </div>
       )}
