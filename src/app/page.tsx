@@ -272,8 +272,8 @@ export default async function Home() {
               },
               {
                 n: '03',
-                h: 'One-click apply',
-                p: 'When a job matches, apply with one click using your saved profile. No re-uploading the same resume for every portal.',
+                h: 'Apply directly',
+                p: 'Your top matches surface on your private profile page. Click any match to go straight to the job listing and apply — no re-uploading the same resume for every portal.',
               },
             ].map((item) => (
               <div key={item.n} className="rounded-2xl border border-gray-200 bg-white p-8 hover:shadow-lg hover:shadow-blue-500/5 transition-shadow">
