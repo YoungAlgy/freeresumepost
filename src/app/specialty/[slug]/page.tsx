@@ -69,55 +69,11 @@ export default async function CandidateSpecialtyPage(
     ],
   }
 
-  // FAQPage schema for SERP rich-result eligibility
-  const faqJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: `How do I upload my ${hub.name} resume?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `Click "Upload resume" on freeresumepost.co. PDF, DOCX, or plain text up to 5 MB. The parser pre-fills your name, email, ${hub.commonCredentials.slice(0, 3).join(', ')}, specialty, state, and years of experience — you correct anything wrong before saving. Takes about 90 seconds.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `What ${hub.name} roles can I be matched to?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: `Common ${hub.name} roles on the platform: ${hub.exampleRoles.join(', ')}. The matching engine scores by specialty, state, city, credential, experience, and salary range — you only get notified when a 70%+ match opens.`,
-        },
-      },
-      {
-        '@type': 'Question',
-        name: `Is uploading my ${hub.name} resume really free?`,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Yes. We never charge candidates anything — not for upload, not for matches, not to apply. Hiring employers pay our placement fee when a match converts.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Will my resume be sold to recruiters?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: "No. We don't sell, license, or share your data with third parties. Only verified employers with active job posts on our network can see profiles that match their roles.",
-        },
-      },
-    ],
-  }
-
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeJsonLd(faqJsonLd) }}
       />
 
       <main className="min-h-screen bg-white text-slate-900">

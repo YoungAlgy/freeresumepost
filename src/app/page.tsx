@@ -412,25 +412,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* FAQPage JSON-LD — eligible for FAQ rich results */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: safeJsonLd({
-            '@context': 'https://schema.org',
-            '@type': 'FAQPage',
-            mainEntity: [
-              { '@type': 'Question', name: 'Is uploading my resume actually free?', acceptedAnswer: { '@type': 'Answer', text: 'Yes — for candidates, always. We never charge for upload, matches, or applying. Hiring employers pay our placement fee.' } },
-              { '@type': 'Question', name: 'Will my resume be sold to recruiters?', acceptedAnswer: { '@type': 'Answer', text: "No. We don't sell, license, or share your data with third parties. Only verified employers with active job posts on freejobpost.co can see profiles that match their roles." } },
-              { '@type': 'Question', name: 'What healthcare roles can I upload as?', acceptedAnswer: { '@type': 'Answer', text: 'Physicians (MD/DO), NPs, PAs, RNs, CRNAs, LPNs, therapists (PT/OT/SLP/AuD), pharmacists (PharmD/RPh), MAs, sonographers, lab techs, paramedics, and most allied health roles.' } },
-              { '@type': 'Question', name: 'How fast will I get matched?', acceptedAnswer: { '@type': 'Answer', text: 'Initial matches typically surface within a few hours of upload. Your top matches appear on your private profile page (the edit URL we send on submit). Florida + Texas + California candidates see the highest match volume.' } },
-              { '@type': 'Question', name: 'Can I delete my profile?', acceptedAnswer: { '@type': 'Answer', text: 'Yes — at any time. Email alex@avahealth.co with subject "Delete my profile" and we wipe both the resume file and parsed data within 30 days, including from any active employer match queues.' } },
-              { '@type': 'Question', name: 'Do I have to make my profile public?', acceptedAnswer: { '@type': 'Answer', text: 'No. Most candidates keep profiles private. Public profiles get an indexed page (first name + last initial only).' } },
-              { '@type': 'Question', name: 'Is my license info verified?', acceptedAnswer: { '@type': 'Answer', text: "We auto-detect credential tokens (RN, CRNA, PA-C, PharmD, etc.) from your resume text. We don't do full credential verification — employers verify independently before hiring." } },
-            ],
-          }),
-        }}
-      />
-    </main>
+</main>
   )
 }
