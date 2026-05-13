@@ -69,22 +69,22 @@ export default async function Home() {
     <main className="min-h-screen bg-white text-gray-900">
       {/* Nav */}
       <nav className="border-b border-gray-200/80 bg-white/95 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="font-semibold text-[17px] tracking-tight text-gray-900">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
+          <Link href="/" className="flex items-center gap-2 min-w-0">
+            <span className="font-semibold text-[15px] sm:text-[17px] tracking-tight text-gray-900">
               freeresumepost<span className="text-blue-600">.co</span>
             </span>
-            <span className="text-[10px] font-semibold tracking-wider text-blue-700 bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded-full">
+            <span className="text-[10px] font-semibold tracking-wider text-blue-700 bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded-full shrink-0">
               BETA
             </span>
           </Link>
-          <div className="hidden md:flex items-center gap-7 text-[14px] font-medium text-gray-700">
-            <Link href="/how-it-works" className="hover:text-gray-900">How it works</Link>
-            <a href="https://freejobpost.co/for-employers" className="hover:text-gray-900">For employers</a>
-            <Link href="/candidate/login" className="hover:text-gray-900">Sign in</Link>
+          <div className="flex items-center gap-3 md:gap-7 text-[14px] font-medium text-gray-700">
+            <Link href="/how-it-works" className="hidden md:inline hover:text-gray-900">How it works</Link>
+            <a href="https://freejobpost.co/for-employers" className="hidden md:inline hover:text-gray-900">For employers</a>
+            <Link href="/candidate/login" className="hover:text-gray-900 whitespace-nowrap">Sign in</Link>
             <Link
               href="/upload"
-              className="bg-gray-900 text-white px-4 py-2 rounded-full text-[13px] font-semibold hover:bg-gray-700 transition-colors"
+              className="bg-gray-900 text-white px-3 md:px-4 py-2 rounded-full text-[13px] font-semibold hover:bg-gray-700 transition-colors whitespace-nowrap"
             >
               Upload resume
             </Link>

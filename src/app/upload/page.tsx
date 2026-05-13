@@ -78,13 +78,11 @@ export default async function UploadPage() {
               freeresumepost<span className="text-slate-400">.co</span>
             </span>
           </Link>
-          <div className="hidden md:flex items-center gap-6 text-sm text-slate-600">
-            <a href="https://freejobpost.co/for-employers" className="hover:text-slate-900">
+          <div className="flex items-center gap-4 md:gap-6 text-sm text-slate-600">
+            <Link href="/" className="hover:text-slate-900 whitespace-nowrap">Home</Link>
+            <a href="https://freejobpost.co/for-employers" className="hidden md:inline hover:text-slate-900">
               For employers
             </a>
-            <Link href="/" className="hover:text-slate-900">
-              How it works
-            </Link>
           </div>
         </div>
       </nav>
