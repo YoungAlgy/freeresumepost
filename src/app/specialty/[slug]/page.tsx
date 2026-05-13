@@ -8,6 +8,19 @@ import { notFound } from 'next/navigation'
 import { CANDIDATE_SPECIALTIES, getCandidateSpecialty } from '@/lib/specialty-slugs'
 
 import { safeJsonLd } from '@/lib/safe-jsonld'
+
+// Slugs that exist on BOTH freeresumepost and freejobpost specialty hubs.
+// When the current hub is in this set, the "browse jobs" cross-link points
+// to the matching specialty hub on freejobpost instead of a search query.
+// Bidirectional authority transfer + tighter user flow.
+const BRIDGED_SPECIALTY_SLUGS = new Set([
+  'registered-nurse',
+  'crna',
+  'nurse-practitioner',
+  'pharmacist',
+  'physician-assistant',
+])
+
 export const revalidate = 600
 
 export async function generateStaticParams() {
@@ -39,6 +52,12 @@ export default async function CandidateSpecialtyPage(
   const { slug } = await params
   const hub = getCandidateSpecialty(slug)
   if (!hub) notFound()
+
+  // Deep-link to the sister freejobpost specialty hub when the slug bridges
+  // both sites. Otherwise fall back to a job search query.
+  const jobHubUrl = BRIDGED_SPECIALTY_SLUGS.has(hub.slug)
+    ? `https://freejobpost.co/specialty/${hub.slug}`
+    : `https://freejobpost.co/jobs?q=${encodeURIComponent(hub.name.split(' /')[0].trim())}`
 
   const breadcrumbJsonLd = {
     '@context': 'https://schema.org',
@@ -140,7 +159,7 @@ export default async function CandidateSpecialtyPage(
                 Upload resume →
               </Link>
               <a
-                href={`https://freejobpost.co/jobs?q=${encodeURIComponent(hub.name.split(' /')[0].trim())}`}
+                href={jobHubUrl}
                 className="inline-block border border-slate-300 text-slate-700 font-semibold px-6 py-3 rounded-full hover:bg-slate-900 hover:text-white hover:border-slate-900"
               >
                 Browse {hub.name} jobs →
@@ -233,7 +252,7 @@ export default async function CandidateSpecialtyPage(
                 Upload your {hub.name.toLowerCase()} resume →
               </Link>
               <a
-                href={`https://freejobpost.co/jobs?q=${encodeURIComponent(hub.name.split(' /')[0].trim())}`}
+                href={jobHubUrl}
                 className="inline-block border border-slate-300 text-slate-700 font-semibold px-6 py-3 rounded-full hover:bg-slate-900 hover:text-white hover:border-slate-900"
               >
                 Browse {hub.name} jobs
