@@ -141,7 +141,7 @@ export default function RootLayout({
               </Link>
               . Your resume is yours — we never sell your data.
               <br />
-              4532 W Kennedy Blvd, Suite 125, Tampa, FL 33609 · (813) 531-8049 · info@avahealth.co
+              4532 W Kennedy Blvd, Suite 125, Tampa, FL 33609 · (813) 531-8049 · alex@avahealth.co
             </p>
           </div>
         </footer>
