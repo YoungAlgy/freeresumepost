@@ -126,6 +126,10 @@ export default function RootLayout({
                 Employers
               </a>
               <span className="text-gray-300">|</span>
+              <Link href="/changelog" className="hover:text-gray-900">
+                Changelog
+              </Link>
+              <span className="text-gray-300">|</span>
               <Link href="/terms" className="hover:text-gray-900">
                 Terms
               </Link>
