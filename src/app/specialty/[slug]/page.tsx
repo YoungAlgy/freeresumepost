@@ -6,6 +6,12 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { CANDIDATE_SPECIALTIES, getCandidateSpecialty } from '@/lib/specialty-slugs'
+import { supabase } from '@/lib/supabase'
+import {
+  aggregateSalariesByGroup,
+  aggregateSalariesOverall,
+  fmtUsdCompact,
+} from '@/lib/salary-aggregates'
 
 import { safeJsonLd } from '@/lib/safe-jsonld'
 
@@ -46,6 +52,38 @@ export async function generateMetadata(
   }
 }
 
+type MatchingJob = {
+  state: string | null
+  salary_min: number | null
+  salary_max: number | null
+}
+
+/**
+ * Fetch active jobs on freejobpost.co that match the candidate specialty.
+ * Uses an ILIKE search across title/specialty/role with the specialty's
+ * display name as the pattern. The salary aggregator's ≥3-data-points
+ * minimum ensures we never surface noisy aggregates from sparse matches.
+ *
+ * Same Supabase project as freejobpost — public_jobs is the canonical
+ * job inventory across both sites.
+ */
+async function fetchMatchingJobs(specialtyName: string): Promise<MatchingJob[]> {
+  // Strip a trailing " / X" alias (e.g. "LPN / LVN" → "LPN") for the
+  // primary search; the alias is rarely the actual posted title.
+  const primary = specialtyName.split(' /')[0].trim()
+  if (!primary) return []
+  const pattern = `%${primary}%`
+  const { data } = await supabase
+    .from('public_jobs')
+    .select('state, salary_min, salary_max')
+    .eq('status', 'active')
+    .is('deleted_at', null)
+    .gt('expires_at', new Date().toISOString())
+    .or(`title.ilike.${pattern},specialty.ilike.${pattern},role.ilike.${pattern}`)
+    .limit(500)
+  return (data ?? []) as MatchingJob[]
+}
+
 export default async function CandidateSpecialtyPage(
   { params }: { params: Promise<{ slug: string }> },
 ) {
@@ -58,6 +96,18 @@ export default async function CandidateSpecialtyPage(
   const jobHubUrl = BRIDGED_SPECIALTY_SLUGS.has(hub.slug)
     ? `https://freejobpost.co/specialty/${hub.slug}`
     : `https://freejobpost.co/jobs?q=${encodeURIComponent(hub.name.split(' /')[0].trim())}`
+
+  // Salary aggregates for this specialty, broken down by state. Targets
+  // AI Overview citability for "[specialty] salary by state" queries.
+  // Plain HTML output (no Occupation/EstimatedSalary schema — deprecated).
+  const matchingJobs = await fetchMatchingJobs(hub.name)
+  const salaryOverall = aggregateSalariesOverall(matchingJobs)
+  const salaryByState = aggregateSalariesByGroup(
+    matchingJobs,
+    (j) => j.state?.trim() || null,
+  )
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10)
 
   const breadcrumbJsonLd = {
     '@context': 'https://schema.org',
@@ -142,6 +192,51 @@ export default async function CandidateSpecialtyPage(
               <span key={c} className="text-sm border border-slate-300 px-3 py-1 rounded-full text-slate-700 font-mono">{c}</span>
             ))}
           </div>
+
+          {/* Computed salary panel — aggregated from active job inventory on
+              freejobpost.co with published salary ranges. Plain HTML for
+              AI Overview citability; no Occupation/EstimatedSalary schema. */}
+          {salaryOverall && (
+            <section className="mb-12">
+              <h2 className="text-xl font-semibold mb-3">
+                {hub.name} salaries by state
+              </h2>
+              <p className="text-slate-600 leading-relaxed mb-4 text-sm">
+                Based on {salaryOverall.count} active {hub.name.toLowerCase()} role{salaryOverall.count === 1 ? '' : 's'} on freejobpost.co with published salary ranges. Typical pay: {fmtUsdCompact(salaryOverall.low)}–{fmtUsdCompact(salaryOverall.high)} (median {fmtUsdCompact(salaryOverall.avg)} per year).
+              </p>
+              {salaryByState.length > 0 && (
+                <div className="overflow-x-auto rounded-2xl border border-slate-200">
+                  <table className="w-full text-sm">
+                    <thead className="bg-slate-50 text-left">
+                      <tr>
+                        <th scope="col" className="px-4 py-3 font-semibold text-slate-900">State</th>
+                        <th scope="col" className="px-4 py-3 font-semibold text-right text-slate-900">Roles</th>
+                        <th scope="col" className="px-4 py-3 font-semibold text-right text-slate-900">Typical pay</th>
+                        <th scope="col" className="px-4 py-3 font-semibold text-right text-slate-900">Median</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {salaryByState.map((row) => (
+                        <tr key={row.label}>
+                          <td className="px-4 py-3 text-slate-800">{row.label}</td>
+                          <td className="px-4 py-3 text-right tabular-nums text-slate-600">{row.count}</td>
+                          <td className="px-4 py-3 text-right tabular-nums text-slate-700">
+                            {fmtUsdCompact(row.low)}&ndash;{fmtUsdCompact(row.high)}
+                          </td>
+                          <td className="px-4 py-3 text-right tabular-nums font-medium text-slate-900">
+                            {fmtUsdCompact(row.avg)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              <p className="text-xs text-slate-500 mt-3 leading-relaxed">
+                Salary ranges are pulled from real published listings on freejobpost.co. Some roles publish a range, others don&apos;t; the table reflects only roles with both a floor and ceiling.
+              </p>
+            </section>
+          )}
 
           <h2 className="text-xl font-semibold mb-4">How matching works</h2>
           <ol className="space-y-4 mb-12">
