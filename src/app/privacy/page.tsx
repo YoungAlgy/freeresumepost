@@ -82,13 +82,13 @@ export default function PrivacyPage() {
           <ul className="list-disc pl-5 space-y-1.5">
             <li>Your profile stays active until you delete it.</li>
             <li>Inactive profiles (no logins or applications in 18 months) are auto-archived and removed from matching.</li>
-            <li>You can request full deletion by emailing <a href="mailto:hello@avahealth.co?subject=Delete%20my%20profile" className="underline text-blue-600 hover:text-blue-700">hello@avahealth.co</a> with subject &quot;Delete my profile&quot; — we&apos;ll wipe both the resume file and parsed data within 30 days.</li>
+            <li>You can request full deletion by emailing <a href="mailto:alex@avahealth.co?subject=Delete%20my%20profile" className="underline text-blue-600 hover:text-blue-700">alex@avahealth.co</a> with subject &quot;Delete my profile&quot; — we&apos;ll wipe both the resume file and parsed data within 30 days.</li>
           </ul>
 
           <h2 className="text-xl font-semibold mt-8 mb-2">Your rights (CCPA / GDPR)</h2>
           <p>
             California + EU residents: you have the right to access, correct, or delete your data.
-            Email <a href="mailto:hello@avahealth.co" className="underline text-blue-600 hover:text-blue-700">hello@avahealth.co</a> with the subject &quot;Privacy request&quot; — we&apos;ll respond within 30 days.
+            Email <a href="mailto:alex@avahealth.co" className="underline text-blue-600 hover:text-blue-700">alex@avahealth.co</a> with the subject &quot;Privacy request&quot; — we&apos;ll respond within 30 days.
           </p>
 
           <h2 className="text-xl font-semibold mt-8 mb-2">Cookies</h2>
@@ -123,7 +123,7 @@ export default function PrivacyPage() {
             <strong>Ava Health Partners LLC</strong><br />
             4532 W Kennedy Blvd, Suite 125<br />
             Tampa, FL 33609<br />
-            <a href="mailto:hello@avahealth.co" className="underline text-blue-600 hover:text-blue-700">hello@avahealth.co</a>
+            <a href="mailto:alex@avahealth.co" className="underline text-blue-600 hover:text-blue-700">alex@avahealth.co</a>
           </p>
 
           <p className="mt-10 text-sm text-slate-600">

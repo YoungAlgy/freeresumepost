@@ -228,7 +228,7 @@ export default async function CandidateSpecialtyPage(
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Can I delete my profile?</h3>
-              <p className="text-slate-600 text-sm leading-relaxed">Yes — at any time. Email <a href="mailto:hello@avahealth.co?subject=Delete%20my%20profile" className="text-blue-600 hover:underline">hello@avahealth.co</a> with subject &ldquo;Delete my profile&rdquo; and we&apos;ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
+              <p className="text-slate-600 text-sm leading-relaxed">Yes — at any time. Email <a href="mailto:alex@avahealth.co?subject=Delete%20my%20profile" className="text-blue-600 hover:underline">alex@avahealth.co</a> with subject &ldquo;Delete my profile&rdquo; and we&apos;ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
             </div>
           </div>
 

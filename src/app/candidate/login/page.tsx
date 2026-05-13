@@ -34,9 +34,9 @@ export default function CandidateLoginPage() {
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-5 mb-6">
           <h2 className="font-semibold text-slate-900 mb-2">Lost your edit link?</h2>
           <ol className="space-y-2 text-sm text-slate-700 list-decimal pl-4">
-            <li>Search your inbox for an email from <code className="text-xs bg-white px-1 py-0.5 rounded border">hello@avahealth.co</code> with subject <em>&quot;Edit your freeresumepost.co profile&quot;</em>.</li>
+            <li>Search your inbox for an email from <code className="text-xs bg-white px-1 py-0.5 rounded border">alex@avahealth.co</code> with subject <em>&quot;Edit your freeresumepost.co profile&quot;</em>.</li>
             <li>Check spam / promotions tabs (Gmail loves to filter transactional links).</li>
-            <li>If you can&apos;t find it, email <a href="mailto:hello@avahealth.co?subject=Lost%20freeresumepost.co%20edit%20link" className="underline text-blue-600 hover:text-blue-700">hello@avahealth.co</a> from the address you used to upload — we&apos;ll resend within 24 hours.</li>
+            <li>If you can&apos;t find it, email <a href="mailto:alex@avahealth.co?subject=Lost%20freeresumepost.co%20edit%20link" className="underline text-blue-600 hover:text-blue-700">alex@avahealth.co</a> from the address you used to upload — we&apos;ll resend within 24 hours.</li>
           </ol>
         </div>
 

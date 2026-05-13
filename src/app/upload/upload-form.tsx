@@ -459,7 +459,7 @@ export default function UploadForm() {
       <p className="text-xs text-slate-500">
         By saving, you agree your profile can be shown to verified employers on
         freejobpost.co. You can edit it anytime from your unique profile URL; email
-        hello@avahealth.co to delete. See{' '}
+        alex@avahealth.co to delete. See{' '}
         <Link href="/privacy" className="underline hover:text-slate-900">
           privacy
         </Link>
