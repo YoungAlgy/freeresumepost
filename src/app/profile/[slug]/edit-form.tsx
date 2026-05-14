@@ -227,6 +227,7 @@ export default function ProfileEditForm({
                 <input
                   type="text"
                   required
+                  autoComplete="given-name"
                   value={f.first_name}
                   onChange={(e) => setF({ ...f, first_name: e.target.value })}
                   className={fieldStyle}
@@ -237,6 +238,7 @@ export default function ProfileEditForm({
                 <input
                   type="text"
                   required
+                  autoComplete="family-name"
                   value={f.last_name}
                   onChange={(e) => setF({ ...f, last_name: e.target.value })}
                   className={fieldStyle}
@@ -246,6 +248,8 @@ export default function ProfileEditForm({
               <Field label="Phone">
                 <input
                   type="tel"
+                  autoComplete="tel"
+                  inputMode="tel"
                   value={f.phone}
                   onChange={(e) => setF({ ...f, phone: e.target.value })}
                   className={fieldStyle}

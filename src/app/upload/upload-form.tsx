@@ -259,6 +259,7 @@ export default function UploadForm() {
             <input
               type="text"
               required
+              autoComplete="given-name"
               value={form.first_name}
               onChange={(e) => setForm({ ...form, first_name: e.target.value })}
               className={fieldStyle}
@@ -269,6 +270,7 @@ export default function UploadForm() {
             <input
               type="text"
               required
+              autoComplete="family-name"
               value={form.last_name}
               onChange={(e) => setForm({ ...form, last_name: e.target.value })}
               className={fieldStyle}
@@ -279,6 +281,8 @@ export default function UploadForm() {
             <input
               type="email"
               required
+              autoComplete="email"
+              inputMode="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               className={fieldStyle}
@@ -288,6 +292,8 @@ export default function UploadForm() {
           <Field label="Phone" hint="Optional but helpful">
             <input
               type="tel"
+              autoComplete="tel"
+              inputMode="tel"
               value={form.phone}
               onChange={(e) => setForm({ ...form, phone: e.target.value })}
               className={fieldStyle}
@@ -323,6 +329,7 @@ export default function UploadForm() {
           <Field label="City">
             <input
               type="text"
+              autoComplete="address-level2"
               value={form.city}
               onChange={(e) => setForm({ ...form, city: e.target.value })}
               className={fieldStyle}
