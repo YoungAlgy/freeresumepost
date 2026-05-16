@@ -128,13 +128,20 @@ export function bucketizeRoles(jobs: JobLike[]): RoleBucket[] {
     if (idx === -1) continue
     const bucket = buckets[idx]
     bucket.count += 1
-    if (job.salary_min != null && job.salary_min > 0) {
+    // Plausibility floor: skip any salary range that's clearly a placeholder.
+    // USAJobs (federal) sometimes lists "$1–$X" or "$0–$X" for jobs whose pay
+    // is governed by a GS-grade scale rather than a stated range. Without
+    // this guard the Physician bucket on /upload showed "$1–$550K typical".
+    // 10,000 is well below the lowest realistic full-time healthcare salary
+    // and high enough to reject the placeholder rows.
+    const MIN_PLAUSIBLE_SALARY = 10_000
+    if (job.salary_min != null && job.salary_min >= MIN_PLAUSIBLE_SALARY) {
       bucket.salaryFloor =
         bucket.salaryFloor == null
           ? job.salary_min
           : Math.min(bucket.salaryFloor, job.salary_min)
     }
-    if (job.salary_max != null && job.salary_max > 0) {
+    if (job.salary_max != null && job.salary_max >= MIN_PLAUSIBLE_SALARY) {
       bucket.salaryCeiling =
         bucket.salaryCeiling == null
           ? job.salary_max

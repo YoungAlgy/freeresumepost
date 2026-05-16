@@ -79,6 +79,21 @@ describe('bucketizeRoles', () => {
     expect(rn.salaryCeiling).toBe(100000)
   })
 
+  it('ignores placeholder $1/$X salaries (USAJobs GS-grade entries) when computing range', () => {
+    // USAJobs sometimes encodes "pay set by GS-grade table" as a $1
+    // MinimumRange in PositionRemuneration. The pre-2026-05-16 floor
+    // (`> 0`) accepted that, producing "Physician $1–$550K typical" on the
+    // /upload tiles. The 10K plausibility floor rejects it cleanly.
+    const jobs = [
+      j('Physician', 'Physician A', 250000, 380000),
+      j('Physician', 'Physician B - GS-scale', 1, 550000), // placeholder min
+      j('Physician', 'Physician C', 290000, 400000),
+    ]
+    const [phys] = bucketizeRoles(jobs)
+    expect(phys.salaryFloor).toBe(250000)
+    expect(phys.salaryCeiling).toBe(550000)
+  })
+
   it('omits empty buckets from output', () => {
     const result = bucketizeRoles([j('RN', 'RN role')])
     expect(result.every((b) => b.count > 0)).toBe(true)
