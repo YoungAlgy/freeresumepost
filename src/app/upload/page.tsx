@@ -37,32 +37,49 @@ export default async function UploadPage() {
   // Live signal — pull active job count + 6 most-recent jobs + a wider slice
   // for role-bucket aggregation in one render. The 500-row aggregation slice
   // is tiny (~30KB) and runs at ISR revalidate (every 5 min), not per-request.
-  const [countRes, recentRes, aggRes] = await Promise.all([
+  // Two .range() batches for the aggregation slice — PostgREST's anon-role
+  // db_max_rows=1000 silently clamps a single .limit(2000), so we batch and
+  // concat. With 8,000+ active jobs in inventory, the previous 500-row sample
+  // was underreporting per-role counts shown in the role-bucket tiles by ~16x.
+  // See parallel comment in src/app/page.tsx for the same fix on the homepage.
+  const nowIso = new Date().toISOString()
+  const aggFields = 'slug, title, city, state, role, salary_min, salary_max, remote_hybrid'
+  const [countRes, recentRes, aggBatch1, aggBatch2] = await Promise.all([
     supabase
       .from('public_jobs')
       .select('id', { count: 'exact', head: true })
       .eq('status', 'active')
       .is('deleted_at', null)
-      .gt('expires_at', new Date().toISOString()),
+      .gt('expires_at', nowIso),
     supabase
       .from('public_jobs')
-      .select('slug, title, city, state, role, salary_min, salary_max, remote_hybrid')
+      .select(aggFields)
       .eq('status', 'active')
       .is('deleted_at', null)
-      .gt('expires_at', new Date().toISOString())
+      .gt('expires_at', nowIso)
       .order('created_at', { ascending: false })
       .limit(6),
     supabase
       .from('public_jobs')
-      .select('slug, title, city, state, role, salary_min, salary_max, remote_hybrid')
+      .select(aggFields)
       .eq('status', 'active')
       .is('deleted_at', null)
-      .gt('expires_at', new Date().toISOString())
-      .limit(500),
+      .gt('expires_at', nowIso)
+      .range(0, 999),
+    supabase
+      .from('public_jobs')
+      .select(aggFields)
+      .eq('status', 'active')
+      .is('deleted_at', null)
+      .gt('expires_at', nowIso)
+      .range(1000, 1999),
   ])
   const activeJobs = countRes.count ?? 0
   const recentJobs = (recentRes.data ?? []) as JobRow[]
-  const aggJobs = (aggRes.data ?? []) as JobRow[]
+  const aggJobs = [
+    ...((aggBatch1.data ?? []) as JobRow[]),
+    ...((aggBatch2.data ?? []) as JobRow[]),
+  ]
   const roleBuckets = bucketizeRoles(aggJobs).slice(0, 6)
 
   return (

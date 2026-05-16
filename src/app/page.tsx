@@ -41,28 +41,45 @@ function compactLocation(job: Pick<PreviewJob, 'city' | 'state' | 'remote_hybrid
 
 export default async function Home() {
   // Pull recent jobs for the hero preview AND a wider slice for role-bucket
-  // aggregation. The 500-row slice (~30KB) runs at ISR revalidate (every 5
-  // min), not per-request, so the cost is negligible.
-  const [recentRes, aggRes] = await Promise.all([
+  // aggregation. The aggregation slice is fetched as two parallel .range()
+  // batches because Supabase's anon-role PostgREST caps queries at 1,000 rows
+  // (`pgrst.db_max_rows=1000`); a single .limit(2000) silently clamps. With
+  // 8,000+ active jobs in inventory, a 500-row sample was under-reporting the
+  // per-role counts shown in the "Browse by specialty" tiles by ~16x. Two
+  // batches (≈120 KB serialized) runs at ISR revalidate (every 5 min), not
+  // per-request, so the cost stays bounded.
+  const nowIso = new Date().toISOString()
+  const aggFields = 'slug, title, city, state, role, remote_hybrid, salary_min, salary_max'
+  const [recentRes, aggBatch1, aggBatch2] = await Promise.all([
     supabase
       .from('public_jobs')
-      .select('slug, title, city, state, role, remote_hybrid, salary_min, salary_max')
+      .select(aggFields)
       .eq('status', 'active')
       .is('deleted_at', null)
-      .gt('expires_at', new Date().toISOString())
+      .gt('expires_at', nowIso)
       .order('created_at', { ascending: false })
       .limit(4),
     supabase
       .from('public_jobs')
-      .select('slug, title, city, state, role, remote_hybrid, salary_min, salary_max')
+      .select(aggFields)
       .eq('status', 'active')
       .is('deleted_at', null)
-      .gt('expires_at', new Date().toISOString())
-      .limit(500),
+      .gt('expires_at', nowIso)
+      .range(0, 999),
+    supabase
+      .from('public_jobs')
+      .select(aggFields)
+      .eq('status', 'active')
+      .is('deleted_at', null)
+      .gt('expires_at', nowIso)
+      .range(1000, 1999),
   ])
 
   const previewJobs = (recentRes.data ?? []) as PreviewJob[]
-  const aggJobs = (aggRes.data ?? []) as PreviewJob[]
+  const aggJobs = [
+    ...((aggBatch1.data ?? []) as PreviewJob[]),
+    ...((aggBatch2.data ?? []) as PreviewJob[]),
+  ]
   const roleBuckets = bucketizeRoles(aggJobs).slice(0, 6)
 
   return (
