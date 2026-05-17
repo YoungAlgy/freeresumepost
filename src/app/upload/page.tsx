@@ -35,16 +35,31 @@ interface JobRow {
 
 export default async function UploadPage() {
   // Live signal — pull active job count + 6 most-recent jobs + a wider slice
-  // for role-bucket aggregation in one render. The 500-row aggregation slice
-  // is tiny (~30KB) and runs at ISR revalidate (every 5 min), not per-request.
-  // Two .range() batches for the aggregation slice — PostgREST's anon-role
-  // db_max_rows=1000 silently clamps a single .limit(2000), so we batch and
-  // concat. With 8,000+ active jobs in inventory, the previous 500-row sample
-  // was underreporting per-role counts shown in the role-bucket tiles by ~16x.
-  // See parallel comment in src/app/page.tsx for the same fix on the homepage.
+  // for role-bucket aggregation in one render. Aggregation runs at ISR
+  // revalidate, not per-request, so cost stays bounded.
+  //
+  // NUM_BATCHES=9 parallel .range() batches — PostgREST's anon-role
+  // db_max_rows=1000 silently clamps a single .limit(N>1000), so we batch
+  // and concat. With ~8,000+ active jobs (USAJobs federal addition pushed
+  // inventory past 9,000), the prior 2-batch (2,000) sample was still
+  // under-reporting per-role counts shown in the role-bucket tiles by ~4x.
+  // Mirrors freejobpost's /jobs page (commit a7aaf6f) and the homepage in
+  // src/app/page.tsx — keep all three in sync.
+  const NUM_BATCHES = 9
+  const BATCH_SIZE = 1000
   const nowIso = new Date().toISOString()
   const aggFields = 'slug, title, city, state, role, salary_min, salary_max, remote_hybrid'
-  const [countRes, recentRes, aggBatch1, aggBatch2] = await Promise.all([
+  const baseAgg = () => supabase
+    .from('public_jobs')
+    .select(aggFields)
+    .eq('status', 'active')
+    .is('deleted_at', null)
+    .gt('expires_at', nowIso)
+    .order('updated_at', { ascending: false })
+  const aggBatchPromises = Array.from({ length: NUM_BATCHES }, (_, i) =>
+    baseAgg().range(i * BATCH_SIZE, (i + 1) * BATCH_SIZE - 1)
+  )
+  const [countRes, recentRes, ...aggBatches] = await Promise.all([
     supabase
       .from('public_jobs')
       .select('id', { count: 'exact', head: true })
@@ -59,27 +74,11 @@ export default async function UploadPage() {
       .gt('expires_at', nowIso)
       .order('created_at', { ascending: false })
       .limit(6),
-    supabase
-      .from('public_jobs')
-      .select(aggFields)
-      .eq('status', 'active')
-      .is('deleted_at', null)
-      .gt('expires_at', nowIso)
-      .range(0, 999),
-    supabase
-      .from('public_jobs')
-      .select(aggFields)
-      .eq('status', 'active')
-      .is('deleted_at', null)
-      .gt('expires_at', nowIso)
-      .range(1000, 1999),
+    ...aggBatchPromises,
   ])
   const activeJobs = countRes.count ?? 0
   const recentJobs = (recentRes.data ?? []) as JobRow[]
-  const aggJobs = [
-    ...((aggBatch1.data ?? []) as JobRow[]),
-    ...((aggBatch2.data ?? []) as JobRow[]),
-  ]
+  const aggJobs = aggBatches.flatMap((b) => (b.data ?? []) as JobRow[])
   const roleBuckets = bucketizeRoles(aggJobs).slice(0, 6)
 
   return (

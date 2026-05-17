@@ -66,6 +66,14 @@ type MatchingJob = {
  *
  * Same Supabase project as freejobpost — public_jobs is the canonical
  * job inventory across both sites.
+ *
+ * Fetches up to NUM_BATCHES × 1,000 = 5,000 matching rows via parallel
+ * .range() batches. Bumped from .limit(500) on 2026-05-17: with the
+ * USAJobs federal addition pushing inventory past 9,000 active jobs and
+ * popular specialties (RN, MD) matching thousands of rows, the prior
+ * 500-row cap was producing noisy state aggregates (states with 10+
+ * actual matches were averaging across 1-2 rows). 5,000 rows covers
+ * even the largest specialties (RN ≈ 3,500 matches) with headroom.
  */
 async function fetchMatchingJobs(specialtyName: string): Promise<MatchingJob[]> {
   // Strip a trailing " / X" alias (e.g. "LPN / LVN" → "LPN") for the
@@ -73,15 +81,22 @@ async function fetchMatchingJobs(specialtyName: string): Promise<MatchingJob[]> 
   const primary = specialtyName.split(' /')[0].trim()
   if (!primary) return []
   const pattern = `%${primary}%`
-  const { data } = await supabase
+  const NUM_BATCHES = 5
+  const BATCH_SIZE = 1000
+  const nowIso = new Date().toISOString()
+  const baseQuery = () => supabase
     .from('public_jobs')
     .select('state, salary_min, salary_max')
     .eq('status', 'active')
     .is('deleted_at', null)
-    .gt('expires_at', new Date().toISOString())
+    .gt('expires_at', nowIso)
     .or(`title.ilike.${pattern},specialty.ilike.${pattern},role.ilike.${pattern}`)
-    .limit(500)
-  return (data ?? []) as MatchingJob[]
+  const batches = await Promise.all(
+    Array.from({ length: NUM_BATCHES }, (_, i) =>
+      baseQuery().range(i * BATCH_SIZE, (i + 1) * BATCH_SIZE - 1)
+    )
+  )
+  return batches.flatMap((b) => (b.data ?? []) as MatchingJob[])
 }
 
 export default async function CandidateSpecialtyPage(

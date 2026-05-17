@@ -41,16 +41,30 @@ function compactLocation(job: Pick<PreviewJob, 'city' | 'state' | 'remote_hybrid
 
 export default async function Home() {
   // Pull recent jobs for the hero preview AND a wider slice for role-bucket
-  // aggregation. The aggregation slice is fetched as two parallel .range()
-  // batches because Supabase's anon-role PostgREST caps queries at 1,000 rows
-  // (`pgrst.db_max_rows=1000`); a single .limit(2000) silently clamps. With
-  // 8,000+ active jobs in inventory, a 500-row sample was under-reporting the
-  // per-role counts shown in the "Browse by specialty" tiles by ~16x. Two
-  // batches (≈120 KB serialized) runs at ISR revalidate (every 5 min), not
-  // per-request, so the cost stays bounded.
+  // aggregation. The aggregation slice is fetched as NUM_BATCHES parallel
+  // .range() batches because Supabase's anon-role PostgREST caps queries at
+  // 1,000 rows (`pgrst.db_max_rows=1000`); a single .limit(N>1000) silently
+  // clamps. With ~8,000+ active jobs (and the USAJobs federal addition
+  // pushing it past 9,000), the prior 2-batch (2,000 row) sample was still
+  // under-reporting per-role counts shown in the "Browse by specialty" tiles
+  // by ~4x. Mirrors freejobpost's /jobs page (which moved to 9 batches in
+  // commit a7aaf6f). All batches fire in parallel — wall time ~200ms; data
+  // runs at ISR revalidate, not per-request, so cost stays bounded.
+  const NUM_BATCHES = 9
+  const BATCH_SIZE = 1000
   const nowIso = new Date().toISOString()
   const aggFields = 'slug, title, city, state, role, remote_hybrid, salary_min, salary_max'
-  const [recentRes, aggBatch1, aggBatch2] = await Promise.all([
+  const baseAgg = () => supabase
+    .from('public_jobs')
+    .select(aggFields)
+    .eq('status', 'active')
+    .is('deleted_at', null)
+    .gt('expires_at', nowIso)
+    .order('updated_at', { ascending: false })
+  const aggBatchPromises = Array.from({ length: NUM_BATCHES }, (_, i) =>
+    baseAgg().range(i * BATCH_SIZE, (i + 1) * BATCH_SIZE - 1)
+  )
+  const [recentRes, ...aggBatches] = await Promise.all([
     supabase
       .from('public_jobs')
       .select(aggFields)
@@ -59,27 +73,11 @@ export default async function Home() {
       .gt('expires_at', nowIso)
       .order('created_at', { ascending: false })
       .limit(4),
-    supabase
-      .from('public_jobs')
-      .select(aggFields)
-      .eq('status', 'active')
-      .is('deleted_at', null)
-      .gt('expires_at', nowIso)
-      .range(0, 999),
-    supabase
-      .from('public_jobs')
-      .select(aggFields)
-      .eq('status', 'active')
-      .is('deleted_at', null)
-      .gt('expires_at', nowIso)
-      .range(1000, 1999),
+    ...aggBatchPromises,
   ])
 
   const previewJobs = (recentRes.data ?? []) as PreviewJob[]
-  const aggJobs = [
-    ...((aggBatch1.data ?? []) as PreviewJob[]),
-    ...((aggBatch2.data ?? []) as PreviewJob[]),
-  ]
+  const aggJobs = aggBatches.flatMap((b) => (b.data ?? []) as PreviewJob[])
   const roleBuckets = bucketizeRoles(aggJobs).slice(0, 6)
 
   return (
