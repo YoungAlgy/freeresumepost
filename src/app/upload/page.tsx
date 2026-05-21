@@ -44,8 +44,10 @@ export default async function UploadPage() {
   // inventory past 9,000), the prior 2-batch (2,000) sample was still
   // under-reporting per-role counts shown in the role-bucket tiles by ~4x.
   // Mirrors freejobpost's /jobs page (commit a7aaf6f) and the homepage in
-  // src/app/page.tsx — keep all three in sync.
-  const NUM_BATCHES = 9
+  // src/app/page.tsx — keep all three in sync. Bumped from 9 → 12 on
+  // 2026-05-21 alongside the homepage + freejobpost bump (inventory crossed
+  // 9,000 active rows).
+  const NUM_BATCHES = 12
   const BATCH_SIZE = 1000
   const nowIso = new Date().toISOString()
   const aggFields = 'slug, title, city, state, role, salary_min, salary_max, remote_hybrid'

@@ -50,7 +50,9 @@ export default async function Home() {
   // by ~4x. Mirrors freejobpost's /jobs page (which moved to 9 batches in
   // commit a7aaf6f). All batches fire in parallel — wall time ~200ms; data
   // runs at ISR revalidate, not per-request, so cost stays bounded.
-  const NUM_BATCHES = 9
+  // Bumped from 9 → 12 on 2026-05-21 to track freejobpost: inventory crossed
+  // 9,000 active rows and the 9-batch cap was silently truncating aggregates.
+  const NUM_BATCHES = 12
   const BATCH_SIZE = 1000
   const nowIso = new Date().toISOString()
   const aggFields = 'slug, title, city, state, role, remote_hybrid, salary_min, salary_max'
