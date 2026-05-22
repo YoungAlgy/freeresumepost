@@ -16,6 +16,13 @@ export const metadata: Metadata = {
     description: 'Pick your specialty, upload once, get matched.',
     url: 'https://www.freeresumepost.co/specialty',
     type: 'website',
+    images: ['/opengraph-image'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Healthcare resume upload by specialty | freeresumepost.co',
+    description: 'Pick your specialty, upload once, get matched.',
+    images: ['/opengraph-image'],
   },
 }
 

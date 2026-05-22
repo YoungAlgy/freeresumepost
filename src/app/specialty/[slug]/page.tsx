@@ -48,6 +48,13 @@ export async function generateMetadata(
       description: hub.metaDescription,
       url: `https://www.freeresumepost.co/specialty/${hub.slug}`,
       type: 'website',
+      images: ['/opengraph-image'],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${hub.title} | freeresumepost.co`,
+      description: hub.metaDescription,
+      images: ['/opengraph-image'],
     },
   }
 }

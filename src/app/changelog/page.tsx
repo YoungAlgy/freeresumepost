@@ -25,6 +25,13 @@ export const metadata: Metadata = {
     description: 'Recent ships on freeresumepost.co — features, fixes, and reliability work.',
     url: 'https://www.freeresumepost.co/changelog',
     type: 'website',
+    images: ['/opengraph-image'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Changelog — freeresumepost.co',
+    description: 'Recent ships on freeresumepost.co — features, fixes, and reliability work.',
+    images: ['/opengraph-image'],
   },
 }
 

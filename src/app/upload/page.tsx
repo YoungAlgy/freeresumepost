@@ -16,6 +16,14 @@ export const metadata: Metadata = {
       'Drop your resume once and get matched to real healthcare openings. No account, no recruiter spam.',
     url: 'https://www.freeresumepost.co/upload',
     type: 'website',
+    images: ['/opengraph-image'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Upload your resume — free healthcare job matching',
+    description:
+      'Drop your resume once and get matched to real healthcare openings. No account, no recruiter spam.',
+    images: ['/opengraph-image'],
   },
 }
 

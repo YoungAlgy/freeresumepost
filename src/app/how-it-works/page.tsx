@@ -13,6 +13,14 @@ export const metadata: Metadata = {
       'Upload free, get matched to real healthcare openings. No recruiter spam, no resume databases sold.',
     url: 'https://www.freeresumepost.co/how-it-works',
     type: 'website',
+    images: ['/opengraph-image'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'How freeresumepost.co works',
+    description:
+      'Upload free, get matched to real healthcare openings. No recruiter spam, no resume databases sold.',
+    images: ['/opengraph-image'],
   },
 }
 
