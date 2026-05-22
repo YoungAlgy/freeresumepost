@@ -19,6 +19,13 @@ export interface ChangelogEntry {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
   // ── May 2026 ──────────────────────────────────────────────────────────────
   {
+    date: '2026-05-22',
+    title: 'Polish pass: link previews, error pages, page titles',
+    body:
+      'Six pages were rendering blank or default link-preview cards when shared to LinkedIn / iMessage / Slack — now every page emits the branded Free Resume Post Open Graph card. Added a styled error page that catches transient failures (Supabase timeout, network blip) with a one-click retry. Stopped browser tabs from showing the brand twice (“Free Resume Post — Upload once, get matched | Free Resume Post”) — now just renders once.',
+    tag: 'improved',
+  },
+  {
     date: '2026-05-13',
     title: 'Salary panel on specialty hubs',
     body:
