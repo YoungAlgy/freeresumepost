@@ -6,6 +6,7 @@ import {
   type ChangelogTag,
   type ChangelogEntry,
 } from '@/lib/changelog-entries'
+import { safeJsonLd } from '@/lib/safe-jsonld'
 
 export const metadata: Metadata = {
   title: 'Changelog',
@@ -66,8 +67,21 @@ export default function ChangelogPage() {
   const grouped = groupByMonth(ENTRIES)
   const lastUpdated = ENTRIES[0]?.date
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.freeresumepost.co' },
+      { '@type': 'ListItem', position: 2, name: 'Changelog', item: 'https://www.freeresumepost.co/changelog' },
+    ],
+  }
+
   return (
     <main className="min-h-screen bg-white text-slate-900">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbJsonLd) }}
+      />
       <nav className="border-b border-slate-200 bg-white/80 backdrop-blur sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
