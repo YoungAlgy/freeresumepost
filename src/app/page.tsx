@@ -7,7 +7,10 @@ import { CANDIDATE_SPECIALTIES } from '@/lib/specialty-slugs'
 
 import { safeJsonLd } from '@/lib/safe-jsonld'
 export const metadata: Metadata = {
-  title: 'Free Resume Post — Upload once, get matched',
+  // `absolute` bypasses the layout template `%s | Free Resume Post`. Without
+  // it the rendered title would be the double-branded "Free Resume Post —
+  // Upload once, get matched | Free Resume Post".
+  title: { absolute: 'Free Resume Post — Upload once, get matched' },
   description:
     'Upload your resume free and get matched to real healthcare openings. No recruiter spam, no resume databases sold to the highest bidder.',
   alternates: { canonical: 'https://www.freeresumepost.co' },
