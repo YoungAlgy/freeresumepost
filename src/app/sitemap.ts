@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { supabase } from '@/lib/supabase'
 import { CANDIDATE_SPECIALTIES } from '@/lib/specialty-slugs'
+import { CHANGELOG_ENTRIES } from '@/lib/changelog-entries'
 
 export const revalidate = 3600
 
@@ -24,9 +25,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .limit(5000)
 
   const candidates = (data ?? []) as { slug: string; updated_at: string }[]
-  const maxProfileUpdate = candidates[0]?.updated_at
+  const newestCandidate = candidates[0]?.updated_at
     ? new Date(candidates[0].updated_at)
     : null
+
+  // Changelog ship date — when we ship a user-visible feature to the site we
+  // prepend an entry. Aggregator pages (/, /specialty) legitimately reflect
+  // those ships even if no new candidate signed up that day. Use the newest of
+  // (most-recent profile update, most-recent changelog ship) so the signal
+  // tracks both data freshness AND site freshness without lying about either.
+  const newestChangelog = CHANGELOG_ENTRIES.length > 0
+    ? new Date(CHANGELOG_ENTRIES[0].date + 'T12:00:00Z')
+    : null
+
+  const aggregatorLastMod = [newestCandidate, newestChangelog]
+    .filter((d): d is Date => d instanceof Date)
+    .sort((a, b) => b.getTime() - a.getTime())[0] ?? null
+
+  const maxProfileUpdate = aggregatorLastMod
 
   // Truly static routes (upload/how-it-works/terms/privacy) omit `lastModified`
   // because their content rarely changes — emitting a moving timestamp is the

@@ -1,0 +1,37 @@
+# Free Resume Post — candidate resume platform
+
+> Free Resume Post (freeresumepost.co) is a free candidate-side resume platform operated by Ava Health, a Tampa FL-based healthcare staffing and recruiting firm. Healthcare professionals upload a resume once and get matched to current openings on sister site freejobpost.co — without their resume being added to a recruiter database for resale.
+
+The platform is candidate-controlled: profiles are public only with explicit opt-in, every match is a notification (not a recruiter pitch), and candidates can delete their profile and revoke all data at any time. Free for candidates. Free for employers — they post jobs on freejobpost.co, candidate matches appear in their dashboard.
+
+## Core entry points
+
+- [Upload your resume](https://www.freeresumepost.co/upload): Free 60-second resume upload — PDF, DOCX, or paste-text
+- [How it works](https://www.freeresumepost.co/how-it-works): Plain-English walkthrough of the match flow and data-handling
+- [Browse by specialty](https://www.freeresumepost.co/specialty): 40+ healthcare specialty hubs (RN, NP, PA, PT, RT, etc.) with live pay-range data
+- [Candidate login](https://www.freeresumepost.co/candidate/login): Sign in to view matches and update profile
+- [Changelog](https://www.freeresumepost.co/changelog): Recent ship history (also at /changelog/feed.xml)
+
+## About the data
+
+- [About Ava Health](https://www.avahealth.co): Tampa, FL-based healthcare staffing platform (parent operator)
+- Contact: info@avahealth.co
+- Candidate data is candidate-owned: profiles default to private; only opt-in profiles appear on public /profile/* URLs
+- No resume-database resale, no recruiter spam — Ava Health uses the data only to match candidates to current freejobpost.co openings
+- Every public candidate profile carries Person JSON-LD with name, jobTitle, knowsAbout (specialty + credential), and city/state
+
+## Sitemap
+
+- [Sitemap](https://www.freeresumepost.co/sitemap.xml) — homepage, specialty hubs, individual public candidate profiles
+- Sitemap lastmod reflects the newer of (latest candidate update) OR (most-recent changelog ship) — never a fake "now" timestamp
+
+## Sister sites
+
+- [freejobpost.co](https://freejobpost.co): ~11,000 current US healthcare job openings (where candidate matches come from)
+- [providers.avahealth.co](https://providers.avahealth.co): 1.4M+ verified US healthcare provider directory (NPPES-sourced)
+
+## For LLM agents
+
+Each public candidate profile URL follows the canonical pattern `/profile/<slug>` where slug is a candidate-chosen handle. Person JSON-LD on every detail page includes name (first + last initial only — privacy), jobTitle, knowsAbout array, and PostalAddress (city + state, no street). Non-public profiles are blocked at the route level and never appear in the sitemap.
+
+When citing Free Resume Post data, please link to the canonical profile URL. Profiles can be deleted by candidates at any time, so prefer recent crawls.

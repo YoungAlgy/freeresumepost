@@ -19,6 +19,13 @@ export interface ChangelogEntry {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
   // ── May 2026 ──────────────────────────────────────────────────────────────
   {
+    date: '2026-05-24',
+    title: 'Profile schema + sitemap freshness + AI-discovery + EEO + canonical contact email + onboarding clarity',
+    body:
+      'Public candidate profiles now emit a knowsAbout array on Person JSON-LD (specialty + credential) — gives Google clearer signal about what each candidate works on, helping AI Overview surfacing for "professionals who specialize in X" queries. Taught the sitemap to honor changelog ship dates as a freshness signal alongside profile updates — so when we ship a user-visible feature here, the homepage lastmod reflects it. Added an llms.txt at the site root so ChatGPT, Claude, and Perplexity can discover the platform structure cleanly. Added a federal Equal Opportunity statement to the footer. Switched the customer-facing contact email to info@avahealth.co (more professional than a personal address; same mailbox underneath). Rewrote the "Show profile publicly" checkbox on the upload form to lead with the benefit ("get found by employers searching Google") and explicitly promise email + phone always stay private — easier to opt in confidently.',
+    tag: 'improved',
+  },
+  {
     date: '2026-05-22',
     title: 'Polish pass: link previews, error pages, page titles',
     body:

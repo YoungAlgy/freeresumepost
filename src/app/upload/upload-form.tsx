@@ -410,7 +410,7 @@ export default function UploadForm() {
               </p>
             </div>
           </label>
-          <label className="flex items-start gap-3 p-3 rounded-xl border border-slate-200 hover:border-slate-300 cursor-pointer">
+          <label className="flex items-start gap-3 p-3 rounded-xl border-2 border-blue-200 bg-blue-50/30 hover:border-blue-300 cursor-pointer">
             <input
               type="checkbox"
               checked={form.is_public}
@@ -418,10 +418,13 @@ export default function UploadForm() {
               className="mt-0.5 w-4 h-4"
             />
             <div>
-              <p className="font-medium text-slate-900">Show my profile publicly</p>
-              <p className="text-sm text-slate-500">
-                Off by default. When on, your name + specialty + state show at
-                <span className="font-mono text-xs"> /profile/[your-slug]</span>. Email + phone stay private.
+              <p className="font-medium text-slate-900">
+                Show my profile publicly — get found by employers searching Google
+              </p>
+              <p className="text-sm text-slate-600 mt-1">
+                <strong>Off by default.</strong> When on, your first name + last initial + specialty + state appear at
+                <span className="font-mono text-xs"> /profile/[your-slug]</span>{' '}
+                so hospitals and clinics searching for your specialty in your state can find you. <strong>Email + phone always stay private</strong> — employers see your public profile, not your contact info, and have to go through us to reach you. Turn off any time from your dashboard.
               </p>
             </div>
           </label>
@@ -466,7 +469,7 @@ export default function UploadForm() {
       <p className="text-xs text-slate-500">
         By saving, you agree your profile can be shown to verified employers on
         freejobpost.co. You can edit it anytime from your unique profile URL; email
-        alex@avahealth.co to delete. See{' '}
+        info@avahealth.co to delete. See{' '}
         <Link href="/privacy" className="underline hover:text-slate-900">
           privacy
         </Link>

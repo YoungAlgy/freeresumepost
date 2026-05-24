@@ -113,11 +113,21 @@ export default async function ProfilePage({ params, searchParams }: Props) {
 
   const loc = [c.city, c.state].filter(Boolean).join(', ')
 
+  // knowsAbout array — Schema.org Person property that boosts AI-overview
+  // surfacing (SGE pulls candidate.knowsAbout fields into "professionals
+  // who specialize in X" answers). Build from specialty + credential since
+  // those are the highest-signal terms we have. Filtered to non-null
+  // strings + de-duped.
+  const knowsAbout = [c.specialty, c.credential]
+    .filter((s): s is string => typeof s === 'string' && s.trim().length > 0)
+    .filter((s, i, arr) => arr.indexOf(s) === i)
+
   const personJsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: `${c.first_name} ${c.last_name?.charAt(0) ?? ''}.`,
     jobTitle: c.specialty || c.credential || 'Healthcare professional',
+    ...(knowsAbout.length > 0 ? { knowsAbout } : {}),
     address: loc
       ? {
           '@type': 'PostalAddress',

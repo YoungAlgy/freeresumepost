@@ -89,7 +89,7 @@ export async function submitCandidate(
     return { success: false, error: result.error || 'Submission rejected.' }
   }
 
-  // Fire the upload notification to alex@avahealth.co. Don't block the
+  // Fire the upload notification to info@avahealth.co. Don't block the
   // confirmation flow on email-send failure — the candidate still gets
   // their edit URL even if Resend hiccups. Mirrors the apply-notify pattern.
   try {
