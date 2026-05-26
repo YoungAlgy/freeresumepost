@@ -164,15 +164,15 @@ export default function RootLayout({
           <p className="text-[11px] text-gray-400 text-center leading-relaxed mt-6 max-w-3xl mx-auto px-4">
             Ava Health Partners LLC is an Equal Opportunity Employer. We do not discriminate in employment or recruitment on the basis of race, color, religion, sex (including pregnancy, sexual orientation, or gender identity), national origin, age, disability, genetic information, veteran status, or any other characteristic protected by applicable federal, state, or local law.
           </p>
-          {/* E-Verify participation block — gated behind src/lib/e-verify-config.ts.
-              Renders nothing until Algy enrolls + pastes the Company ID. */}
+          {/* E-Verify participation chip — short footer link to /e-verify
+              which holds the full federal-compliance statement + posters.
+              Gated behind src/lib/e-verify-config.ts. */}
           {E_VERIFY.enrolled && E_VERIFY.companyId && (
-            <p className="text-[11px] text-gray-400 text-center leading-relaxed mt-3 max-w-3xl mx-auto px-4">
-              Ava Health Partners LLC participates in <a href="https://www.e-verify.gov" className="underline hover:text-gray-900">E-Verify</a>{' '}
-              (Company ID {E_VERIFY.companyId}{E_VERIFY.mouDate ? `, MOU effective ${E_VERIFY.mouDate}` : ''}).
-              We confirm work authorization for every new hire as required by Florida SB 1718.
-              See the <a href="https://www.e-verify.gov/sites/default/files/everify/posters/EVerifyParticipationPoster.pdf" className="underline hover:text-gray-900">E-Verify Participation</a> and{' '}
-              <a href="https://www.e-verify.gov/sites/default/files/everify/posters/IER_RighttoWorkPoster.pdf" className="underline hover:text-gray-900">Right to Work</a> posters.
+            <p className="text-[11px] text-gray-400 text-center leading-relaxed mt-3">
+              <Link href="/e-verify" className="underline hover:text-gray-900">
+                E-Verify Participant
+              </Link>{' '}
+              &middot; Company ID {E_VERIFY.companyId}
             </p>
           )}
         </footer>
