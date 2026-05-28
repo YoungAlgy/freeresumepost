@@ -13,6 +13,12 @@ export const runtime = 'edge'
 export const alt = 'Healthcare candidate on freeresumepost.co'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
+// 2026-05-28 cost audit: cache the generated card for 7 days. Profile OG
+// content is static per candidate (name/credential/specialty/location
+// baked in once), so repeat unfurls + crawler og:image fetches serve from
+// cache instead of re-querying public_candidates + re-rendering the PNG.
+// Mirrors the freejobpost per-job OG fix. Self-heals on edit/unpublish.
+export const revalidate = 604800
 
 const BRAND = '#003D5C'
 const ACCENT = '#7FBC00'
