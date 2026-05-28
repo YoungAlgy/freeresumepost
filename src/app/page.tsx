@@ -31,8 +31,10 @@ export const metadata: Metadata = {
   },
 }
 
-// ISR refresh every 5 min — keeps the live preview fresh without per-request cost
-export const revalidate = 300
+// ISR: 2026-05-28 bumped 300s → 3600s (1h) in the cost audit. Candidates
+// flow in via Flow B / self-upload (not every 5 min), so 1h keeps the live
+// preview fresh at a fraction of the regen cost. See freejobpost jobs/[slug].
+export const revalidate = 3600
 
 interface PreviewJob {
   slug: string

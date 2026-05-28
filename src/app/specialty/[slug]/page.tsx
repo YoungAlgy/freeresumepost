@@ -27,7 +27,11 @@ const BRIDGED_SPECIALTY_SLUGS = new Set([
   'physician-assistant',
 ])
 
-export const revalidate = 600
+// 2026-05-28: 600s → 21600s (6h). ISR cost audit — mirrors the freejobpost
+// fix. Candidate listings change only when a profile is published (Flow B
+// or self-upload), not every 10 min. Future-proofs against the regen storm
+// that hit freejobpost as this surface grows.
+export const revalidate = 21600
 
 export async function generateStaticParams() {
   return CANDIDATE_SPECIALTIES.map((s) => ({ slug: s.slug }))
