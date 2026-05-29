@@ -47,6 +47,17 @@ export async function submitCandidate(
   const normalizedEmail = (input.email ?? '').trim().toLowerCase()
   const normalizedState = (input.state ?? '').trim().toUpperCase()
 
+  // Defense-in-depth validation (mirrors freejobpost submitApplication). The
+  // SECURITY DEFINER RPC is the authority, but rejecting a malformed email or
+  // missing name here avoids persisting a junk row AND firing the Resend
+  // edit-link notify at an undeliverable address. 2026-05-28 cross-app drift fix.
+  if (!input.first_name?.trim() || !input.last_name?.trim()) {
+    return { success: false, error: 'First and last name are required.' }
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+    return { success: false, error: 'Please enter a valid email address.' }
+  }
+
   // Cap parsed_profile payload so we don't balloon the jsonb column
   const rawText = (input.raw_text ?? '').slice(0, 50_000)
 

@@ -15,16 +15,50 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Why not `new Date()`? Google's sitemap docs are explicit: if `lastmod`
   // consistently lies (every URL = "today" on every refresh), Google stops
   // trusting all `lastmod` values from the host. Tying signal to real data.
-  const { data } = await supabase
+  // Count active public profiles, then fetch exactly ceil(count/1000) batches.
+  // PostgREST's anon role silently caps a single .limit(>1000) at 1,000
+  // (db_max_rows) — so the prior bare .limit(5000) would silently drop profile
+  // URLs from the sitemap once public-candidate inventory passed 1,000
+  // (deindex risk on exactly the indexed-profile surface this site is built
+  // on — the same failure mode freejobpost's batched sitemap fixes). Count-
+  // based paging (vs freejob's fixed 30-batch fan-out) fits the candidate
+  // table: it's small and grows slower than jobs, so a fixed fan-out would
+  // fire ~30 mostly-empty queries at the shared DB on every regen. 2026-05-28
+  // cross-app drift fix.
+  const PROFILE_PAGE = 1000
+  const { count: publicCount } = await supabase
     .from('public_candidates')
-    .select('slug, updated_at')
+    .select('slug', { count: 'exact', head: true })
     .eq('is_public', true)
     .eq('status', 'active')
     .is('deleted_at', null)
-    .order('updated_at', { ascending: false })
-    .limit(5000)
-
-  const candidates = (data ?? []) as { slug: string; updated_at: string }[]
+  const numProfileBatches = Math.max(1, Math.ceil((publicCount ?? 0) / PROFILE_PAGE))
+  const profileBatches = await Promise.all(
+    Array.from({ length: numProfileBatches }, (_, i) =>
+      supabase
+        .from('public_candidates')
+        .select('slug, updated_at, specialty, credential')
+        .eq('is_public', true)
+        .eq('status', 'active')
+        .is('deleted_at', null)
+        .order('updated_at', { ascending: false })
+        .range(i * PROFILE_PAGE, (i + 1) * PROFILE_PAGE - 1)
+    )
+  )
+  // Drop thin profiles (no specialty AND no credential): profile/[slug]
+  // noindexes them, so advertising them in the sitemap would trip GSC's
+  // "Submitted URL marked noindex" + waste crawl budget. The page stays
+  // crawlable; it just isn't listed until it's filled in. Mirrors the page's
+  // own thin gate. 2026-05-28 audit (P3-1).
+  type ProfileRow = {
+    slug: string
+    updated_at: string
+    specialty: string | null
+    credential: string | null
+  }
+  const candidates = profileBatches
+    .flatMap((b) => (b.data ?? []) as ProfileRow[])
+    .filter((c) => (c.specialty ?? '').trim() || (c.credential ?? '').trim())
   const newestCandidate = candidates[0]?.updated_at
     ? new Date(candidates[0].updated_at)
     : null
