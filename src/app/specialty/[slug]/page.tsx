@@ -106,7 +106,11 @@ async function fetchMatchingJobs(specialtyName: string): Promise<MatchingJob[]> 
     // result set. Without it Postgres gives no ordering guarantee, so the 5
     // windows could overlap or skip rows — silently corrupting the per-state
     // salary aggregate (double-counted or dropped rows). 2026-05-29 audit.
+    // created_at alone is NOT unique (tie-clusters up to ~50 rows), so append
+    // the unique `id` as a secondary key — otherwise a tie straddling a 1,000-
+    // row window boundary still shuffles rows across windows.
     .order('created_at', { ascending: false })
+    .order('id', { ascending: false })
   const batches = await Promise.all(
     Array.from({ length: NUM_BATCHES }, (_, i) =>
       baseQuery().range(i * BATCH_SIZE, (i + 1) * BATCH_SIZE - 1)

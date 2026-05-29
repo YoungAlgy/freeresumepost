@@ -5,7 +5,6 @@ import { formatSalary } from '@/lib/format-salary'
 import { bucketizeRoles } from '@/lib/role-buckets'
 import { CANDIDATE_SPECIALTIES } from '@/lib/specialty-slugs'
 
-import { safeJsonLd } from '@/lib/safe-jsonld'
 export const metadata: Metadata = {
   // `absolute` bypasses the layout template `%s | Free Resume Post`. Without
   // it the rendered title would be the double-branded "Free Resume Post —
@@ -53,36 +52,49 @@ function compactLocation(job: Pick<PreviewJob, 'city' | 'state' | 'remote_hybrid
 }
 
 export default async function Home() {
-  // Pull recent jobs for the hero preview AND a wider slice for role-bucket
-  // aggregation. The aggregation slice is fetched as NUM_BATCHES parallel
-  // .range() batches because Supabase's anon-role PostgREST caps queries at
-  // 1,000 rows (`pgrst.db_max_rows=1000`); a single .limit(N>1000) silently
-  // clamps. With ~8,000+ active jobs (and the USAJobs federal addition
-  // pushing it past 9,000), the prior 2-batch (2,000 row) sample was still
-  // under-reporting per-role counts shown in the "Browse by specialty" tiles
-  // by ~4x. Mirrors freejobpost's /jobs page (which moved to 9 batches in
-  // commit a7aaf6f). All batches fire in parallel — wall time ~200ms; data
-  // runs at ISR revalidate, not per-request, so cost stays bounded.
-  // Bumped from 9 → 12 on 2026-05-21 to track freejobpost: inventory crossed
-  // 9,000 active rows and the 9-batch cap was silently truncating aggregates.
-  const NUM_BATCHES = 12
+  // The "Browse by specialty" tiles aggregate role-bucket counts + salary
+  // ranges over the FULL active corpus. Supabase's anon PostgREST caps a query
+  // at 1,000 rows (pgrst.db_max_rows), so we fetch the corpus as parallel
+  // .range() windows. 2026-05-29 audit fixed two correctness bugs (keep in sync
+  // with src/app/upload/page.tsx):
+  //   (1) windows were ordered by the NON-UNIQUE `updated_at` — it has
+  //       tie-clusters of hundreds of rows, and Postgres gives no order within a
+  //       tie, so the same row could land in two windows (or none), corrupting
+  //       the counts. Now ordered by the unique `id` → clean partitioning.
+  //   (2) the batch count was a fixed 12 (12,000 rows) while inventory had grown
+  //       to ~13.7K, silently truncating ~12%. Now count-based so it never
+  //       under-fetches (capped at MAX_BATCHES as a runaway guard).
+  // Runs at ISR revalidate, not per-request. Aggregation only reads
+  // role/title/salary, so those windows fetch just those columns (the hero
+  // preview below keeps the full display set).
   const BATCH_SIZE = 1000
+  const MAX_BATCHES = 40 // safety bound (~40K jobs) against a runaway count
   const nowIso = new Date().toISOString()
-  const aggFields = 'slug, title, city, state, role, remote_hybrid, salary_min, salary_max'
-  const baseAgg = () => supabase
+  const previewFields = 'slug, title, city, state, role, remote_hybrid, salary_min, salary_max'
+  const bucketFields = 'role, title, salary_min, salary_max'
+
+  const { count: activeCount } = await supabase
     .from('public_jobs')
-    .select(aggFields)
+    .select('id', { count: 'exact', head: true })
     .eq('status', 'active')
     .is('deleted_at', null)
     .gt('expires_at', nowIso)
-    .order('updated_at', { ascending: false })
-  const aggBatchPromises = Array.from({ length: NUM_BATCHES }, (_, i) =>
+  const numBatches = Math.min(MAX_BATCHES, Math.max(1, Math.ceil((activeCount ?? 0) / BATCH_SIZE)))
+
+  const baseAgg = () => supabase
+    .from('public_jobs')
+    .select(bucketFields)
+    .eq('status', 'active')
+    .is('deleted_at', null)
+    .gt('expires_at', nowIso)
+    .order('id', { ascending: true })
+  const aggBatchPromises = Array.from({ length: numBatches }, (_, i) =>
     baseAgg().range(i * BATCH_SIZE, (i + 1) * BATCH_SIZE - 1)
   )
   const [recentRes, ...aggBatches] = await Promise.all([
     supabase
       .from('public_jobs')
-      .select(aggFields)
+      .select(previewFields)
       .eq('status', 'active')
       .is('deleted_at', null)
       .gt('expires_at', nowIso)
@@ -92,7 +104,15 @@ export default async function Home() {
   ])
 
   const previewJobs = (recentRes.data ?? []) as PreviewJob[]
-  const aggJobs = aggBatches.flatMap((b) => (b.data ?? []) as PreviewJob[])
+  const aggJobs = aggBatches.flatMap(
+    (b) =>
+      (b.data ?? []) as Array<{
+        role: string | null
+        title: string
+        salary_min: number | null
+        salary_max: number | null
+      }>
+  )
   const roleBuckets = bucketizeRoles(aggJobs).slice(0, 6)
 
   return (

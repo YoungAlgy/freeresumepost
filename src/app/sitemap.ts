@@ -42,6 +42,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         .eq('status', 'active')
         .is('deleted_at', null)
         .order('updated_at', { ascending: false })
+        .order('id', { ascending: false }) // unique tiebreaker → stable .range() windows as the table grows
         .range(i * PROFILE_PAGE, (i + 1) * PROFILE_PAGE - 1)
     )
   )
