@@ -102,6 +102,11 @@ async function fetchMatchingJobs(specialtyName: string): Promise<MatchingJob[]> 
     .is('deleted_at', null)
     .gt('expires_at', nowIso)
     .or(`title.ilike.${pattern},specialty.ilike.${pattern},role.ilike.${pattern}`)
+    // ORDER is REQUIRED for the .range() batches below to paginate a STABLE
+    // result set. Without it Postgres gives no ordering guarantee, so the 5
+    // windows could overlap or skip rows — silently corrupting the per-state
+    // salary aggregate (double-counted or dropped rows). 2026-05-29 audit.
+    .order('created_at', { ascending: false })
   const batches = await Promise.all(
     Array.from({ length: NUM_BATCHES }, (_, i) =>
       baseQuery().range(i * BATCH_SIZE, (i + 1) * BATCH_SIZE - 1)
