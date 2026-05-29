@@ -101,20 +101,22 @@ describe('verifyTurnstileToken — Cloudflare failure paths', () => {
   })
 })
 
-describe('verifyTurnstileToken — fail-open on infra failure', () => {
-  it('returns ok:true on fetch network error', async () => {
+describe('verifyTurnstileToken — infra failure (network=fail-open, non-2xx=fail-closed)', () => {
+  it('returns ok:true on fetch network error (CF unreachable → forms still work)', async () => {
     globalThis.fetch = vi.fn().mockRejectedValue(new Error('ECONNRESET'))
     const r = await verifyTurnstileToken('a'.repeat(50))
     expect(r.ok).toBe(true)
   })
 
-  it('returns ok:true on 5xx HTTP response', async () => {
+  it('FAILS CLOSED on a non-2xx HTTP response (CF 5xx) — closes the silent bypass window', async () => {
     globalThis.fetch = vi.fn().mockResolvedValue({
       ok: false,
       status: 503,
       json: async () => ({}),
     } as Response)
     const r = await verifyTurnstileToken('a'.repeat(50))
-    expect(r.ok).toBe(true)
+    // 2026-05-28 audit: a non-200 means CF responded but rejected → fail closed
+    // (user retries with a fresh token). Network-exception above stays fail-open.
+    expect(r.ok).toBe(false)
   })
 })
