@@ -32,7 +32,12 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: '/((?!_next|api).*)',
+        // index,follow for everything EXCEPT _next, api, and /candidate/* — the
+        // candidate edit-link login flow, which is noindex'd by the rule below.
+        // Excluding /candidate from this catch-all prevents shipping TWO
+        // conflicting X-Robots-Tag headers (index,follow + noindex,nofollow) on
+        // those routes. Mirrors freejobpost's noindex-path exclusion pattern.
+        source: '/((?!_next|api|candidate).*)',
         headers: [{ key: 'X-Robots-Tag', value: 'index, follow' }],
       },
       {

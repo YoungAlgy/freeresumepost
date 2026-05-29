@@ -78,12 +78,27 @@ async function getEditableCandidate(
   return { candidate: r.candidate, matches: r.matches ?? [] }
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { slug } = await params
+  const { t } = await searchParams
+  // Edit-mode links (?t=…&id=…, emailed to the candidate) must NEVER be
+  // indexed — that view unlocks the candidate's private PII (email/phone) +
+  // job matches. generateMetadata otherwise computes the PUBLIC profile's
+  // indexable metadata even for a ?t URL, so set noindex authoritatively here
+  // (robots.txt disallow + canonical also guard, but this is the real signal).
+  if (t) {
+    return { title: 'Edit your profile', robots: { index: false, follow: false } }
+  }
   const c = await getPublicCandidate(slug)
   if (!c) {
     return { title: 'Profile', robots: { index: false, follow: false } }
   }
+  // Thin-content gate: a profile with no specialty AND no credential is just a
+  // name — too thin to index (Google rejects thin profiles + it drags domain
+  // quality). Still served + crawlable for internal links, just noindex'd;
+  // self-heals when the candidate adds a specialty/credential. Mirrors the
+  // job-side hasUsableDescription / hub <5-cell noindex policy.
+  const thin = !((c.specialty ?? '').trim() || (c.credential ?? '').trim())
   const loc = [c.city, c.state].filter(Boolean).join(', ')
   const lastInitial = c.last_name?.charAt(0) ?? ''
   const title = `${c.first_name} ${lastInitial}.${c.credential ? ', ' + c.credential : ''} — ${c.specialty ?? 'Healthcare'}`
@@ -91,6 +106,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description: `${title} profile on freeresumepost.co. ${loc ? 'Based in ' + loc + '. ' : ''}Open to healthcare job opportunities.`,
     alternates: { canonical: `https://www.freeresumepost.co/profile/${slug}` },
+    ...(thin ? { robots: { index: false, follow: true } } : {}),
     openGraph: { title, type: 'profile', url: `https://www.freeresumepost.co/profile/${slug}` },
   }
 }
