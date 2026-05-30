@@ -15,17 +15,44 @@ import {
 
 import { safeJsonLd } from '@/lib/safe-jsonld'
 
-// Slugs that exist on BOTH freeresumepost and freejobpost specialty hubs.
-// When the current hub is in this set, the "browse jobs" cross-link points
-// to the matching specialty hub on freejobpost instead of a search query.
-// Bidirectional authority transfer + tighter user flow.
-const BRIDGED_SPECIALTY_SLUGS = new Set([
-  'registered-nurse',
-  'crna',
-  'nurse-practitioner',
-  'pharmacist',
-  'physician-assistant',
-])
+// freeresumepost specialty slug → freejobpost specialty-hub slug, for every
+// candidate specialty that has a real /specialty/[slug] hub on freejobpost.co.
+// When the current hub maps, the "Browse jobs" CTA DEEP-LINKS to that hub
+// (tighter candidate→jobs flow + authority transfer) instead of a generic
+// /jobs?q= search. 13 entries are identical slugs; 7 are naming-only
+// differences for the SAME specialty (e.g. physical-therapist→physical-therapy,
+// registered-dietitian→dietitian, surgical-tech→surgical-technologist).
+//
+// SAFETY: every value below was verified 2026-05-30 to resolve HTTP 200 as a
+// freejobpost /specialty/[slug] hub (the 34 slugs in freejobpost's
+// specialty-slugs.ts). Specialties with NO matching freejob hub (physician,
+// psychologist, optometrist, podiatrist, chiropractor, perfusionist, PTA/COTA,
+// PCT, sleep/MRI/cath-lab tech, MLS, sonographer, etc.) are intentionally
+// ABSENT → they keep the /jobs?q=<name> search fallback (always 200).
+const RESUME_TO_FREEJOB_SPECIALTY: Record<string, string> = {
+  // identical slugs
+  'registered-nurse': 'registered-nurse',
+  'nurse-practitioner': 'nurse-practitioner',
+  'physician-assistant': 'physician-assistant',
+  'crna': 'crna',
+  'pharmacist': 'pharmacist',
+  'lpn': 'lpn',
+  'cna': 'cna',
+  'medical-assistant': 'medical-assistant',
+  'audiologist': 'audiologist',
+  'genetic-counselor': 'genetic-counselor',
+  'paramedic': 'paramedic',
+  'phlebotomist': 'phlebotomist',
+  'dental-hygienist': 'dental-hygienist',
+  // naming-only differences (same specialty, different slug on each site)
+  'physical-therapist': 'physical-therapy',
+  'occupational-therapist': 'occupational-therapy',
+  'speech-language-pathologist': 'speech-language-pathology',
+  'radiology-tech': 'radiologic-technologist',
+  'respiratory-therapist': 'respiratory-therapy',
+  'surgical-tech': 'surgical-technologist',
+  'registered-dietitian': 'dietitian',
+}
 
 // 2026-05-28: 600s → 21600s (6h). ISR cost audit — mirrors the freejobpost
 // fix. Candidate listings change only when a profile is published (Flow B
@@ -126,10 +153,11 @@ export default async function CandidateSpecialtyPage(
   const hub = getCandidateSpecialty(slug)
   if (!hub) notFound()
 
-  // Deep-link to the sister freejobpost specialty hub when the slug bridges
-  // both sites. Otherwise fall back to a job search query.
-  const jobHubUrl = BRIDGED_SPECIALTY_SLUGS.has(hub.slug)
-    ? `https://freejobpost.co/specialty/${hub.slug}`
+  // Deep-link to the matching freejobpost specialty hub when one exists
+  // (verified-200 map above). Otherwise fall back to a job search query.
+  const mappedJobHub = RESUME_TO_FREEJOB_SPECIALTY[hub.slug]
+  const jobHubUrl = mappedJobHub
+    ? `https://freejobpost.co/specialty/${mappedJobHub}`
     : `https://freejobpost.co/jobs?q=${encodeURIComponent(hub.name.split(' /')[0].trim())}`
 
   // Salary aggregates for this specialty, broken down by state. Targets

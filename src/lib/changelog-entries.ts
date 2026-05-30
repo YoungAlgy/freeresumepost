@@ -19,6 +19,13 @@ export interface ChangelogEntry {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
   // ── May 2026 ──────────────────────────────────────────────────────────────
   {
+    date: '2026-05-30',
+    title: 'More specialty pages link straight to matching jobs',
+    body:
+      'The "Browse jobs" button on each specialty page now deep-links to the exact matching specialty hub on freejobpost.co for 15 more fields — physical therapy, occupational therapy, speech-language pathology, respiratory therapy, surgical tech, rad tech, dietitian, LPN/LVN, CNA, medical assistant, phlebotomist, dental hygienist, paramedic/EMT, audiologist, and genetic counselor (previously only RN, NP, PA, CRNA, and pharmacist did). So whatever your specialty, one tap takes you straight to that field\'s open roles instead of a generic search.',
+    tag: 'improved',
+  },
+  {
     date: '2026-05-26',
     title: 'Ava Health enrolled in E-Verify',
     body:
