@@ -57,7 +57,14 @@ export const metadata: Metadata = {
   // DNS TXT verification gives Google + Bing a redundant ownership signal
   // (belt-and-suspenders so verification doesn't silently lapse if DNS rotates).
   verification: {
-    google: 'SFRvinmueg87J1kMFBhvpABzmM1c13pLPCTRYjrRlVI',
+    // 2026-05-29: added youngalgy@gmail.com's actual GSC verification token (2nd)
+    // via the homepage HTML-tag method — the HTML-FILE method wouldn't verify even
+    // though the file serves 200 to Googlebot. Array renders both metas. This is
+    // the unlock for indexing: freeresumepost.co has ZERO pages in Google's index.
+    google: [
+      'SFRvinmueg87J1kMFBhvpABzmM1c13pLPCTRYjrRlVI',
+      'osvOXjbhKGQXgOtQTzcqAz_G84Jsleaiaxwg-iM3X4Q',
+    ],
     other: { 'msvalidate.01': 'AC806718B7170AF0A71011FC59BD9A88' },
   },
   category: 'business',
