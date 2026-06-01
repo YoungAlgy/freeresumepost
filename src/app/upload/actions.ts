@@ -3,6 +3,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { headers } from 'next/headers'
 import { verifyTurnstileToken } from '@/lib/turnstile'
+import { track } from '@vercel/analytics/server'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -122,6 +123,19 @@ export async function submitCandidate(
     }
   } catch (e) {
     console.error('resume-uploaded-notify fetch error:', e instanceof Error ? e.message : 'unknown')
+  }
+
+  // Conversion event (board→CRM): a candidate uploaded a resume into the CRM.
+  // Low-cardinality, PII-free — no email/name/raw resume text.
+  try {
+    await track('resume_uploaded', {
+      state: normalizedState || 'unknown',
+      credential: input.credential || 'unspecified',
+      is_public: input.is_public,
+      remote_only: input.remote_only,
+    })
+  } catch {
+    /* analytics is best-effort */
   }
 
   const editUrl = `/profile/${result.candidate_slug}?t=${result.nonce}&id=${result.candidate_id}`

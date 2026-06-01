@@ -14,6 +14,7 @@ import {
 } from '@/lib/salary-aggregates'
 
 import { safeJsonLd } from '@/lib/safe-jsonld'
+import JobAlertCapture from '@/components/JobAlertCapture'
 
 // freeresumepost specialty slug → freejobpost specialty-hub slug, for every
 // candidate specialty that has a real /specialty/[slug] hub on freejobpost.co.
@@ -300,6 +301,13 @@ export default async function CandidateSpecialtyPage(
               </p>
             </section>
           )}
+
+          {/* Job-alert capture — lower-commitment alternative to uploading:
+              captures the email of candidates not ready to upload as a
+              re-contactable CRM lead tagged with this specialty. */}
+          <div className="mb-12">
+            <JobAlertCapture defaultSpecialty={hub.name} source="resume_specialty_hub" />
+          </div>
 
           <h2 className="text-xl font-semibold mb-4">How matching works</h2>
           <ol className="space-y-4 mb-12">
