@@ -116,12 +116,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
-  const profileRoutes: MetadataRoute.Sitemap = candidates.map((c) => ({
-    url: `${base}/profile/${c.slug}`,
-    lastModified: c.updated_at,
-    changeFrequency: 'weekly' as const,
-    priority: 0.6,
-  }))
-
-  return [...staticRoutes, ...specialtyRoutes, ...profileRoutes]
+  // 2026-06-02: per-candidate /profile/[slug] URLs are intentionally NOT listed.
+  // Public candidate profiles are being pulled out of the public index (the
+  // candidate directory is a monetizable asset, not free indexed content — see
+  // /profile/[slug], now noindex'd) while the gated/paid-access model is
+  // designed. Listing them here would trip GSC "Submitted URL marked noindex".
+  // The `candidates` fetch above is retained only for the honest aggregator
+  // lastmod signal. Re-add ...profileRoutes if the access model reopens them.
+  return [...staticRoutes, ...specialtyRoutes]
 }

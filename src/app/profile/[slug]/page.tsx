@@ -97,12 +97,13 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   if (!c) {
     return { title: 'Profile', robots: { index: false, follow: false } }
   }
-  // Thin-content gate: a profile with no specialty AND no credential is just a
-  // name — too thin to index (Google rejects thin profiles + it drags domain
-  // quality). Still served + crawlable for internal links, just noindex'd;
-  // self-heals when the candidate adds a specialty/credential. Mirrors the
-  // job-side hasUsableDescription / hub <5-cell noindex policy.
-  const thin = !((c.specialty ?? '').trim() || (c.credential ?? '').trim())
+  // 2026-06-02: ALL public candidate profiles are noindex'd. The candidate
+  // directory is a monetizable asset, not free indexed content — we're pulling
+  // it out of Google while the gated/paid-access model is designed (profiles are
+  // also dropped from the sitemap). Edit-mode (?t=) is already noindex,nofollow
+  // above. The page still renders (direct links + the owner's edit view work);
+  // it's just out of the public index. Reversible: restore the old thin-only
+  // gate (`index:false` only when no specialty AND no credential).
   const loc = [c.city, c.state].filter(Boolean).join(', ')
   const lastInitial = c.last_initial ?? ''
   const title = `${c.first_name} ${lastInitial}.${c.credential ? ', ' + c.credential : ''} — ${c.specialty ?? 'Healthcare'}`
@@ -110,7 +111,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     title,
     description: `${title} profile on freeresumepost.co. ${loc ? 'Based in ' + loc + '. ' : ''}Open to healthcare job opportunities.`,
     alternates: { canonical: `https://www.freeresumepost.co/profile/${slug}` },
-    ...(thin ? { robots: { index: false, follow: true } } : {}),
+    robots: { index: false, follow: true },
     openGraph: { title, type: 'profile', url: `https://www.freeresumepost.co/profile/${slug}` },
   }
 }
