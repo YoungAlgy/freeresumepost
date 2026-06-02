@@ -26,7 +26,7 @@ const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,120}$/
 
 type PublicProfile = {
   first_name: string
-  last_name: string
+  last_initial: string | null
   credential: string | null
   specialty: string | null
   city: string | null
@@ -46,7 +46,9 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   if (SLUG_RE.test(slug)) {
     const { data } = await supabase
       .from('public_candidates')
-      .select('first_name, last_name, credential, specialty, city, state, years_experience')
+      // last_initial (public-safe generated col), NOT last_name — keep the full
+      // last name off every anon read path (privacy promise).
+      .select('first_name, last_initial, credential, specialty, city, state, years_experience')
       .eq('slug', slug)
       .eq('is_public', true)
       .eq('status', 'active')
@@ -55,7 +57,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
 
     if (data) {
       const c = data as PublicProfile
-      name = `${c.first_name} ${c.last_name?.charAt(0) ?? ''}.`.trim() || name
+      name = `${c.first_name} ${c.last_initial ?? ''}.`.trim() || name
       credential = c.credential || ''
       specialty = c.specialty || ''
       location = [c.city, c.state].filter(Boolean).join(', ')

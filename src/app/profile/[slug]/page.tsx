@@ -19,6 +19,7 @@ type Candidate = {
   slug: string
   first_name: string
   last_name: string
+  last_initial: string | null
   email: string
   phone: string | null
   credential: string | null
@@ -54,7 +55,10 @@ async function getPublicCandidate(slug: string): Promise<Candidate | null> {
   const { data } = await supabase
     .from('public_candidates')
     .select(
-      'id, slug, first_name, last_name, credential, specialty, city, state, years_experience, remote_only, contact_via_email, contact_via_sms, is_public, source, created_at'
+      // last_initial (generated, public-safe), NOT last_name — anon must never
+      // read the full last name (privacy promise). The owner's edit view still
+      // gets the full name via the SECURITY DEFINER consume_candidate_edit_rpc.
+      'id, slug, first_name, last_initial, credential, specialty, city, state, years_experience, remote_only, contact_via_email, contact_via_sms, is_public, source, created_at'
     )
     .eq('slug', slug)
     .eq('is_public', true)
@@ -100,7 +104,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   // job-side hasUsableDescription / hub <5-cell noindex policy.
   const thin = !((c.specialty ?? '').trim() || (c.credential ?? '').trim())
   const loc = [c.city, c.state].filter(Boolean).join(', ')
-  const lastInitial = c.last_name?.charAt(0) ?? ''
+  const lastInitial = c.last_initial ?? ''
   const title = `${c.first_name} ${lastInitial}.${c.credential ? ', ' + c.credential : ''} — ${c.specialty ?? 'Healthcare'}`
   return {
     title,
@@ -141,7 +145,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
   const personJsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: `${c.first_name} ${c.last_name?.charAt(0) ?? ''}.`,
+    name: `${c.first_name} ${c.last_initial ?? ''}.`,
     jobTitle: c.specialty || c.credential || 'Healthcare professional',
     ...(knowsAbout.length > 0 ? { knowsAbout } : {}),
     address: loc
@@ -187,7 +191,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
               Open to opportunities
             </p>
             <h1 className="text-3xl md:text-4xl font-semibold leading-tight tracking-tight mb-2">
-              {c.first_name} {c.last_name?.charAt(0) ?? ''}.
+              {c.first_name} {c.last_initial ?? ''}.
               {c.credential && (
                 <span className="text-slate-500 font-normal">, {c.credential}</span>
               )}
