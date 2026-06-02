@@ -82,7 +82,7 @@ export default function HowItWorksPage() {
             <div>
               <div className="font-semibold text-slate-900 mb-1">Get matched</div>
               <div className="text-slate-600 leading-relaxed">
-                Our matching engine scores you against every active job on freejobpost.co (specialty trigram, state, city, credential, experience, salary, certifications). Your top matches appear on your private profile page, refreshed every few hours. You decide whether to apply — never automatic.
+                Our matching engine scores you against every active job on freejobpost.co (specialty trigram, state, city, credential, experience, salary, certifications). Your top matches appear on your private profile page, refreshed daily. You decide whether to apply — never automatic.
               </div>
             </div>
           </li>
@@ -129,7 +129,7 @@ export default function HowItWorksPage() {
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">How fast will I get matched?</h3>
-            <p className="text-slate-600">Initial matches typically surface within a few hours of upload. Florida + Texas + California candidates see the highest match volume.</p>
+            <p className="text-slate-600">Initial matches typically surface within a day of upload. Florida + Texas + California candidates see the highest match volume.</p>
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Can I delete my profile later?</h3>

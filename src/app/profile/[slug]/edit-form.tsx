@@ -131,7 +131,7 @@ export default function ProfileEditForm({
                 Your top matches
               </h2>
               <p className="text-sm text-slate-600 mt-1">
-                Live healthcare openings scored against your profile, refreshed every few hours.
+                Live healthcare openings scored against your profile, refreshed daily.
               </p>
             </div>
             {matches.length > 0 && (
@@ -147,7 +147,7 @@ export default function ProfileEditForm({
                 No matches yet.
               </p>
               <p className="text-sm text-slate-600 mb-4">
-                The matching engine runs on a schedule — give it a few hours after upload.
+                The matching engine runs daily — your matches appear within a day of uploading.
                 You can also browse the full board directly while you wait.
               </p>
               <a

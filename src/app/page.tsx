@@ -357,7 +357,7 @@ export default async function Home() {
             {[
               { n: '1', h: 'Upload PDF', p: 'Drop your resume. Any format — PDF, DOCX, whatever.' },
               { n: '2', h: 'We parse', p: 'We auto-extract your specialty, credential, experience, location. Review in 30 seconds.' },
-              { n: '3', h: 'Get matched', p: 'Your top matches surface on your private profile page, refreshed every few hours. Apply directly from each listing.' },
+              { n: '3', h: 'Get matched', p: 'Your top matches surface on your private profile page, refreshed daily. Apply directly from each listing.' },
             ].map((step) => (
               <div key={step.n} className="text-center">
                 <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white font-semibold mb-4">
@@ -426,7 +426,7 @@ export default async function Home() {
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">How fast will I get matched?</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">Initial matches typically surface within a few hours of upload. Your top matches appear on your private profile page (the edit URL we send on submit). Florida + Texas + California candidates see the highest match volume. Never automatic application.</p>
+              <p className="text-slate-600 leading-relaxed text-sm">Initial matches typically surface within a day of upload. Your top matches appear on your private profile page (the edit URL we send on submit). Florida + Texas + California candidates see the highest match volume. Never automatic application.</p>
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Can I delete my profile?</h3>
