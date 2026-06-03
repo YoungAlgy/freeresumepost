@@ -33,7 +33,7 @@ export default function HowItWorksPage() {
             freeresumepost<span className="text-slate-400">.co</span>
           </Link>
           <div className="flex items-center gap-6 text-sm font-medium">
-            <a href="https://freejobpost.co/for-employers" className="hover:text-slate-900">For employers</a>
+            <a href="https://freejobpost.co/for-employers" className="hidden sm:inline hover:text-slate-900">For employers</a>
             <Link href="/upload" className="bg-slate-900 text-white px-4 py-2 rounded-full text-[13px] font-semibold hover:bg-slate-700">Upload resume</Link>
           </div>
         </div>
