@@ -1,27 +1,33 @@
 # freeresumepost.co
 
-Free healthcare resume upload + matching — candidate side of a two-sided marketplace with [freejobpost.co](https://freejobpost.co).
+**A free, two-sided healthcare hiring marketplace** — the candidate side, paired with its employer-side sibling [freejobpost.co](https://github.com/YoungAlgy/freejobpost). Built and operated solo.
 
-## Stack
-- Next.js 16 (app router) + React 19
-- Tailwind CSS v4 (@tailwindcss/postcss)
-- Supabase (shared project: `tsruqbodyrmxqzhvxret`) for DB + auth + storage
-- Deployed on Vercel
+🔗 **Live:** [freeresumepost.co](https://freeresumepost.co)
+
+## What it does
+- **Resume upload → parse → structured candidate profile**, with opt-in public profiles.
+- **Cross-matches candidates to the live listings** on the sibling employer app — the two-sided loop.
+- Candidate dashboard: matched jobs + application history.
+- **SEO-first** — indexable opt-in profile pages, sitemaps, structured data.
+
+## Architecture / stack
+- **Next.js 16** (app router) + **React 19** + **TypeScript**
+- **Tailwind CSS v4**
+- **Supabase** (Postgres + auth + storage), row-level security throughout
+- **Vercel**
+- Vitest test suite
+
+## Engineering notes
+- The core challenge is **resume parsing → normalized profile**: turning unstructured uploads into a queryable candidate schema that can be matched against the employer-side job corpus.
+- Privacy-by-default: profiles are private until a candidate explicitly opts into a public, indexable page.
 
 ## Dev
 ```bash
 npm install
-cp .env.example .env.local  # fill in Supabase anon key
+cp .env.example .env.local   # add your own Supabase anon key
 npm run dev                  # http://localhost:3000
 ```
 
-## Structure
-- `/` — landing
-- `/upload` — resume drop-zone → parse → profile edit
-- `/profile/[slug]` — public profile (opt-in)
-- `/candidate/dashboard` — matched jobs + application history
-
 ## Related
-- [freejobpost.co](https://github.com/YoungAlgy/freejobpost) — employer side
-- [avahealth-crm](https://github.com/YoungAlgy/avahealth) — admin/back-office
-- Plan doc: `~/.claude/plans/compiled-frolicking-moler.md`
+- [freejobpost.co](https://github.com/YoungAlgy/freejobpost) — the employer side of the marketplace
+- Part of a broader healthcare-data + hiring stack I build and operate solo. More at [youngalgy.com](https://youngalgy.com).
