@@ -152,7 +152,7 @@ export default async function Home() {
         <div className="max-w-6xl mx-auto px-6 py-24 md:py-32 text-center">
           <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 border border-blue-100 px-4 py-1.5 text-xs font-semibold text-blue-700 mb-8">
             <span className="w-2 h-2 bg-blue-500 rounded-full" />
-            Beta opening April 2026
+            Now in beta — free for candidates
           </div>
           <h1 className="text-5xl md:text-7xl font-semibold tracking-[-0.03em] leading-[1.02] text-gray-900 max-w-4xl mx-auto">
             Browse jobs first. <span className="text-blue-600">Upload when ready.</span>
