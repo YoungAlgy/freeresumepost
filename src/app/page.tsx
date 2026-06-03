@@ -128,9 +128,9 @@ export default async function Home() {
               BETA
             </span>
           </Link>
-          <div className="flex items-center gap-4 md:gap-7 text-[14px] font-medium text-gray-700">
-            <Link href="/how-it-works" className="hidden md:inline hover:text-gray-900">How it works</Link>
-            <a href="https://freejobpost.co/for-employers" className="hidden md:inline hover:text-gray-900">For employers</a>
+          <div className="flex items-center gap-4 lg:gap-7 text-[14px] font-medium text-gray-700">
+            <Link href="/how-it-works" className="hidden lg:inline hover:text-gray-900">How it works</Link>
+            <a href="https://freejobpost.co/for-employers" className="hidden lg:inline hover:text-gray-900">For employers</a>
             <Link href="/candidate/login" className="hidden min-[360px]:inline hover:text-gray-900 whitespace-nowrap">Sign in</Link>
             <Link
               href="/upload"
