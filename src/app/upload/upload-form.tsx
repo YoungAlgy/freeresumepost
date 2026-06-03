@@ -123,7 +123,17 @@ export default function UploadForm() {
     if (!canSubmit()) return
     setPhase('submitting')
     startTransition(async () => {
-      const res = await submitCandidate(form, turnstileToken ?? '')
+      // Cross-app attribution: read utm params off the /upload URL (set by the
+      // freejobpost resume-match bridge) so the upload is traceable to its source.
+      const _utm = new URLSearchParams(window.location.search)
+      const res = await submitCandidate(
+        {
+          ...form,
+          utm_source: _utm.get('utm_source') || undefined,
+          utm_campaign: _utm.get('utm_campaign') || undefined,
+        },
+        turnstileToken ?? '',
+      )
       if (res.success) {
         setPhase('done')
         router.push(res.edit_url)

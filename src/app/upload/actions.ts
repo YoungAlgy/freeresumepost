@@ -24,6 +24,12 @@ export type SubmitCandidateInput = {
   is_public: boolean
   // Parsed-profile payload — stored as-is in public_candidates.parsed_profile
   raw_text: string
+  // Cross-app attribution (e.g. the freejobpost resume-match bridge). Read
+  // from the /upload URL's utm params client-side; stored in parsed_profile
+  // for durable, queryable conversion measurement. Optional — direct uploads
+  // omit it.
+  utm_source?: string | null
+  utm_campaign?: string | null
 }
 
 export type SubmitCandidateResult =
@@ -81,6 +87,8 @@ export async function submitCandidate(
       raw_text: rawText,
       extracted_at: new Date().toISOString(),
       source: 'freeresumepost.upload.v1',
+      utm_source: input.utm_source || null,
+      utm_campaign: input.utm_campaign || null,
     },
   })
 
