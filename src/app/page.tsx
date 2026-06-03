@@ -128,10 +128,10 @@ export default async function Home() {
               BETA
             </span>
           </Link>
-          <div className="flex items-center gap-3 md:gap-7 text-[14px] font-medium text-gray-700">
+          <div className="flex items-center gap-4 md:gap-7 text-[14px] font-medium text-gray-700">
             <Link href="/how-it-works" className="hidden md:inline hover:text-gray-900">How it works</Link>
             <a href="https://freejobpost.co/for-employers" className="hidden md:inline hover:text-gray-900">For employers</a>
-            <Link href="/candidate/login" className="hover:text-gray-900 whitespace-nowrap">Sign in</Link>
+            <Link href="/candidate/login" className="hidden sm:inline hover:text-gray-900 whitespace-nowrap">Sign in</Link>
             <Link
               href="/upload"
               className="bg-gray-900 text-white px-3 md:px-4 py-2 rounded-full text-[13px] font-semibold hover:bg-gray-700 transition-colors whitespace-nowrap"
