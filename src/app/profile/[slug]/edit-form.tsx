@@ -391,7 +391,7 @@ export default function ProfileEditForm({
           </section>
 
           {saved && (
-            <div className="rounded-xl border border-green-300 bg-green-50 p-4 text-green-800 font-medium text-sm">
+            <div role="status" aria-live="polite" className="rounded-xl border border-green-300 bg-green-50 p-4 text-green-800 font-medium text-sm">
               Saved. {f.is_public && (
                 <>
                   Your public profile is live at{' '}
@@ -403,7 +403,7 @@ export default function ProfileEditForm({
             </div>
           )}
           {err && (
-            <div className="rounded-xl border border-red-300 bg-red-50 p-4 text-red-800 font-medium text-sm">
+            <div role="alert" className="rounded-xl border border-red-300 bg-red-50 p-4 text-red-800 font-medium text-sm">
               {err}
             </div>
           )}
