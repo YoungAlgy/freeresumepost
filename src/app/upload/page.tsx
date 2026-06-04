@@ -151,7 +151,7 @@ export default async function UploadPage() {
         </p>
 
         {/* Live trust strip — gives visitors a real reason to upload now */}
-        <div className="grid grid-cols-3 gap-3 mb-10 max-w-2xl">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-10 max-w-2xl">
           <div className="bg-slate-50 rounded-lg px-4 py-3 border border-slate-200/60">
             <div className="text-[10px] font-semibold tracking-wider text-slate-500 uppercase mb-1">Open roles</div>
             <div className="text-2xl font-semibold text-slate-900 tabular-nums flex items-baseline gap-1.5">
