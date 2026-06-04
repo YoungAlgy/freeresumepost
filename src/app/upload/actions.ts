@@ -93,6 +93,18 @@ export async function submitCandidate(
   })
 
   if (error) {
+    // A returning candidate re-uploading with the same email hits the
+    // UNIQUE(email) constraint (public_candidates_email_key, SQLSTATE 23505) —
+    // the RPC INSERTs without an upsert, so the generic "try again" is a
+    // dead-end (it would fail forever). Guide them to the edit link we emailed
+    // at their first upload (resume-uploaded-notify) instead. (#11 — audit S25C3)
+    if (error.code === '23505' || /duplicate key|already exists/i.test(error.message)) {
+      return {
+        success: false,
+        error:
+          "You've already uploaded a resume with this email — check your inbox for the edit link we sent you to update it.",
+      }
+    }
     console.error('submit_public_candidate_rpc error:', error.message)
     return { success: false, error: 'Unable to submit. Please try again.' }
   }
