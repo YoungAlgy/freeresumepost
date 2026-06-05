@@ -127,6 +127,12 @@ export default async function ProfilePage({ params, searchParams }: Props) {
     if (result && result.candidate.slug === slug) {
       return <EditMode candidate={result.candidate} nonce={t} matches={result.matches} />
     }
+    // L122 fix: an edit link was provided but it didn't open the editor (expired,
+    // already used, or slug-mismatched). Don't silently fall through to the public
+    // read-only view (or a bare 404 for a private profile) with no explanation —
+    // show a clear "this link didn't work" state that points at the real recovery
+    // page (/candidate/login, which resends a fresh link).
+    return <EditLinkInvalid />
   }
 
   const c = await getPublicCandidate(slug)
@@ -234,6 +240,63 @@ export default async function ProfilePage({ params, searchParams }: Props) {
         </div>
       </main>
     </>
+  )
+}
+
+// L122: shown when a ?t=&id= edit link is present but invalid/expired/used —
+// a clear recovery state instead of a silent fall-through to public/404.
+function EditLinkInvalid() {
+  return (
+    <main className="min-h-screen bg-white text-slate-900">
+      <nav className="border-b border-slate-200">
+        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <span className="w-7 h-7 rounded-lg bg-blue-600 text-white font-black flex items-center justify-center text-sm">
+              r
+            </span>
+            <span className="font-bold text-lg tracking-tight">
+              freeresumepost<span className="text-slate-400">.co</span>
+            </span>
+          </Link>
+          <Link
+            href="/upload"
+            className="text-sm font-semibold text-blue-600 hover:text-blue-700"
+          >
+            Upload yours →
+          </Link>
+        </div>
+      </nav>
+
+      <div className="max-w-xl mx-auto px-6 py-16">
+        <div className="rounded-3xl border border-slate-200 p-8 md:p-10 shadow-sm">
+          <h1 className="text-2xl md:text-3xl font-semibold tracking-tight mb-3">
+            This edit link didn&apos;t work
+          </h1>
+          <p className="text-slate-600 mb-2">
+            It may have expired or already been used. Your profile is still live —
+            this just means this particular link can&apos;t open the editor.
+          </p>
+          <p className="text-slate-600 mb-6">
+            Check your email for the most recent edit link we sent you. If you
+            can&apos;t find it, we&apos;ll send a fresh one.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/candidate/login"
+              className="px-4 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
+            >
+              Get a fresh edit link →
+            </Link>
+            <Link
+              href="/"
+              className="px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+            >
+              Back home
+            </Link>
+          </div>
+        </div>
+      </div>
+    </main>
   )
 }
 
