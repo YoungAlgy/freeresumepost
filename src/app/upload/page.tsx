@@ -6,12 +6,12 @@ import { formatSalary } from '@/lib/format-salary'
 import { bucketizeRoles } from '@/lib/role-buckets'
 
 export const metadata: Metadata = {
-  title: 'Upload your resume — free healthcare job matching',
+  title: 'Upload your resume free and get matched to healthcare jobs',
   description:
     'Drag-drop your PDF resume and get matched to real healthcare jobs. No account, no cold-call recruiters. Your resume stays on your device until you click submit.',
   alternates: { canonical: 'https://www.freeresumepost.co/upload' },
   openGraph: {
-    title: 'Upload your resume — free healthcare job matching',
+    title: 'Upload your resume free and get matched to healthcare jobs',
     description:
       'Drop your resume once and get matched to real healthcare openings. No account, no recruiter spam.',
     url: 'https://www.freeresumepost.co/upload',
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Upload your resume — free healthcare job matching',
+    title: 'Upload your resume free and get matched to healthcare jobs',
     description:
       'Drop your resume once and get matched to real healthcare openings. No account, no recruiter spam.',
     images: ['/opengraph-image'],
@@ -130,13 +130,13 @@ export default async function UploadPage() {
 
       <div className="max-w-3xl mx-auto px-6 py-10 md:py-16">
         <p className="text-xs font-semibold tracking-wider text-blue-600 uppercase mb-3">
-          Free forever · No account
+          Free forever. No account
         </p>
         <h1 className="text-4xl md:text-5xl font-semibold leading-tight tracking-tight text-slate-900 mb-4">
           Upload your resume.
         </h1>
         <p className="text-lg text-slate-600 max-w-2xl mb-4 leading-relaxed">
-          We parse it locally in your browser — your file never leaves your
+          We parse it locally in your browser. Your file never leaves your
           machine until you review and approve what we extracted. Takes 30
           seconds.
         </p>
@@ -186,7 +186,7 @@ export default async function UploadPage() {
               <div className="shrink-0 w-7 h-7 rounded-full bg-blue-600 text-white text-xs font-semibold flex items-center justify-center mt-0.5">2</div>
               <div>
                 <div className="font-medium text-slate-900">You review every field</div>
-                <div className="text-sm text-slate-600 mt-0.5">Specialty, credentials, state, contact info — fix anything we got wrong before it saves.</div>
+                <div className="text-sm text-slate-600 mt-0.5">Specialty, credentials, state, contact info. Fix anything we got wrong before it saves.</div>
               </div>
             </li>
             <li className="flex gap-4">

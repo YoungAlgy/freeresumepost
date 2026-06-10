@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { safeJsonLd } from '@/lib/safe-jsonld'
 export const metadata: Metadata = {
   title: 'How it works',
-  description: 'How freeresumepost.co works — upload your resume free, get matched to real healthcare openings, no recruiter spam, no resume databases sold.',
+  description: 'How freeresumepost.co works: upload your resume free, get matched to real healthcare openings, no recruiter spam, no resume databases sold.',
   alternates: { canonical: 'https://www.freeresumepost.co/how-it-works' },
   robots: { index: true, follow: true },
   openGraph: {

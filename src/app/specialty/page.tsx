@@ -9,7 +9,7 @@ import { CANDIDATE_SPECIALTIES } from '@/lib/specialty-slugs'
 import { safeJsonLd } from '@/lib/safe-jsonld'
 export const metadata: Metadata = {
   title: 'Healthcare resume upload by specialty',
-  description: 'Free resume upload for healthcare candidates — physicians, NPs, PAs, RNs, CRNAs, LPNs, therapists, pharmacists, MAs, and more. Get matched, no recruiter spam.',
+  description: 'Free resume upload for healthcare candidates: physicians, NPs, PAs, RNs, CRNAs, LPNs, therapists, pharmacists, MAs, and more. Get matched, no recruiter spam.',
   alternates: { canonical: 'https://www.freeresumepost.co/specialty' },
   openGraph: {
     title: 'Healthcare resume upload by specialty | freeresumepost.co',
@@ -54,7 +54,7 @@ export default function CandidateSpecialtyIndexPage() {
           <span className="text-blue-600">by specialty</span>
         </h1>
         <p className="text-lg text-slate-600 leading-relaxed mb-12 max-w-3xl">
-          Pick your specialty to start. The parser handles the rest — credentials, state, experience, salary expectations. Free, private by default, no recruiter spam.
+          Pick your specialty to start. The parser handles the rest: credentials, state, experience, salary expectations. Free, private by default, no recruiter spam.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">

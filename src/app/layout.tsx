@@ -19,7 +19,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: {
     template: '%s | Free Resume Post',
-    default: 'Free Resume Post — Upload once, get matched to real healthcare jobs',
+    default: 'Free Resume Post: Upload once, get matched to real healthcare jobs',
   },
   description:
     'Upload your resume for free and get matched to healthcare openings. No recruiter pitches, no resume databases sold to spammers. Built by a real staffing team.',
@@ -32,12 +32,12 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://www.freeresumepost.co',
-    title: 'Free Resume Post — Upload once, get matched',
+    title: 'Free Resume Post: Upload once, get matched',
     description: 'Upload your resume free. We match you to real healthcare openings. No recruiter spam.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Free Resume Post — Upload once, get matched',
+    title: 'Free Resume Post: Upload once, get matched',
     description: 'Upload your resume free. We match you to real openings.',
     site: '@avahealth',
   },
