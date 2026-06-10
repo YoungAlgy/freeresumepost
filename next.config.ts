@@ -2,6 +2,9 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   trailingSlash: false,
+  // Don't advertise the framework (X-Powered-By: Next.js) — freejobpost
+  // already suppresses it; keep the pair in lockstep. 2026-06 audit.
+  poweredByHeader: false,
   async headers() {
     return [
       {
@@ -31,15 +34,10 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      {
-        // index,follow for everything EXCEPT _next, api, and /candidate/* — the
-        // candidate edit-link login flow, which is noindex'd by the rule below.
-        // Excluding /candidate from this catch-all prevents shipping TWO
-        // conflicting X-Robots-Tag headers (index,follow + noindex,nofollow) on
-        // those routes. Mirrors freejobpost's noindex-path exclusion pattern.
-        source: '/((?!_next|api|candidate).*)',
-        headers: [{ key: 'X-Robots-Tag', value: 'index, follow' }],
-      },
+      // NOTE (2026-06 audit): the old catch-all `X-Robots-Tag: index, follow`
+      // header was REMOVED. index,follow is the crawler default, and the
+      // header conflicted with pages that noindex dynamically via metadata
+      // (every /profile/* page). The explicit noindex header below stays.
       {
         source: '/candidate/:path*',
         headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],

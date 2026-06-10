@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { supabase } from '@/lib/supabase'
+import { supabase, hourIso } from '@/lib/supabase'
 import { formatSalary } from '@/lib/format-salary'
 import { bucketizeRoles } from '@/lib/role-buckets'
 import { CANDIDATE_SPECIALTIES } from '@/lib/specialty-slugs'
@@ -69,7 +69,7 @@ export default async function Home() {
   // preview below keeps the full display set).
   const BATCH_SIZE = 1000
   const MAX_BATCHES = 40 // safety bound (~40K jobs) against a runaway count
-  const nowIso = new Date().toISOString()
+  const nowIso = hourIso()
   const previewFields = 'slug, title, city, state, role, remote_hybrid, salary_min, salary_max'
   const bucketFields = 'role, title, salary_min, salary_max'
 

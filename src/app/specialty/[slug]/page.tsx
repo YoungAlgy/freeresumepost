@@ -6,7 +6,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { CANDIDATE_SPECIALTIES, getCandidateSpecialty } from '@/lib/specialty-slugs'
-import { supabase } from '@/lib/supabase'
+import { supabase, hourIso } from '@/lib/supabase'
 import {
   aggregateSalariesByGroup,
   aggregateSalariesOverall,
@@ -122,7 +122,7 @@ async function fetchMatchingJobs(specialtyName: string): Promise<MatchingJob[]> 
   const pattern = `%${primary}%`
   const NUM_BATCHES = 5
   const BATCH_SIZE = 1000
-  const nowIso = new Date().toISOString()
+  const nowIso = hourIso()
   const baseQuery = () => supabase
     .from('public_jobs')
     .select('state, salary_min, salary_max')

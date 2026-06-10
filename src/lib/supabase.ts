@@ -30,3 +30,14 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     },
   },
 })
+
+// Hour-truncated "now" for PostgREST time filters. A raw new-Date ISO string
+// changes per render, which changes the request URL, which busts the 1h
+// fetch cache above on every render — the homepage, /upload, and all 38
+// specialty hubs were re-running their full corpus scans every render
+// because of it (2026-06 audit, F52/F54/F55). Mirrors freejobpost's helper.
+export function hourIso(): string {
+  const d = new Date()
+  d.setMinutes(0, 0, 0)
+  return d.toISOString()
+}

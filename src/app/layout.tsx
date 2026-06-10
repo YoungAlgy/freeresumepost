@@ -24,9 +24,9 @@ export const metadata: Metadata = {
   description:
     'Upload your resume for free and get matched to healthcare openings. No recruiter pitches, no resume databases sold to spammers. Built by a real staffing team.',
   metadataBase: new URL('https://www.freeresumepost.co'),
-  alternates: {
-    canonical: '/',
-  },
+  // NO root-level `canonical` — with metadataBase set it would be inherited
+  // by every page without its own alternates, claiming the homepage as
+  // canonical for all of them (2026-06 audit). Pages declare their own.
   openGraph: {
     siteName: 'Free Resume Post',
     type: 'website',

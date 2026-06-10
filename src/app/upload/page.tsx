@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { supabase } from '@/lib/supabase'
+import { supabase, hourIso } from '@/lib/supabase'
 import UploadForm from './upload-form'
 import { formatSalary } from '@/lib/format-salary'
 import { bucketizeRoles } from '@/lib/role-buckets'
@@ -60,7 +60,7 @@ export default async function UploadPage() {
   // columns (the recent-jobs preview keeps the full display set).
   const BATCH_SIZE = 1000
   const MAX_BATCHES = 40 // safety bound (~40K jobs) against a runaway count
-  const nowIso = new Date().toISOString()
+  const nowIso = hourIso()
   const recentFields = 'slug, title, city, state, role, salary_min, salary_max, remote_hybrid'
   const bucketFields = 'role, title, salary_min, salary_max'
 

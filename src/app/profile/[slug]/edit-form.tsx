@@ -212,8 +212,9 @@ export default function ProfileEditForm({
           )}
 
           <p className="text-xs text-slate-500 mt-4">
-            Bookmark this page — it&apos;s your only login link, and it&apos;s where new
-            matches surface as fresh jobs are posted.
+            This link works for 7 days. Need to come back later? Get a fresh link
+            anytime at freeresumepost.co/candidate/login. New matches show up here
+            as fresh jobs are posted.
           </p>
         </section>
 
@@ -410,7 +411,7 @@ export default function ProfileEditForm({
 
           <div className="flex items-center justify-between pt-6 border-t border-slate-200">
             <p className="text-xs text-slate-500">
-              Bookmark this URL to edit your profile later — it&apos;s your only login link.
+              Edit links work for 7 days. Get a fresh one anytime at freeresumepost.co/candidate/login.
             </p>
             <button
               type="submit"
