@@ -15,6 +15,12 @@ import {
 
 import { safeJsonLd } from '@/lib/safe-jsonld'
 import JobAlertCapture from '@/components/JobAlertCapture'
+// Resume-writing guide content (2026-06 audit): GSC showed "[role] resume"
+// queries at position ~26 with no content behind them — the hubs targeted
+// "resume upload" (near-zero volume) instead of the examples/skills intent
+// searchers actually have. getResumeGuide supplies per-role titles, an
+// example summary, ATS keywords, credential formatting, and tips.
+import { getResumeGuide } from '@/lib/resume-guides'
 
 // freeresumepost specialty slug → freejobpost specialty-hub slug, for every
 // candidate specialty that has a real /specialty/[slug] hub on freejobpost.co.
@@ -71,21 +77,27 @@ export async function generateMetadata(
   const { slug } = await params
   const hub = getCandidateSpecialty(slug)
   if (!hub) return {}
+  // Guide titles target the real query ("physical therapist assistant resume")
+  // instead of "resume upload"; fall back to the hub strings if a guide is
+  // ever missing.
+  const guide = getResumeGuide(slug)
+  const title = guide?.pageTitle ?? hub.title
+  const description = guide?.metaDescription ?? hub.metaDescription
   return {
-    title: hub.title,
-    description: hub.metaDescription,
+    title: { absolute: `${title} | Free Resume Post` },
+    description,
     alternates: { canonical: `https://www.freeresumepost.co/specialty/${hub.slug}` },
     openGraph: {
-      title: `${hub.title} | freeresumepost.co`,
-      description: hub.metaDescription,
+      title: `${title} | freeresumepost.co`,
+      description,
       url: `https://www.freeresumepost.co/specialty/${hub.slug}`,
       type: 'website',
       images: ['/opengraph-image'],
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${hub.title} | freeresumepost.co`,
-      description: hub.metaDescription,
+      title: `${title} | freeresumepost.co`,
+      description,
       images: ['/opengraph-image'],
     },
   }
@@ -154,6 +166,12 @@ export default async function CandidateSpecialtyPage(
   const hub = getCandidateSpecialty(slug)
   if (!hub) notFound()
 
+  // Guide content + the official searcher-phrased role name (e.g. the hub
+  // file says "Physical Therapy Assistant" but the APTA term searchers type
+  // is "Physical Therapist Assistant").
+  const guide = getResumeGuide(slug)
+  const displayName = guide?.roleName ?? hub.name
+
   // Deep-link to the matching freejobpost specialty hub when one exists
   // (verified-200 map above). Otherwise fall back to a job search query.
   const mappedJobHub = RESUME_TO_FREEJOB_SPECIALTY[hub.slug]
@@ -209,20 +227,25 @@ export default async function CandidateSpecialtyPage(
             {' / '}
             <Link href="/specialty" className="hover:text-slate-900">Specialties</Link>
             {' / '}
-            <span className="text-slate-900 font-medium">{hub.name}</span>
+            <span className="text-slate-900 font-medium">{displayName}</span>
           </nav>
 
-          <p className="text-xs font-semibold tracking-wider text-blue-600 uppercase mb-3">For {hub.name.toLowerCase()}s</p>
+          <p className="text-xs font-semibold tracking-wider text-blue-600 uppercase mb-3">For {displayName.toLowerCase()}s</p>
           <h1 className="text-4xl md:text-5xl font-semibold leading-tight tracking-tight text-slate-900 mb-6">
-            {hub.name} resume upload<br />
-            <span className="text-blue-600">— free, private by default.</span>
+            {displayName} resume<br />
+            <span className="text-blue-600">examples, skills, and a free upload.</span>
           </h1>
-          <p className="text-lg text-slate-600 leading-relaxed mb-10">
-            {hub.shortDescription} Upload once, get matched, decide whether to apply. We don&apos;t sell your data — email us any time to delete your profile.
+          <p className={guide && guide.alsoKnownAs.length > 0 ? 'text-lg text-slate-600 leading-relaxed mb-4' : 'text-lg text-slate-600 leading-relaxed mb-10'}>
+            {hub.shortDescription}{' '}Upload once, get matched, decide whether to apply. We don&apos;t sell your data. Email us any time to delete your profile.
           </p>
+          {guide && guide.alsoKnownAs.length > 0 && (
+            <p className="text-sm text-slate-500 mb-10">
+              Also written as: {guide.alsoKnownAs.join(', ')}.
+            </p>
+          )}
 
           <div className="border border-slate-200 rounded-2xl bg-slate-50 p-8 mb-12">
-            <p className="text-sm font-semibold text-slate-900 mb-2">Drop your {hub.name.toLowerCase()} resume</p>
+            <p className="text-sm font-semibold text-slate-900 mb-2">Drop your {displayName.toLowerCase()} resume</p>
             <p className="text-sm text-slate-600 mb-4">PDF, DOCX, or text. Up to 5 MB. ~90 seconds end-to-end.</p>
             <div className="flex flex-wrap gap-3">
               <Link href="/upload" className="inline-block bg-slate-900 text-white font-semibold px-6 py-3 rounded-full hover:bg-slate-700">
@@ -232,12 +255,12 @@ export default async function CandidateSpecialtyPage(
                 href={jobHubUrl}
                 className="inline-block border border-slate-300 text-slate-700 font-semibold px-6 py-3 rounded-full hover:bg-slate-900 hover:text-white hover:border-slate-900"
               >
-                Browse {hub.name} jobs →
+                Browse {displayName} jobs →
               </a>
             </div>
           </div>
 
-          <h2 className="text-xl font-semibold mb-4">{hub.name} roles we match to</h2>
+          <h2 className="text-xl font-semibold mb-4">{displayName} roles we match to</h2>
           <p className="text-slate-600 leading-relaxed mb-4">
             Most candidates upload as one of these:
           </p>
@@ -257,16 +280,55 @@ export default async function CandidateSpecialtyPage(
             ))}
           </div>
 
+          {/* Resume-writing guide (2026-06 audit): the content the
+              "[role] resume" searcher is actually looking for. Recruiter-
+              grounded example summary, ATS keywords, credential formatting,
+              and role-specific tips from src/lib/resume-guides.ts. */}
+          {guide && (
+            <section className="mb-12">
+              <h2 className="text-xl font-semibold mb-3">{displayName} resume example</h2>
+              <p className="text-slate-600 leading-relaxed mb-4 text-sm">
+                A strong {displayName.toLowerCase()} summary reads like this. Swap in your own numbers and settings:
+              </p>
+              <blockquote className="border border-slate-200 rounded-2xl bg-slate-50 p-6 text-slate-800 leading-relaxed mb-10 text-[15px]">
+                {guide.summaryExample}
+              </blockquote>
+
+              <h2 className="text-xl font-semibold mb-3">Skills recruiters search for</h2>
+              <p className="text-slate-600 leading-relaxed mb-4 text-sm">
+                These are the terms recruiters and ATS filters look for on a {displayName.toLowerCase()} resume. Use the ones that are true for you:
+              </p>
+              <div className="flex flex-wrap gap-2 mb-10">
+                {guide.skillsKeywords.map((k) => (
+                  <span key={k} className="text-sm bg-slate-100 text-slate-800 px-3 py-1 rounded-full">{k}</span>
+                ))}
+              </div>
+
+              <h2 className="text-xl font-semibold mb-3">How to list your credentials</h2>
+              <p className="text-slate-700 leading-relaxed mb-10">{guide.credentialLine}</p>
+
+              <h2 className="text-xl font-semibold mb-3">Resume tips for {displayName.toLowerCase()}s</h2>
+              <ul className="space-y-3 mb-2">
+                {guide.tips.map((t) => (
+                  <li key={t} className="flex gap-3 text-slate-700 leading-relaxed">
+                    <span className="text-blue-600 font-bold shrink-0 mt-0.5" aria-hidden="true">→</span>
+                    <span>{t}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
           {/* Computed salary panel — aggregated from active job inventory on
               freejobpost.co with published salary ranges. Plain HTML for
               AI Overview citability; no Occupation/EstimatedSalary schema. */}
           {salaryOverall && (
             <section className="mb-12">
               <h2 className="text-xl font-semibold mb-3">
-                {hub.name} salaries by state
+                {displayName} salaries by state
               </h2>
               <p className="text-slate-600 leading-relaxed mb-4 text-sm">
-                Based on {salaryOverall.count} active {hub.name.toLowerCase()} role{salaryOverall.count === 1 ? '' : 's'} on freejobpost.co with published salary ranges. Typical pay: {fmtUsdCompact(salaryOverall.low)}–{fmtUsdCompact(salaryOverall.high)} (median {fmtUsdCompact(salaryOverall.avg)} per year).
+                Based on {salaryOverall.count} active {displayName.toLowerCase()} role{salaryOverall.count === 1 ? '' : 's'} on freejobpost.co with published salary ranges. Typical pay: {fmtUsdCompact(salaryOverall.low)}–{fmtUsdCompact(salaryOverall.high)} (median {fmtUsdCompact(salaryOverall.avg)} per year).
               </p>
               {salaryByState.length > 0 && (
                 <div className="overflow-x-auto rounded-2xl border border-slate-200">
@@ -377,7 +439,7 @@ export default async function CandidateSpecialtyPage(
                 href={jobHubUrl}
                 className="inline-block border border-slate-300 text-slate-700 font-semibold px-6 py-3 rounded-full hover:bg-slate-900 hover:text-white hover:border-slate-900"
               >
-                Browse {hub.name} jobs
+                Browse {displayName} jobs
               </a>
             </div>
           </div>
