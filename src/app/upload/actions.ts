@@ -102,7 +102,7 @@ export async function submitCandidate(
       return {
         success: false,
         error:
-          "You've already uploaded a resume with this email — check your inbox for the edit link we sent you to update it.",
+          "You've already uploaded a resume with this email. Check your inbox for the edit link we sent you, or get a fresh one at freeresumepost.co/candidate/login.",
       }
     }
     console.error('submit_public_candidate_rpc error:', error.message)
