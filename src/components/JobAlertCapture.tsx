@@ -83,7 +83,7 @@ export default function JobAlertCapture({
       </p>
       <h3 className="text-lg font-semibold text-slate-900 mb-1">Get new {what} by email</h3>
       <p className="text-sm text-slate-600 mb-4">
-        Free job alerts — new matching roles straight to your inbox. No spam, unsubscribe anytime.
+        Free job alerts. New matching roles straight to your inbox. No spam, unsubscribe anytime.
       </p>
       <div className="flex flex-col sm:flex-row gap-2">
         <input

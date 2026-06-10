@@ -46,13 +46,16 @@ export default function NotFound() {
             Popular specialties
           </h3>
           <div className="flex flex-wrap gap-2">
+            {/* Slugs MUST exist in src/lib/specialty-slugs.ts — three of the
+                old entries (family-medicine, psychiatry, cardiology) were
+                freejobpost slugs that 404 here (2026-06 audit, F89). */}
             {[
-              { label: 'Family Medicine', href: '/specialty/family-medicine' },
-              { label: 'Psychiatry', href: '/specialty/psychiatry' },
+              { label: 'Physician', href: '/specialty/physician' },
+              { label: 'LPN / LVN', href: '/specialty/lpn' },
               { label: 'Registered Nurse', href: '/specialty/registered-nurse' },
               { label: 'Nurse Practitioner', href: '/specialty/nurse-practitioner' },
               { label: 'Physician Assistant', href: '/specialty/physician-assistant' },
-              { label: 'Cardiology', href: '/specialty/cardiology' },
+              { label: 'Physical Therapist', href: '/specialty/physical-therapist' },
               { label: 'How it works', href: '/how-it-works' },
             ].map((link) => (
               <Link

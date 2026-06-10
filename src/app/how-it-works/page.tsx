@@ -104,7 +104,7 @@ export default function HowItWorksPage() {
         <h2 className="text-xl font-semibold mt-12 mb-4">Why is this free?</h2>
         <p className="text-slate-600 leading-relaxed mb-4">
           freeresumepost.co is operated by Ava Health Partners LLC, a healthcare staffing firm.
-          When a 70%+ match leads to a real placement, the hiring employer pays our fee. The
+          When a match leads to a real placement, the hiring employer pays our fee. The
           candidate-facing platform stays free because the placement-fee model upstream covers the
           infrastructure.
         </p>

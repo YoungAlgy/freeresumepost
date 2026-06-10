@@ -48,7 +48,7 @@ export default function TermsPage() {
           <h2 className="text-xl font-semibold mt-8 mb-2">3. Matching engine</h2>
           <p>
             Once your profile is saved, our matching engine scores you against active jobs on
-            freejobpost.co. We email you when a high-match (70%+) opening is posted that fits your
+            freejobpost.co. Your top matches appear on your private profile page, refreshed daily, when an opening fits your
             specialty + state. Your matches appear on your private profile page. You decide whether
             to apply; your application goes directly to the posting employer.
           </p>

@@ -35,7 +35,7 @@ export default function PrivacyPage() {
             <li>Your resume is parsed locally in your browser before any data reaches our servers.</li>
             <li>You review every extracted field before saving.</li>
             <li>We never sell your contact information or resume content.</li>
-            <li>We email you only when a strong job match opens up; never marketing spam.</li>
+            <li>We email you your edit link and account notices. No marketing spam.</li>
           </ul>
 
           <h2 className="text-xl font-semibold mt-8 mb-2">What we collect</h2>
@@ -55,7 +55,7 @@ export default function PrivacyPage() {
 
           <h2 className="text-xl font-semibold mt-8 mb-2">How we use your data</h2>
           <ul className="list-disc pl-5 space-y-1.5">
-            <li><strong>Matching:</strong> we score your profile against active jobs and email you when a 70%+ match opens.</li>
+            <li><strong>Matching:</strong> we score your profile against active jobs and show your top matches on your private profile page, refreshed daily.</li>
             <li><strong>Profile management:</strong> we email you a secure edit link so you can update your profile.</li>
             <li><strong>Aggregated analytics:</strong> we look at usage trends (popular specialties, geographic distribution) — never individually identifiable.</li>
           </ul>
