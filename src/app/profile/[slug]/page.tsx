@@ -106,7 +106,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   // gate (`index:false` only when no specialty AND no credential).
   const loc = [c.city, c.state].filter(Boolean).join(', ')
   const lastInitial = c.last_initial ?? ''
-  const title = `${c.first_name} ${lastInitial}.${c.credential ? ', ' + c.credential : ''} — ${c.specialty ?? 'Healthcare'}`
+  const title = `${c.first_name} ${lastInitial}.${c.credential ? ', ' + c.credential : ''}, ${c.specialty ?? 'Healthcare'}`
   return {
     title,
     description: `${title} profile on freeresumepost.co. ${loc ? 'Based in ' + loc + '. ' : ''}Open to healthcare job opportunities.`,
@@ -234,7 +234,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
               >
                 freejobpost.co
               </a>{' '}
-              — post a matching role and they&apos;ll see it in their dashboard.
+              by posting a matching role, and they&apos;ll see it in their dashboard.
             </div>
           </div>
         </div>
@@ -273,8 +273,8 @@ function EditLinkInvalid() {
             This edit link didn&apos;t work
           </h1>
           <p className="text-slate-600 mb-2">
-            It may have expired or already been used. Your profile is still live —
-            this just means this particular link can&apos;t open the editor.
+            It may have expired or already been used. Your profile is still live.
+            This just means this particular link can&apos;t open the editor.
           </p>
           <p className="text-slate-600 mb-6">
             Check your email for the most recent edit link we sent you. If you

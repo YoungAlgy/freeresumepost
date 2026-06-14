@@ -147,7 +147,7 @@ export default function ProfileEditForm({
                 No matches yet.
               </p>
               <p className="text-sm text-slate-600 mb-4">
-                The matching engine runs daily — your matches appear within a day of uploading.
+                The matching engine runs daily. Your matches appear within a day of uploading.
                 You can also browse the full board directly while you wait.
               </p>
               <a
@@ -257,7 +257,7 @@ export default function ProfileEditForm({
                   maxLength={30}
                 />
               </Field>
-              <Field label="Email" hint="Can't change this here — email support">
+              <Field label="Email" hint="Can't change this here. Email support">
                 <input
                   type="email"
                   value={candidate.email}

@@ -22,35 +22,35 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     date: '2026-05-30',
     title: 'More specialty pages link straight to matching jobs',
     body:
-      'The "Browse jobs" button on each specialty page now deep-links to the exact matching specialty hub on freejobpost.co for 15 more fields — physical therapy, occupational therapy, speech-language pathology, respiratory therapy, surgical tech, rad tech, dietitian, LPN/LVN, CNA, medical assistant, phlebotomist, dental hygienist, paramedic/EMT, audiologist, and genetic counselor (previously only RN, NP, PA, CRNA, and pharmacist did). So whatever your specialty, one tap takes you straight to that field\'s open roles instead of a generic search.',
+      'The "Browse jobs" button on each specialty page now deep-links to the exact matching specialty hub on freejobpost.co for 15 more fields: physical therapy, occupational therapy, speech-language pathology, respiratory therapy, surgical tech, rad tech, dietitian, LPN/LVN, CNA, medical assistant, phlebotomist, dental hygienist, paramedic/EMT, audiologist, and genetic counselor (previously only RN, NP, PA, CRNA, and pharmacist did). So whatever your specialty, one tap takes you straight to that field\'s open roles instead of a generic search.',
     tag: 'improved',
   },
   {
     date: '2026-05-26',
     title: 'Ava Health enrolled in E-Verify',
     body:
-      'Ava Health Partners LLC is now an enrolled participant in the federal E-Verify employment authorization system (Company ID 3024987, MOU effective 2026-05-26). Added a small "E-Verify Participant" chip to the footer linking to a new /e-verify page with the full federal-compliance statement, official DHS Participation poster, DOJ Right to Work poster, and Florida SB 1718 context. We enrolled proactively below the FL SB 1718 25-employee threshold so the compliance ramp is in place as the team grows. Doesn\'t change anything for you as a candidate; it\'s confirmation that any future Ava Health hire goes through federal work-eligibility verification.',
+      'Ava Health Partners LLC is now an enrolled participant in the federal E-Verify employment authorization system (Company ID 3024987, MOU effective 2026-05-26). Added a small "E-Verify Participant" chip to the footer linking to a new /e-verify page with the full federal-compliance statement, official DHS Participation poster, DOJ Right to Work poster, and Florida SB 1718 context. We enrolled proactively below the FL SB 1718 25-employee threshold so the compliance ramp is in place as the team grows. Doesn\'t change anything for you as a candidate. It\'s confirmation that any future Ava Health hire goes through federal work-eligibility verification.',
     tag: 'improved',
   },
   {
     date: '2026-05-24',
     title: 'Profile schema + sitemap freshness + AI-discovery + EEO + canonical contact email + onboarding clarity',
     body:
-      'Public candidate profiles now emit a knowsAbout array on Person JSON-LD (specialty + credential) — gives Google clearer signal about what each candidate works on, helping AI Overview surfacing for "professionals who specialize in X" queries. Taught the sitemap to honor changelog ship dates as a freshness signal alongside profile updates — so when we ship a user-visible feature here, the homepage lastmod reflects it. Added an llms.txt at the site root so ChatGPT, Claude, and Perplexity can discover the platform structure cleanly. Added a federal Equal Opportunity statement to the footer. Switched the customer-facing contact email to info@avahealth.co (more professional than a personal address; same mailbox underneath). Rewrote the "Show profile publicly" checkbox on the upload form to lead with the benefit ("get found by employers searching Google") and explicitly promise email + phone always stay private — easier to opt in confidently.',
+      'Public candidate profiles now emit a knowsAbout array on Person JSON-LD (specialty + credential), giving Google clearer signal about what each candidate works on, helping AI Overview surfacing for "professionals who specialize in X" queries. Taught the sitemap to honor changelog ship dates as a freshness signal alongside profile updates, so when we ship a user-visible feature here, the homepage lastmod reflects it. Added an llms.txt at the site root so ChatGPT, Claude, and Perplexity can discover the platform structure cleanly. Added a federal Equal Opportunity statement to the footer. Switched the customer-facing contact email to info@avahealth.co (more professional than a personal address. Same mailbox underneath). Rewrote the "Show profile publicly" checkbox on the upload form to lead with the benefit ("get found by employers searching Google") and explicitly promise email + phone always stay private. Easier to opt in confidently.',
     tag: 'improved',
   },
   {
     date: '2026-05-22',
     title: 'Polish pass: link previews, error pages, page titles',
     body:
-      'Six pages were rendering blank or default link-preview cards when shared to LinkedIn / iMessage / Slack — now every page emits the branded Free Resume Post Open Graph card. Added a styled error page that catches transient failures (Supabase timeout, network blip) with a one-click retry. Stopped browser tabs from showing the brand twice (“Free Resume Post — Upload once, get matched | Free Resume Post”) — now just renders once.',
+      'Six pages were rendering blank or default link-preview cards when shared to LinkedIn / iMessage / Slack. Now every page emits the branded Free Resume Post Open Graph card. Added a styled error page that catches transient failures (Supabase timeout, network blip) with a one-click retry. Stopped browser tabs from showing the brand twice ("Free Resume Post: Upload once, get matched | Free Resume Post"). Now just renders once.',
     tag: 'improved',
   },
   {
     date: '2026-05-13',
     title: 'Salary panel on specialty hubs',
     body:
-      'Every specialty hub (/specialty/registered-nurse, /specialty/physical-therapist, etc.) now shows a real pay range computed from the live job inventory — 10th–90th percentile bounds with the median called out.',
+      'Every specialty hub (/specialty/registered-nurse, /specialty/physical-therapist, etc.) now shows a real pay range computed from the live job inventory: 10th-90th percentile bounds with the median called out.',
     tag: 'new',
   },
   {
@@ -64,7 +64,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     date: '2026-05-13',
     title: 'Mobile nav + iOS input fix',
     body:
-      'Mobile nav links were hidden on small screens. Fixed on homepage and upload. Also stopped iOS Safari from auto-zooming when you tap the resume-upload form — feels native on iPhone now.',
+      'Mobile nav links were hidden on small screens. Fixed on homepage and upload. Also stopped iOS Safari from auto-zooming when you tap the resume-upload form. Feels native on iPhone now.',
     tag: 'fixed',
   },
   {
@@ -79,7 +79,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     date: '2026-05-08',
     title: 'Role-buckets section on homepage',
     body:
-      'Homepage now shows which specialties have the most open roles right now — click in to filter the live job feed instead of scrolling through everything.',
+      'Homepage now shows which specialties have the most open roles right now. Click in to filter the live job feed instead of scrolling through everything.',
     tag: 'new',
   },
   {
@@ -93,7 +93,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     date: '2026-05-08',
     title: 'Specialty preview before upload',
     body:
-      'Upload page now shows live role counts by specialty before you commit — so you can see what\'s out there in your field first.',
+      'Upload page now shows live role counts by specialty before you commit, so you can see what\'s out there in your field first.',
     tag: 'improved',
   },
   {
@@ -114,7 +114,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     date: '2026-05-07',
     title: 'Bot challenge on upload',
     body:
-      'Cloudflare Turnstile now guards the upload form. Invisible for real users; blocks scripted submissions.',
+      'Cloudflare Turnstile now guards the upload form. Invisible for real users. Blocks scripted submissions.',
     tag: 'security',
   },
   // ── April ─────────────────────────────────────────────────────────────────
@@ -122,7 +122,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     date: '2026-04-29',
     title: 'Candidate specialty hubs expanded to 38',
     body:
-      'Specialty hubs grew from 14 to 38 — added PTA, COTA, phlebotomist, PCT, sleep tech, RDH, MHT, BCBA, cath lab, MRI tech, and more. Each hub is now a real landing page rather than a search filter.',
+      'Specialty hubs grew from 14 to 38. Added PTA, COTA, phlebotomist, PCT, sleep tech, RDH, MHT, BCBA, cath lab, MRI tech, and more. Each hub is now a real landing page rather than a search filter.',
     tag: 'new',
   },
   {
@@ -136,7 +136,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     date: '2026-04-27',
     title: 'Initial launch',
     body:
-      'freeresumepost.co goes live — upload your resume once, get matched to real healthcare openings, no recruiter spam, no resume-database sale. Includes /terms, /privacy, /how-it-works, and the candidate login flow.',
+      'freeresumepost.co goes live. Upload your resume once, get matched to real healthcare openings, no recruiter spam, no resume-database sale. Includes /terms, /privacy, /how-it-works, and the candidate login flow.',
     tag: 'new',
   },
 ]

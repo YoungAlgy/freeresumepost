@@ -61,7 +61,7 @@ export default function UploadForm() {
     // block it for several seconds on mobile.
     const MAX_BYTES = 5 * 1024 * 1024
     if (file.size > MAX_BYTES) {
-      setParseErr(`That file is ${(file.size / 1024 / 1024).toFixed(1)} MB — please keep it under 5 MB. Most resumes are under 500 KB.`)
+      setParseErr(`That file is ${(file.size / 1024 / 1024).toFixed(1)} MB. Please keep it under 5 MB. Most resumes are under 500 KB.`)
       return
     }
     setFileName(file.name)
@@ -204,7 +204,7 @@ export default function UploadForm() {
               accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
               className="sr-only"
               onChange={onFileChange}
-              aria-label="Upload your resume — PDF, DOCX, or TXT"
+              aria-label="Upload your resume, PDF, DOCX, or TXT"
             />
             Browse files
           </label>
@@ -226,7 +226,7 @@ export default function UploadForm() {
       <div className="rounded-2xl border border-slate-200 p-12 text-center bg-slate-50">
         <div className="mx-auto mb-4 w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
         <p className="font-semibold text-slate-900">Reading {fileName}…</p>
-        <p className="text-sm text-slate-500 mt-1">This runs locally — no uploads yet.</p>
+        <p className="text-sm text-slate-500 mt-1">This runs locally. No uploads yet.</p>
       </div>
     )
   }
@@ -416,7 +416,7 @@ export default function UploadForm() {
             <div>
               <p className="font-medium text-slate-900">SMS</p>
               <p className="text-sm text-slate-500">
-                Explicit opt-in. Only interview confirmations + application updates — no cold outreach, no marketing.
+                Explicit opt-in. Only interview confirmations + application updates. No cold outreach, no marketing.
               </p>
             </div>
           </label>
@@ -429,12 +429,12 @@ export default function UploadForm() {
             />
             <div>
               <p className="font-medium text-slate-900">
-                Show my profile publicly — get found by employers searching Google
+                Show my profile publicly. Get found by employers searching Google
               </p>
               <p className="text-sm text-slate-600 mt-1">
                 <strong>Off by default.</strong> When on, your first name + last initial + specialty + state appear at
                 <span className="font-mono text-xs"> /profile/[your-slug]</span>{' '}
-                so hospitals and clinics searching for your specialty in your state can find you. <strong>Email + phone always stay private</strong> — employers see your public profile, not your contact info, and have to go through us to reach you. Turn off any time from your dashboard.
+                so hospitals and clinics searching for your specialty in your state can find you. <strong>Email + phone always stay private</strong>. Employers see your public profile, not your contact info, and have to go through us to reach you. Turn off any time from your dashboard.
               </p>
             </div>
           </label>
