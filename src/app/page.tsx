@@ -152,7 +152,7 @@ export default async function Home() {
         <div className="max-w-6xl mx-auto px-6 py-24 md:py-32 text-center">
           <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 border border-blue-100 px-4 py-1.5 text-xs font-semibold text-blue-700 mb-8">
             <span className="w-2 h-2 bg-blue-500 rounded-full" />
-            Now in beta — free for candidates
+            Now in beta. Free for candidates
           </div>
           <h1 className="text-5xl md:text-7xl font-semibold tracking-[-0.03em] leading-[1.02] text-gray-900 max-w-4xl mx-auto">
             Browse jobs first. <span className="text-blue-600">Upload when ready.</span>
@@ -189,8 +189,8 @@ export default async function Home() {
             Employer?{' '}
             <a href="https://freejobpost.co" className="text-blue-600 font-medium hover:underline">
               freejobpost.co
-            </a>{' '}
-            — free job posts, no credit card.
+            </a>,{' '}
+            free job posts, no credit card.
           </p>
 
           {/* Hero product preview — live data from public_jobs */}
@@ -275,7 +275,7 @@ export default async function Home() {
                   b.salaryFloor && b.salaryCeiling
                     ? b.salaryFloor === b.salaryCeiling
                       ? fmtK(b.salaryFloor)
-                      : `${fmtK(b.salaryFloor)}–${fmtK(b.salaryCeiling)}`
+                      : `${fmtK(b.salaryFloor)}-${fmtK(b.salaryCeiling)}`
                     : null
                 return (
                   <a
@@ -321,7 +321,7 @@ export default async function Home() {
               {
                 n: '01',
                 h: 'Your resume, your data',
-                p: 'We never sell your resume to third parties. Public profile or private — your call. Delete anytime, we honor it.',
+                p: 'We never sell your resume to third parties. Public profile or private. Your call. Delete anytime, we honor it.',
               },
               {
                 n: '02',
@@ -331,7 +331,7 @@ export default async function Home() {
               {
                 n: '03',
                 h: 'Apply directly',
-                p: 'Your top matches surface on your private profile page. Click any match to go straight to the job listing and apply — no re-uploading the same resume for every portal.',
+                p: 'Your top matches surface on your private profile page. Click any match to go straight to the job listing and apply. No re-uploading the same resume for every portal.',
               },
             ].map((item) => (
               <div key={item.n} className="rounded-2xl border border-gray-200 bg-white p-8 hover:shadow-lg hover:shadow-blue-500/5 transition-shadow">
@@ -355,7 +355,7 @@ export default async function Home() {
           </div>
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {[
-              { n: '1', h: 'Upload PDF', p: 'Drop your resume. Any format — PDF, DOCX, whatever.' },
+              { n: '1', h: 'Upload PDF', p: 'Drop your resume. Any format: PDF, DOCX, whatever.' },
               { n: '2', h: 'We parse', p: 'We auto-extract your specialty, credential, experience, location. Review in 30 seconds.' },
               { n: '3', h: 'Get matched', p: 'Your top matches surface on your private profile page, refreshed daily. Apply directly from each listing.' },
             ].map((step) => (
@@ -393,7 +393,7 @@ export default async function Home() {
             {CANDIDATE_SPECIALTIES.length} healthcare roles, one upload.
           </p>
           <p className="text-lg text-slate-600 leading-relaxed max-w-xl mx-auto mb-8">
-            Physicians, NPs, PAs, RNs, CRNAs, therapists (PT/OT/SLP), pharmacists, MAs, RDNs, sonographers, and more — pick yours and the parser handles the rest.
+            Physicians, NPs, PAs, RNs, CRNAs, therapists (PT/OT/SLP), pharmacists, MAs, RDNs, sonographers, and more. Pick yours and the parser handles the rest.
           </p>
           <Link
             href="/specialty"
@@ -414,7 +414,7 @@ export default async function Home() {
           <div className="space-y-6">
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Is uploading my resume actually free?</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">Yes — for candidates, always. We never charge you for upload, matches, or applying. Hiring employers pay our placement fee when a match converts.</p>
+              <p className="text-slate-600 leading-relaxed text-sm">Yes, for candidates, always. We never charge you for upload, matches, or applying. Hiring employers pay our placement fee when a match converts.</p>
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Will my resume be sold to recruiters?</h3>
@@ -430,7 +430,7 @@ export default async function Home() {
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Can I delete my profile?</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">Yes — at any time. Email <a href="mailto:info@avahealth.co?subject=Delete%20my%20profile" className="text-blue-600 hover:underline">info@avahealth.co</a> with subject &ldquo;Delete my profile&rdquo; and we&apos;ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
+              <p className="text-slate-600 leading-relaxed text-sm">Yes, at any time. Email <a href="mailto:info@avahealth.co?subject=Delete%20my%20profile" className="text-blue-600 hover:underline">info@avahealth.co</a> with subject &ldquo;Delete my profile&rdquo; and we&apos;ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Do I have to make my profile public?</h3>
@@ -438,7 +438,7 @@ export default async function Home() {
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Is my license info verified?</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">We auto-detect credential tokens (RN, CRNA, PA-C, PharmD, etc.) from your resume text. We don&apos;t do full credential verification — employers verify independently before hiring.</p>
+              <p className="text-slate-600 leading-relaxed text-sm">We auto-detect credential tokens (RN, CRNA, PA-C, PharmD, etc.) from your resume text. We don&apos;t do full credential verification. Employers verify independently before hiring.</p>
             </div>
           </div>
         </div>
