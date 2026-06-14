@@ -65,8 +65,8 @@ export default function ResendForm() {
       {state === 'error' && <p className="text-sm text-red-600 mt-2">{error}</p>}
       <p className="text-xs text-slate-500 mt-3">
         Tip: the original link came from{' '}
-        <code className="text-xs bg-white px-1 py-0.5 rounded border">resumes@avahealth.co</code> —
-        worth a quick inbox search (and a look in spam) first.
+        <code className="text-xs bg-white px-1 py-0.5 rounded border">resumes@avahealth.co</code>.
+        Worth a quick inbox search (and a look in spam) first.
       </p>
     </form>
   )

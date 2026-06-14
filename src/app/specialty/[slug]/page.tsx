@@ -328,7 +328,7 @@ export default async function CandidateSpecialtyPage(
                 {displayName} salaries by state
               </h2>
               <p className="text-slate-600 leading-relaxed mb-4 text-sm">
-                Based on {salaryOverall.count} active {displayName.toLowerCase()} role{salaryOverall.count === 1 ? '' : 's'} on freejobpost.co with published salary ranges. Typical pay: {fmtUsdCompact(salaryOverall.low)}–{fmtUsdCompact(salaryOverall.high)} (median {fmtUsdCompact(salaryOverall.avg)} per year).
+                Based on {salaryOverall.count} active {displayName.toLowerCase()} role{salaryOverall.count === 1 ? '' : 's'} on freejobpost.co with published salary ranges. Typical pay: {fmtUsdCompact(salaryOverall.low)}-{fmtUsdCompact(salaryOverall.high)} (median {fmtUsdCompact(salaryOverall.avg)} per year).
               </p>
               {salaryByState.length > 0 && (
                 <div className="overflow-x-auto rounded-2xl border border-slate-200">
@@ -347,7 +347,7 @@ export default async function CandidateSpecialtyPage(
                           <td className="px-4 py-3 text-slate-800">{row.label}</td>
                           <td className="px-4 py-3 text-right tabular-nums text-slate-600">{row.count}</td>
                           <td className="px-4 py-3 text-right tabular-nums text-slate-700">
-                            {fmtUsdCompact(row.low)}&ndash;{fmtUsdCompact(row.high)}
+                            {fmtUsdCompact(row.low)}-{fmtUsdCompact(row.high)}
                           </td>
                           <td className="px-4 py-3 text-right tabular-nums font-medium text-slate-900">
                             {fmtUsdCompact(row.avg)}
@@ -384,7 +384,7 @@ export default async function CandidateSpecialtyPage(
               <div className="shrink-0 w-7 h-7 rounded-full bg-blue-600 text-white text-sm font-semibold flex items-center justify-center">2</div>
               <div>
                 <div className="font-semibold text-slate-900 mb-1">Pick public or private</div>
-                <div className="text-slate-600 leading-relaxed text-sm">Public profiles get an indexed page (first name + last initial only). Private profiles only appear in the matching engine — invisible elsewhere.</div>
+                <div className="text-slate-600 leading-relaxed text-sm">Public profiles get an indexed page (first name + last initial only). Private profiles only appear in the matching engine. Invisible elsewhere.</div>
               </div>
             </li>
             <li className="flex gap-4">
@@ -404,7 +404,7 @@ export default async function CandidateSpecialtyPage(
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Is it really free?</h3>
-              <p className="text-slate-600 text-sm leading-relaxed">Yes — for candidates, always. Hiring employers pay our placement fee.</p>
+              <p className="text-slate-600 text-sm leading-relaxed">Yes. For candidates, always. Hiring employers pay our placement fee.</p>
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Will recruiters spam me?</h3>

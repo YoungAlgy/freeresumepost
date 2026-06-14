@@ -49,7 +49,7 @@ export default function PrivacyPage() {
           <h2 className="text-xl font-semibold mt-8 mb-2">What we don&apos;t collect</h2>
           <ul className="list-disc pl-5 space-y-1.5">
             <li>The original resume file. After parsing in your browser, only the text you approve is sent to us.</li>
-            <li>Social Security number, date of birth, financial info — never asked.</li>
+            <li>Social Security number, date of birth, financial info. Never asked.</li>
             <li>Behavioral tracking data from third-party advertisers.</li>
           </ul>
 
@@ -57,7 +57,7 @@ export default function PrivacyPage() {
           <ul className="list-disc pl-5 space-y-1.5">
             <li><strong>Matching:</strong> we score your profile against active jobs and show your top matches on your private profile page, refreshed daily.</li>
             <li><strong>Profile management:</strong> we email you a secure edit link so you can update your profile.</li>
-            <li><strong>Aggregated analytics:</strong> we look at usage trends (popular specialties, geographic distribution) — never individually identifiable.</li>
+            <li><strong>Aggregated analytics:</strong> we look at usage trends (popular specialties, geographic distribution). Never individually identifiable.</li>
           </ul>
 
           <h2 className="text-xl font-semibold mt-8 mb-2">Public vs private profiles</h2>
@@ -82,13 +82,13 @@ export default function PrivacyPage() {
           <ul className="list-disc pl-5 space-y-1.5">
             <li>Your profile stays active until you delete it.</li>
             <li>Inactive profiles (no logins or applications in 18 months) are auto-archived and removed from matching.</li>
-            <li>You can request full deletion by emailing <a href="mailto:info@avahealth.co?subject=Delete%20my%20profile" className="underline text-blue-600 hover:text-blue-700">info@avahealth.co</a> with subject &quot;Delete my profile&quot; — we&apos;ll wipe both the resume file and parsed data within 30 days.</li>
+            <li>You can request full deletion by emailing <a href="mailto:info@avahealth.co?subject=Delete%20my%20profile" className="underline text-blue-600 hover:text-blue-700">info@avahealth.co</a> with subject &quot;Delete my profile&quot;. We&apos;ll wipe both the resume file and parsed data within 30 days.</li>
           </ul>
 
           <h2 className="text-xl font-semibold mt-8 mb-2">Your rights (CCPA / GDPR)</h2>
           <p>
             California + EU residents: you have the right to access, correct, or delete your data.
-            Email <a href="mailto:info@avahealth.co" className="underline text-blue-600 hover:text-blue-700">info@avahealth.co</a> with the subject &quot;Privacy request&quot; — we&apos;ll respond within 30 days.
+            Email <a href="mailto:info@avahealth.co" className="underline text-blue-600 hover:text-blue-700">info@avahealth.co</a> with the subject &quot;Privacy request&quot;. We&apos;ll respond within 30 days.
           </p>
 
           <h2 className="text-xl font-semibold mt-8 mb-2">Cookies</h2>

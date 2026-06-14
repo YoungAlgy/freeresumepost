@@ -11,27 +11,27 @@ import { safeJsonLd } from '@/lib/safe-jsonld'
 export const metadata: Metadata = {
   title: 'Changelog',
   description:
-    'What\'s new on freeresumepost.co — recent shipped features, fixes, and reliability work. Updated when something user-visible changes.',
+    'What\'s new on freeresumepost.co: recent shipped features, fixes, and reliability work. Updated when something user-visible changes.',
   alternates: {
     canonical: 'https://www.freeresumepost.co/changelog',
     types: {
       'application/rss+xml': [
-        { url: 'https://www.freeresumepost.co/changelog/feed.xml', title: 'freeresumepost.co — Changelog (RSS)' },
+        { url: 'https://www.freeresumepost.co/changelog/feed.xml', title: 'freeresumepost.co Changelog (RSS)' },
       ],
     },
   },
   robots: { index: true, follow: true },
   openGraph: {
-    title: 'Changelog — freeresumepost.co',
-    description: 'Recent ships on freeresumepost.co — features, fixes, and reliability work.',
+    title: 'freeresumepost.co Changelog',
+    description: 'Recent ships on freeresumepost.co: features, fixes, and reliability work.',
     url: 'https://www.freeresumepost.co/changelog',
     type: 'website',
     images: ['/opengraph-image'],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Changelog — freeresumepost.co',
-    description: 'Recent ships on freeresumepost.co — features, fixes, and reliability work.',
+    title: 'freeresumepost.co Changelog',
+    description: 'Recent ships on freeresumepost.co: features, fixes, and reliability work.',
     images: ['/opengraph-image'],
   },
 }
@@ -110,7 +110,7 @@ export default function ChangelogPage() {
         </h1>
         <p className="text-lg text-slate-600 leading-relaxed mb-2">
           Recent shipped features, fixes, and reliability work. We update this when
-          something user-visible changes — not on every commit.
+          something user-visible changes, not on every commit.
         </p>
         {lastUpdated && (
           <p className="text-sm text-slate-500 mb-12">

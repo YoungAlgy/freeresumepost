@@ -225,7 +225,7 @@ export default async function UploadPage() {
                   b.salaryFloor && b.salaryCeiling
                     ? b.salaryFloor === b.salaryCeiling
                       ? fmtK(b.salaryFloor)
-                      : `${fmtK(b.salaryFloor)}–${fmtK(b.salaryCeiling)}`
+                      : `${fmtK(b.salaryFloor)}-${fmtK(b.salaryCeiling)}`
                     : null
                 return (
                   <a

@@ -72,7 +72,7 @@ export default function Error({
             info@avahealth.co
           </a>{' '}
           and include the error id above (if shown). We respond within 24
-          hours on weekdays — usually faster.
+          hours on weekdays, usually faster.
         </p>
       </div>
     </main>

@@ -101,7 +101,7 @@ export default function RootLayout({
                 websiteDescription:
                   'Upload your resume free, get matched to real healthcare openings.',
                 organizationDescription:
-                  'Healthcare staffing and recruiting firm connecting physicians, nurses, and therapists with US healthcare employers. Operates freeresumepost.co — a free candidate-resume platform that matches healthcare professionals to open roles without selling resume data.',
+                  'Healthcare staffing and recruiting firm connecting physicians, nurses, and therapists with US healthcare employers. Operates freeresumepost.co, a free candidate-resume platform that matches healthcare professionals to open roles without selling resume data.',
                 searchActionTarget: 'https://freejobpost.co/jobs?q={search_term_string}',
               })
             ),
@@ -159,7 +159,7 @@ export default function RootLayout({
               <Link href="https://avahealth.co" className="underline hover:text-gray-900">
                 Ava Health Partners LLC
               </Link>
-              . Your resume is yours — we never sell your data.
+              . Your resume is yours. We never sell your data.
               <br />
               4532 W Kennedy Blvd, Suite 125, Tampa, FL 33609 · (904) 343-9449 · info@avahealth.co
             </p>

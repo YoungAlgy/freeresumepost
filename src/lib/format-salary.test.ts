@@ -9,9 +9,9 @@ describe('formatSalary', () => {
     expect(formatSalary(null, 0)).toBe(null)
   })
 
-  it('formats a true range as $XK–$YK', () => {
-    expect(formatSalary(180000, 240000)).toBe('$180K–$240K')
-    expect(formatSalary(75000, 95000)).toBe('$75K–$95K')
+  it('formats a true range as $XK-$YK', () => {
+    expect(formatSalary(180000, 240000)).toBe('$180K-$240K')
+    expect(formatSalary(75000, 95000)).toBe('$75K-$95K')
   })
 
   it('uses K-shorthand for amounts >= 1000 and dollar-direct for smaller', () => {

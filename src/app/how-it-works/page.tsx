@@ -57,7 +57,7 @@ export default function HowItWorksPage() {
             <div className="shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-semibold flex items-center justify-center">1</div>
             <div>
               <div className="font-semibold text-slate-900 mb-1">Drop your resume</div>
-              <div className="text-slate-600 leading-relaxed">PDF, DOCX, or plain text. Up to 5 MB. Parsed locally in your browser — your file never reaches our servers until you click submit.</div>
+              <div className="text-slate-600 leading-relaxed">PDF, DOCX, or plain text. Up to 5 MB. Parsed locally in your browser. Your file never reaches our servers until you click submit.</div>
             </div>
           </li>
           <li className="flex gap-4">
@@ -72,7 +72,7 @@ export default function HowItWorksPage() {
             <div>
               <div className="font-semibold text-slate-900 mb-1">Pick public or private</div>
               <div className="text-slate-600 leading-relaxed">
-                <strong>Public:</strong> first name, last initial, specialty, state, and years of experience are visible at /profile/[your-slug] — discoverable by employers.<br />
+                <strong>Public:</strong> first name, last initial, specialty, state, and years of experience are visible at /profile/[your-slug], discoverable by employers.<br />
                 <strong>Private:</strong> only the matching engine sees you. New matches surface on your private profile page (the edit URL we send when you upload); nobody else can find you.
               </div>
             </div>
@@ -82,7 +82,7 @@ export default function HowItWorksPage() {
             <div>
               <div className="font-semibold text-slate-900 mb-1">Get matched</div>
               <div className="text-slate-600 leading-relaxed">
-                Our matching engine scores you against every active job on freejobpost.co (specialty trigram, state, city, credential, experience, salary, certifications). Your top matches appear on your private profile page, refreshed daily. You decide whether to apply — never automatic.
+                Our matching engine scores you against every active job on freejobpost.co (specialty trigram, state, city, credential, experience, salary, certifications). Your top matches appear on your private profile page, refreshed daily. You decide whether to apply. Never automatic.
               </div>
             </div>
           </li>
@@ -117,7 +117,7 @@ export default function HowItWorksPage() {
         <div className="space-y-6 mb-12">
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Is it really free?</h3>
-            <p className="text-slate-600">Yes. We don&apos;t charge candidates anything — not for upload, not for matches, not to apply. Hiring employers pay our placement fee when a match converts.</p>
+            <p className="text-slate-600">Yes. We don&apos;t charge candidates anything. Not for upload, not for matches, not to apply. Hiring employers pay our placement fee when a match converts.</p>
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Will my resume be sold to recruiters?</h3>
@@ -133,7 +133,7 @@ export default function HowItWorksPage() {
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Can I delete my profile later?</h3>
-            <p className="text-slate-600">Yes — at any time. Email <a href="mailto:info@avahealth.co" className="underline text-blue-600 hover:text-blue-700">info@avahealth.co</a> with the subject &ldquo;Delete my profile&rdquo; and we&apos;ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
+            <p className="text-slate-600">Yes. At any time. Email <a href="mailto:info@avahealth.co" className="underline text-blue-600 hover:text-blue-700">info@avahealth.co</a> with the subject &ldquo;Delete my profile&rdquo; and we&apos;ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Do I need to make my profile public?</h3>
@@ -141,7 +141,7 @@ export default function HowItWorksPage() {
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Is my license info verified?</h3>
-            <p className="text-slate-600">We auto-detect credential tokens (RN, CRNA, PA-C, PharmD, etc.) from your resume text. We don&apos;t do full credential verification — employers verify independently before hiring.</p>
+            <p className="text-slate-600">We auto-detect credential tokens (RN, CRNA, PA-C, PharmD, etc.) from your resume text. We don&apos;t do full credential verification. Employers verify independently before hiring.</p>
           </div>
         </div>
 

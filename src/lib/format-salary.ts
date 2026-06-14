@@ -16,7 +16,7 @@ export function formatSalary(
 ): string | null {
   if (!min && !max) return null
   const fmt = (n: number) => (n >= 1000 ? `$${Math.round(n / 1000)}K` : `$${n}`)
-  if (min && max && min !== max) return `${fmt(min)}–${fmt(max)}`
+  if (min && max && min !== max) return `${fmt(min)}-${fmt(max)}`
   // When only one side of the range is set, append "+" to signal it's an
   // open-ended floor / ceiling rather than an exact figure. e.g. "$200K+".
   // Use || (not ??) so explicit-zero is treated as "missing" — matches the
