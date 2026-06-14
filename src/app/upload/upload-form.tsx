@@ -70,7 +70,7 @@ export default function UploadForm() {
       const text = await extractTextFromFile(file)
       if (!text || text.length < 50) {
         setParseErr(
-          'We couldn\u2019t read any text from that file. If it\u2019s a scanned image, try exporting a searchable PDF first.'
+          'We couldn\'t read any text from that file. If it\'s a scanned image, try exporting a searchable PDF first.'
         )
         setPhase('drop')
         return
