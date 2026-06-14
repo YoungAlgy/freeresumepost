@@ -68,9 +68,9 @@ export default function JobAlertCapture({
         aria-live="polite"
         className={`border border-slate-200 rounded-2xl bg-blue-50 p-6 ${className}`}
       >
-        <p className="font-semibold text-slate-900">You&rsquo;re on the list.</p>
+        <p className="font-semibold text-slate-900">You're on the list.</p>
         <p className="text-sm text-slate-600 mt-1">
-          We&rsquo;ll email <strong>{email}</strong> when new {what} get posted. Unsubscribe anytime.
+          We'll email <strong>{email}</strong> when new {what} get posted. Unsubscribe anytime.
         </p>
       </div>
     )

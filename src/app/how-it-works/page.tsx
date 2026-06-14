@@ -133,7 +133,7 @@ export default function HowItWorksPage() {
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Can I delete my profile later?</h3>
-            <p className="text-slate-600">Yes. At any time. Email <a href="mailto:info@avahealth.co" className="underline text-blue-600 hover:text-blue-700">info@avahealth.co</a> with the subject &ldquo;Delete my profile&rdquo; and we&apos;ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
+            <p className="text-slate-600">Yes. At any time. Email <a href="mailto:info@avahealth.co" className="underline text-blue-600 hover:text-blue-700">info@avahealth.co</a> with the subject "Delete my profile" and we&apos;ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Do I need to make my profile public?</h3>
