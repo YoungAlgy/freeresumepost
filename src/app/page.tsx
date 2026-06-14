@@ -9,12 +9,12 @@ export const metadata: Metadata = {
   // `absolute` bypasses the layout template `%s | Free Resume Post`. Without
   // it the rendered title would be the double-branded "Free Resume Post —
   // Upload once, get matched | Free Resume Post".
-  title: { absolute: 'Free Resume Post — Upload once, get matched' },
+  title: { absolute: 'Free Resume Post: Upload once, get matched' },
   description:
     'Upload your resume free and get matched to real healthcare openings. No recruiter spam, no resume databases sold to the highest bidder.',
   alternates: { canonical: 'https://www.freeresumepost.co' },
   openGraph: {
-    title: 'Free Resume Post — Upload once, get matched',
+    title: 'Free Resume Post: Upload once, get matched',
     description:
       'Upload your resume free. We match you to real healthcare openings. No recruiter spam.',
     url: 'https://www.freeresumepost.co',
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Free Resume Post — Upload once, get matched',
+    title: 'Free Resume Post: Upload once, get matched',
     description:
       'Upload your resume free. We match you to real healthcare openings. No recruiter spam.',
     images: ['/opengraph-image'],
