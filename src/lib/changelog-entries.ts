@@ -17,6 +17,49 @@ export interface ChangelogEntry {
 }
 
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
+  // ── June 2026 ────────────────────────────────────
+  {
+    date: "2026-06-10",
+    title: "Resume guides for every specialty",
+    body:
+      "Every specialty hub now has a plain-English guide to writing a strong resume for that field, from RN to physical therapy to surgical tech. All 38 specialties are covered.",
+    tag: "new",
+  },
+  {
+    date: "2026-06-10",
+    title: "Better recovery when an edit link expires",
+    body:
+      "If your profile edit link has expired or already been used, the login page now sends you a fresh one in a click instead of telling you to email us.",
+    tag: "improved",
+  },
+  {
+    date: "2026-06-04",
+    title: "Friendlier message on a failed upload",
+    body:
+      "A resume that fails to parse now shows a clear, helpful message with an easy retry, instead of a dead-end 'try again'.",
+    tag: "fixed",
+  },
+  {
+    date: "2026-06-02",
+    title: "Last names stay private on public profiles",
+    body:
+      "Public profiles show your first name and last initial only, never your full last name. Tightened so the full name can't leak even by accident.",
+    tag: "improved",
+  },
+  {
+    date: "2026-06-02",
+    title: "Cleaner mobile header, stale badge gone",
+    body:
+      "Trimmed the header so it fits on phones, and removed an old 'Beta opening April 2026' badge that was past its date.",
+    tag: "fixed",
+  },
+  {
+    date: "2026-06-01",
+    title: "Job alerts by email",
+    body:
+      "Pick the kinds of roles you want and get new matching jobs in your inbox. One-click unsubscribe, and no account needed.",
+    tag: "new",
+  },
   // ── May 2026 ──────────────────────────────────────────────────────────────
   {
     date: '2026-05-30',
