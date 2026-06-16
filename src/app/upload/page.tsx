@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { supabase, hourIso } from '@/lib/supabase'
 import UploadForm from './upload-form'
+import AffiliateOffer from '@/components/AffiliateOffer'
 import { formatSalary } from '@/lib/format-salary'
 import { bucketizeRoles } from '@/lib/role-buckets'
 
@@ -170,6 +171,12 @@ export default async function UploadPage() {
         </div>
 
         <UploadForm />
+
+        {/* Affiliate offer (live: JobCopilot). The kickresume/rezi slots render
+            nothing until their links are configured. */}
+        <div className="mt-8">
+          <AffiliateOffer program="jobcopilot" />
+        </div>
 
         {/* What happens next — sets expectations after upload */}
         <div className="mt-14 mb-10">
