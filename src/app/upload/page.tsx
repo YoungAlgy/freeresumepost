@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 
 // ISR: 2026-05-28 bumped 300s → 3600s (1h) in the cost audit. Low-traffic
 // upload landing page — no need to regen every 5 min. See freejobpost.
-export const revalidate = 3600
+export const revalidate = 21600
 
 interface JobRow {
   slug: string

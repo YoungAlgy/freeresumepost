@@ -65,7 +65,7 @@ const RESUME_TO_FREEJOB_SPECIALTY: Record<string, string> = {
 // fix. Candidate listings change only when a profile is published (Flow B
 // or self-upload), not every 10 min. Future-proofs against the regen storm
 // that hit freejobpost as this surface grows.
-export const revalidate = 21600
+export const revalidate = 86400
 
 export async function generateStaticParams() {
   return CANDIDATE_SPECIALTIES.map((s) => ({ slug: s.slug }))

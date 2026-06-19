@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase'
 import { CANDIDATE_SPECIALTIES } from '@/lib/specialty-slugs'
 import { CHANGELOG_ENTRIES } from '@/lib/changelog-entries'
 
-export const revalidate = 3600
+export const revalidate = 21600
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = 'https://www.freeresumepost.co'
