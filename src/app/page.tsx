@@ -9,12 +9,12 @@ export const metadata: Metadata = {
   // `absolute` bypasses the layout template `%s | Free Resume Post`. Without
   // it the rendered title would be the double-branded "Free Resume Post —
   // Upload once, get matched | Free Resume Post".
-  title: { absolute: 'Free Resume Post: Upload once, get matched' },
+  title: { absolute: 'Upload Your Resume, Get Matched | Ava Health' },
   description:
     'Upload your resume free and get matched to real healthcare openings. No recruiter spam, no resume databases sold to the highest bidder.',
   alternates: { canonical: 'https://www.freeresumepost.co' },
   openGraph: {
-    title: 'Free Resume Post: Upload once, get matched',
+    title: 'Upload Your Resume, Get Matched | Ava Health',
     description:
       'Upload your resume free. We match you to real healthcare openings. No recruiter spam.',
     url: 'https://www.freeresumepost.co',
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Free Resume Post: Upload once, get matched',
+    title: 'Upload Your Resume, Get Matched | Ava Health',
     description:
       'Upload your resume free. We match you to real healthcare openings. No recruiter spam.',
     images: ['/opengraph-image'],
@@ -122,9 +122,9 @@ export default async function Home() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
           <Link href="/" className="flex items-center gap-2 min-w-0">
             <span className="font-semibold text-[15px] sm:text-[17px] tracking-tight text-gray-900">
-              freeresumepost<span className="text-blue-600">.co</span>
+              Ava Health
             </span>
-            <span className="hidden sm:inline-block text-[10px] font-semibold tracking-wider text-blue-700 bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded-full shrink-0">
+            <span className="hidden sm:inline-block text-[10px] font-semibold tracking-wider text-[#003D5C] bg-[#003D5C]/5 border border-[#003D5C]/20 px-1.5 py-0.5 rounded-full shrink-0">
               BETA
             </span>
           </Link>
@@ -134,7 +134,7 @@ export default async function Home() {
             <Link href="/candidate/login" className="hidden min-[360px]:inline hover:text-gray-900 whitespace-nowrap">Sign in</Link>
             <Link
               href="/upload"
-              className="bg-gray-900 text-white px-3 md:px-4 py-2 rounded-full text-[13px] font-semibold hover:bg-gray-700 transition-colors whitespace-nowrap"
+              className="bg-[#7FBC00] text-white px-3 md:px-4 py-2 rounded-full text-[13px] font-semibold hover:bg-[#6DA300] transition-colors whitespace-nowrap"
             >
               Upload resume
             </Link>
@@ -144,18 +144,18 @@ export default async function Home() {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        {/* Subtle blue gradient */}
+        {/* Subtle navy gradient */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-gradient-to-b from-blue-50/70 via-white to-white"
+          className="absolute inset-0 -z-10 bg-gradient-to-b from-[#003D5C]/5 via-white to-white"
         />
         <div className="max-w-6xl mx-auto px-6 py-24 md:py-32 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 border border-blue-100 px-4 py-1.5 text-xs font-semibold text-blue-700 mb-8">
-            <span className="w-2 h-2 bg-blue-500 rounded-full" />
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#003D5C]/5 border border-[#003D5C]/10 px-4 py-1.5 text-xs font-semibold text-[#003D5C] mb-8">
+            <span className="w-2 h-2 bg-[#7FBC00] rounded-full" />
             Now in beta. Free for candidates
           </div>
           <h1 className="text-5xl md:text-7xl font-semibold tracking-[-0.03em] leading-[1.02] text-gray-900 max-w-4xl mx-auto">
-            Browse jobs first. <span className="text-blue-600">Upload when ready.</span>
+            Browse jobs first. <span className="text-[#003D5C]">Upload when ready.</span>
           </h1>
           <p className="mt-6 text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto">
             See real healthcare openings before you commit a resume. When something fits, drop your
@@ -166,7 +166,7 @@ export default async function Home() {
           <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
             <a
               href="https://freejobpost.co/jobs"
-              className="inline-flex items-center justify-center px-6 py-3.5 bg-gray-900 text-white font-semibold rounded-full hover:bg-gray-700 transition-colors shadow-sm"
+              className="inline-flex items-center justify-center px-6 py-3.5 bg-[#7FBC00] text-white font-semibold rounded-full hover:bg-[#6DA300] transition-colors shadow-sm"
             >
               Browse healthcare jobs →
             </a>
@@ -180,14 +180,14 @@ export default async function Home() {
 
           <p className="mt-6 text-sm text-gray-500">
             Already have an account?{' '}
-            <Link href="/candidate/login" className="text-blue-600 font-medium hover:underline">
+            <Link href="/candidate/login" className="text-[#003D5C] font-medium hover:underline">
               Sign in
             </Link>
           </p>
 
           <p className="mt-2 text-sm text-gray-500">
             Employer?{' '}
-            <a href="https://freejobpost.co" className="text-blue-600 font-medium hover:underline">
+            <a href="https://freejobpost.co" className="text-[#003D5C] font-medium hover:underline">
               freejobpost.co
             </a>,{' '}
             free job posts, no credit card.
@@ -195,13 +195,13 @@ export default async function Home() {
 
           {/* Hero product preview — live data from public_jobs */}
           <div className="mt-16 max-w-3xl mx-auto">
-            <div className="rounded-2xl border border-gray-200 bg-white shadow-xl shadow-blue-500/5 p-6 text-left">
+            <div className="rounded-2xl border border-gray-200 bg-white shadow-xl shadow-[#003D5C]/5 p-6 text-left">
               <div className="flex items-center justify-between text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
                 <span className="flex items-center gap-2">
                   Live healthcare openings
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" aria-hidden="true" />
                 </span>
-                <a href="https://freejobpost.co/jobs" className="text-blue-600 hover:text-blue-700 normal-case tracking-normal font-medium text-[11px]">
+                <a href="https://freejobpost.co/jobs" className="text-[#003D5C] hover:text-[#002A40] normal-case tracking-normal font-medium text-[11px]">
                   See all &rarr;
                 </a>
               </div>
@@ -233,7 +233,7 @@ export default async function Home() {
                               Remote
                             </span>
                           ) : job.remote_hybrid === 'hybrid' ? (
-                            <span className="inline-flex items-center rounded-full bg-blue-50 text-blue-700 border border-blue-100 px-2.5 py-0.5 text-xs font-semibold">
+                            <span className="inline-flex items-center rounded-full bg-[#003D5C]/5 text-[#003D5C] border border-[#003D5C]/10 px-2.5 py-0.5 text-xs font-semibold">
                               Hybrid
                             </span>
                           ) : (
@@ -283,7 +283,7 @@ export default async function Home() {
                     href={`https://freejobpost.co/jobs?q=${encodeURIComponent(b.searchKeyword)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group block rounded-2xl bg-white hover:bg-blue-50/50 transition-colors border border-gray-200 hover:border-blue-200 px-5 py-5"
+                    className="group block rounded-2xl bg-white hover:bg-[#003D5C]/5 transition-colors border border-gray-200 hover:border-[#003D5C]/20 px-5 py-5"
                   >
                     <div className="flex items-baseline justify-between gap-2 mb-1.5">
                       <span className="text-base font-semibold text-gray-900 truncate">
@@ -292,7 +292,7 @@ export default async function Home() {
                         </span>
                         {b.label}
                       </span>
-                      <span className="text-sm font-semibold text-blue-600 tabular-nums shrink-0">
+                      <span className="text-sm font-semibold text-[#003D5C] tabular-nums shrink-0">
                         {b.count}
                       </span>
                     </div>
@@ -334,8 +334,8 @@ export default async function Home() {
                 p: 'Your top matches surface on your private profile page. Click any match to go straight to the job listing and apply. No re-uploading the same resume for every portal.',
               },
             ].map((item) => (
-              <div key={item.n} className="rounded-2xl border border-gray-200 bg-white p-8 hover:shadow-lg hover:shadow-blue-500/5 transition-shadow">
-                <div className="text-blue-600 font-semibold text-xs tracking-widest mb-3">{item.n}</div>
+              <div key={item.n} className="rounded-2xl border border-gray-200 bg-white p-8 hover:shadow-lg hover:shadow-[#003D5C]/5 transition-shadow">
+                <div className="text-[#003D5C] font-semibold text-xs tracking-widest mb-3">{item.n}</div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.h}</h3>
                 <p className="text-gray-600 leading-relaxed">{item.p}</p>
               </div>
@@ -360,7 +360,7 @@ export default async function Home() {
               { n: '3', h: 'Get matched', p: 'Your top matches surface on your private profile page, refreshed daily. Apply directly from each listing.' },
             ].map((step) => (
               <div key={step.n} className="text-center">
-                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white font-semibold mb-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#7FBC00] text-white font-semibold mb-4">
                   {step.n}
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">{step.h}</h3>
@@ -388,7 +388,7 @@ export default async function Home() {
       {/* Specialty hub discovery */}
       <section className="border-t border-gray-100 bg-slate-50">
         <div className="max-w-4xl mx-auto px-6 py-16 text-center">
-          <p className="text-xs font-semibold tracking-wider text-blue-600 uppercase mb-3">Browse by specialty</p>
+          <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">Browse by specialty</p>
           <p className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-900 mb-4">
             {CANDIDATE_SPECIALTIES.length} healthcare roles, one upload.
           </p>
@@ -397,7 +397,7 @@ export default async function Home() {
           </p>
           <Link
             href="/specialty"
-            className="inline-flex items-center px-6 py-3 border border-slate-300 rounded-full text-base font-semibold text-slate-900 hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-colors"
+            className="inline-flex items-center px-6 py-3 border border-slate-300 rounded-full text-base font-semibold text-slate-900 hover:bg-[#003D5C] hover:text-white hover:border-[#003D5C] transition-colors"
           >
             See all specialties →
           </Link>
@@ -407,7 +407,7 @@ export default async function Home() {
       {/* FAQ */}
       <section className="border-t border-gray-100">
         <div className="max-w-3xl mx-auto px-6 py-20">
-          <p className="text-xs font-semibold tracking-wider text-blue-600 uppercase mb-3">FAQ</p>
+          <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">FAQ</p>
           <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-900 mb-12">
             Common questions.
           </h2>
@@ -430,7 +430,7 @@ export default async function Home() {
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Can I delete my profile?</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">Yes, at any time. Email <a href="mailto:info@avahealth.co?subject=Delete%20my%20profile" className="text-blue-600 hover:underline">info@avahealth.co</a> with subject "Delete my profile" and we&apos;ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
+              <p className="text-slate-600 leading-relaxed text-sm">Yes, at any time. Email <a href="mailto:info@avahealth.co?subject=Delete%20my%20profile" className="text-[#003D5C] hover:underline">info@avahealth.co</a> with subject "Delete my profile" and we&apos;ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Do I have to make my profile public?</h3>
@@ -445,7 +445,7 @@ export default async function Home() {
       </section>
 
       {/* Final CTA */}
-      <section className="border-t border-gray-100 bg-gradient-to-b from-white to-blue-50/50">
+      <section className="border-t border-gray-100 bg-gradient-to-b from-white to-[#003D5C]/5">
         <div className="max-w-4xl mx-auto px-6 py-24 text-center">
           <p className="text-4xl md:text-5xl font-semibold tracking-tight text-gray-900 mb-6">
             Upload once. Get matched forever.
@@ -455,7 +455,7 @@ export default async function Home() {
           </p>
           <Link
             href="/upload"
-            className="inline-flex items-center px-8 py-4 bg-gray-900 text-white text-base font-semibold rounded-full hover:bg-gray-700 transition-colors shadow-lg shadow-blue-500/10"
+            className="inline-flex items-center px-8 py-4 bg-[#7FBC00] text-white text-base font-semibold rounded-full hover:bg-[#6DA300] transition-colors shadow-lg shadow-[#003D5C]/10"
           >
             Upload your resume free →
           </Link>

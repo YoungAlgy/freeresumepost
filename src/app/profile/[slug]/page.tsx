@@ -176,16 +176,16 @@ export default async function ProfilePage({ params, searchParams }: Props) {
         <nav className="border-b border-slate-200">
           <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
-              <span className="w-7 h-7 rounded-lg bg-blue-600 text-white font-black flex items-center justify-center text-sm">
-                r
+              <span className="w-7 h-7 rounded-lg bg-[#003D5C] text-white font-black flex items-center justify-center text-sm">
+                a
               </span>
               <span className="font-bold text-lg tracking-tight">
-                freeresumepost<span className="text-slate-400">.co</span>
+                Ava Health
               </span>
             </Link>
             <Link
               href="/upload"
-              className="text-sm font-semibold text-blue-600 hover:text-blue-700"
+              className="text-sm font-semibold text-[#003D5C] hover:text-[#002A40]"
             >
               Upload yours →
             </Link>
@@ -194,7 +194,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
 
         <div className="max-w-3xl mx-auto px-6 py-12 md:py-16">
           <div className="rounded-3xl border border-slate-200 p-8 md:p-10 shadow-sm">
-            <p className="text-xs font-semibold tracking-wider text-blue-600 uppercase mb-3">
+            <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">
               Open to opportunities
             </p>
             <h1 className="text-3xl md:text-4xl font-semibold leading-tight tracking-tight mb-2">
@@ -220,7 +220,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                 </span>
               )}
               {c.contact_via_email && (
-                <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#003D5C]/10 text-[#003D5C] border border-[#003D5C]/20">
                   Email contact OK
                 </span>
               )}
@@ -230,7 +230,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
               Contact this candidate via{' '}
               <a
                 href="https://freejobpost.co/post-job"
-                className="underline hover:text-blue-600"
+                className="underline hover:text-[#003D5C]"
               >
                 freejobpost.co
               </a>{' '}
@@ -251,16 +251,16 @@ function EditLinkInvalid() {
       <nav className="border-b border-slate-200">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-lg bg-blue-600 text-white font-black flex items-center justify-center text-sm">
-              r
+            <span className="w-7 h-7 rounded-lg bg-[#003D5C] text-white font-black flex items-center justify-center text-sm">
+              a
             </span>
             <span className="font-bold text-lg tracking-tight">
-              freeresumepost<span className="text-slate-400">.co</span>
+              Ava Health
             </span>
           </Link>
           <Link
             href="/upload"
-            className="text-sm font-semibold text-blue-600 hover:text-blue-700"
+            className="text-sm font-semibold text-[#003D5C] hover:text-[#002A40]"
           >
             Upload yours →
           </Link>
@@ -283,7 +283,7 @@ function EditLinkInvalid() {
           <div className="flex flex-wrap gap-3">
             <Link
               href="/candidate/login"
-              className="px-4 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
+              className="px-4 py-2.5 rounded-xl bg-[#003D5C] text-white text-sm font-semibold hover:bg-[#002A40]"
             >
               Get a fresh edit link →
             </Link>

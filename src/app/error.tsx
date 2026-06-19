@@ -5,7 +5,7 @@
 // this file Next.js falls back to its generic dev/prod error UI which
 // looks broken to users. Mirrors the freejobpost.co sister-site
 // implementation; styled to match this site's slate-on-white system
-// (sister site is black-and-green).
+// (both sister sites now share the Ava Health navy + lime palette).
 
 import Link from 'next/link'
 import { useEffect } from 'react'
@@ -44,7 +44,7 @@ export default function Error({
         <button
           type="button"
           onClick={() => reset()}
-          className="inline-flex justify-center items-center bg-slate-900 text-white px-6 py-3 rounded-full font-semibold hover:bg-slate-700 transition-colors"
+          className="inline-flex justify-center items-center bg-[#003D5C] text-white px-6 py-3 rounded-full font-semibold hover:bg-[#002A40] transition-colors"
         >
           Try again
         </button>

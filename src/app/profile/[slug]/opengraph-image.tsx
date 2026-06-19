@@ -10,7 +10,7 @@ import { ImageResponse } from 'next/og'
 import { supabase } from '@/lib/supabase'
 
 export const runtime = 'edge'
-export const alt = 'Healthcare candidate on freeresumepost.co'
+export const alt = 'Healthcare candidate on Ava Health'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 // 2026-05-28 cost audit: cache the generated card for 7 days. Profile OG
@@ -83,8 +83,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         }}
       >
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, paddingBottom: 20, borderBottom: `4px solid ${ACCENT}`, marginBottom: 56 }}>
-          <span style={{ fontSize: 36, fontWeight: 800, letterSpacing: -1 }}>freeresumepost</span>
-          <span style={{ fontSize: 26, fontWeight: 400, opacity: 0.7 }}>.co</span>
+          <span style={{ fontSize: 36, fontWeight: 800, letterSpacing: -1 }}>Ava Health</span>
         </div>
 
         <div style={{ display: 'flex', alignSelf: 'flex-start', background: ACCENT, color: BRAND, padding: '8px 18px', borderRadius: 999, fontSize: 22, fontWeight: 700, marginBottom: 36, textTransform: 'uppercase', letterSpacing: 1 }}>

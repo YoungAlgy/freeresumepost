@@ -66,7 +66,7 @@ export default function JobAlertCapture({
       <div
         role="status"
         aria-live="polite"
-        className={`border border-slate-200 rounded-2xl bg-blue-50 p-6 ${className}`}
+        className={`border border-slate-200 rounded-2xl bg-[#003D5C]/5 p-6 ${className}`}
       >
         <p className="font-semibold text-slate-900">You're on the list.</p>
         <p className="text-sm text-slate-600 mt-1">
@@ -78,7 +78,7 @@ export default function JobAlertCapture({
 
   return (
     <form onSubmit={onSubmit} className={`border border-slate-200 rounded-2xl bg-slate-50 p-6 ${className}`}>
-      <p className="text-xs font-semibold tracking-wider text-blue-600 uppercase mb-1">
+      <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-1">
         Not ready to upload?
       </p>
       <h3 className="text-lg font-semibold text-slate-900 mb-1">Get new {what} by email</h3>
@@ -96,7 +96,7 @@ export default function JobAlertCapture({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           maxLength={254}
-          className="flex-1 px-4 py-3 bg-white border border-slate-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1 px-4 py-3 bg-white border border-slate-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[#7FBC00]"
         />
         <button
           type="submit"
@@ -128,7 +128,7 @@ export default function JobAlertCapture({
 
       <p className="text-xs text-slate-500 mt-3">
         By subscribing you agree to receive job-alert emails. Unsubscribe anytime.{' '}
-        <a href="/privacy" className="underline hover:text-blue-600">
+        <a href="/privacy" className="underline hover:text-[#003D5C]">
           Privacy
         </a>
         .

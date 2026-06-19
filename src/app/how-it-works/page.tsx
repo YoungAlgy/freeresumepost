@@ -30,20 +30,20 @@ export default function HowItWorksPage() {
       <nav className="border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="font-bold text-lg tracking-tight">
-            freeresumepost<span className="text-slate-400">.co</span>
+            Ava Health
           </Link>
           <div className="flex items-center gap-6 text-sm font-medium">
             <a href="https://freejobpost.co/for-employers" className="hidden sm:inline hover:text-slate-900">For employers</a>
-            <Link href="/upload" className="bg-slate-900 text-white px-4 py-2 rounded-full text-[13px] font-semibold hover:bg-slate-700">Upload resume</Link>
+            <Link href="/upload" className="bg-[#003D5C] text-white px-4 py-2 rounded-full text-[13px] font-semibold hover:bg-[#002A40]">Upload Resume</Link>
           </div>
         </div>
       </nav>
 
       <article className="max-w-3xl mx-auto px-6 py-12 md:py-20">
-        <p className="text-xs font-semibold tracking-wider text-blue-600 uppercase mb-3">How it works</p>
+        <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">How it works</p>
         <h1 className="text-4xl md:text-5xl font-semibold leading-tight tracking-tight text-slate-900 mb-6">
           Upload once.<br />
-          <span className="text-blue-600">Get matched.</span>
+          <span className="text-[#003D5C]">Get matched.</span>
         </h1>
         <p className="text-lg text-slate-600 leading-relaxed mb-12">
           freeresumepost.co matches healthcare candidates to real, currently-open jobs. We don&apos;t
@@ -54,21 +54,21 @@ export default function HowItWorksPage() {
         <h2 className="text-xl font-semibold mb-4">For candidates</h2>
         <ol className="space-y-5 mb-12">
           <li className="flex gap-4">
-            <div className="shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-semibold flex items-center justify-center">1</div>
+            <div className="shrink-0 w-8 h-8 rounded-full bg-[#7FBC00] text-white text-sm font-semibold flex items-center justify-center">1</div>
             <div>
               <div className="font-semibold text-slate-900 mb-1">Drop your resume</div>
               <div className="text-slate-600 leading-relaxed">PDF, DOCX, or plain text. Up to 5 MB. Parsed locally in your browser. Your file never reaches our servers until you click submit.</div>
             </div>
           </li>
           <li className="flex gap-4">
-            <div className="shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-semibold flex items-center justify-center">2</div>
+            <div className="shrink-0 w-8 h-8 rounded-full bg-[#7FBC00] text-white text-sm font-semibold flex items-center justify-center">2</div>
             <div>
               <div className="font-semibold text-slate-900 mb-1">Review every field</div>
               <div className="text-slate-600 leading-relaxed">Our parser fills in name, email, phone, credentials, specialty, state, and years of experience. You correct anything wrong before saving.</div>
             </div>
           </li>
           <li className="flex gap-4">
-            <div className="shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-semibold flex items-center justify-center">3</div>
+            <div className="shrink-0 w-8 h-8 rounded-full bg-[#7FBC00] text-white text-sm font-semibold flex items-center justify-center">3</div>
             <div>
               <div className="font-semibold text-slate-900 mb-1">Pick public or private</div>
               <div className="text-slate-600 leading-relaxed">
@@ -78,7 +78,7 @@ export default function HowItWorksPage() {
             </div>
           </li>
           <li className="flex gap-4">
-            <div className="shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-semibold flex items-center justify-center">4</div>
+            <div className="shrink-0 w-8 h-8 rounded-full bg-[#7FBC00] text-white text-sm font-semibold flex items-center justify-center">4</div>
             <div>
               <div className="font-semibold text-slate-900 mb-1">Get matched</div>
               <div className="text-slate-600 leading-relaxed">
@@ -90,7 +90,7 @@ export default function HowItWorksPage() {
 
         <h2 className="text-xl font-semibold mb-4">For employers</h2>
         <p className="text-slate-600 leading-relaxed mb-4">
-          Employers post jobs at <a href="https://freejobpost.co/post-job" className="underline text-blue-600 hover:text-blue-700">freejobpost.co/post-job</a>. The matching engine surfaces matched candidates to them; candidates apply directly through the job listing. No middlemen, no &quot;unlock this resume&quot; fee.
+          Employers post jobs at <a href="https://freejobpost.co/post-job" className="underline text-[#003D5C] hover:text-[#002A40]">freejobpost.co/post-job</a>. The matching engine surfaces matched candidates to them; candidates apply directly through the job listing. No middlemen, no &quot;unlock this resume&quot; fee.
         </p>
 
         <h2 className="text-xl font-semibold mt-12 mb-4">What you don&apos;t get</h2>
@@ -110,7 +110,7 @@ export default function HowItWorksPage() {
         </p>
         <p className="text-slate-600 leading-relaxed mb-12">
           You can use freeresumepost.co indefinitely without ever being charged anything. Read our{' '}
-          <Link href="/privacy" className="underline text-blue-600 hover:text-blue-700">privacy policy</Link> for the specifics on what we collect and don&apos;t.
+          <Link href="/privacy" className="underline text-[#003D5C] hover:text-[#002A40]">privacy policy</Link> for the specifics on what we collect and don&apos;t.
         </p>
 
         <h2 className="text-xl font-semibold mt-12 mb-4">FAQ</h2>
@@ -133,7 +133,7 @@ export default function HowItWorksPage() {
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Can I delete my profile later?</h3>
-            <p className="text-slate-600">Yes. At any time. Email <a href="mailto:info@avahealth.co" className="underline text-blue-600 hover:text-blue-700">info@avahealth.co</a> with the subject "Delete my profile" and we&apos;ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
+            <p className="text-slate-600">Yes. At any time. Email <a href="mailto:info@avahealth.co" className="underline text-[#003D5C] hover:text-[#002A40]">info@avahealth.co</a> with the subject "Delete my profile" and we&apos;ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Do I need to make my profile public?</h3>
@@ -147,8 +147,8 @@ export default function HowItWorksPage() {
 
         <div className="border border-slate-200 rounded-2xl bg-slate-50 p-8 text-center">
           <p className="text-2xl font-semibold mb-3 text-slate-900">Ready when you are</p>
-          <Link href="/upload" className="inline-block bg-slate-900 text-white font-semibold px-6 py-3 rounded-full hover:bg-slate-700">
-            Upload your resume →
+          <Link href="/upload" className="inline-block bg-[#003D5C] text-white font-semibold px-6 py-3 rounded-full hover:bg-[#002A40]">
+            Upload Your Resume →
           </Link>
         </div>
       </article>

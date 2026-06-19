@@ -165,11 +165,11 @@ export default function UploadForm() {
           aria-hidden="true"
           className={`rounded-2xl border-2 border-dashed p-12 md:p-16 text-center transition-all ${
             dragOver
-              ? 'border-blue-500 bg-blue-50'
+              ? 'border-[#7FBC00] bg-[#7FBC00]/5'
               : 'border-slate-300 bg-slate-50/50'
           }`}
         >
-          <div className="mx-auto mb-4 w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center">
+          <div className="mx-auto mb-4 w-14 h-14 rounded-full bg-[#003D5C] text-white flex items-center justify-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -196,7 +196,7 @@ export default function UploadForm() {
         </div>
         {/* Keyboard-accessible file picker. visually centered below the drop zone. */}
         <div className="mt-4 flex justify-center">
-          <label className="cursor-pointer inline-flex items-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 text-sm transition-colors focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2">
+          <label className="cursor-pointer inline-flex items-center gap-2 rounded-lg bg-[#7FBC00] hover:bg-[#6DA300] text-white font-semibold px-6 py-3 text-sm transition-colors focus-within:ring-2 focus-within:ring-[#7FBC00] focus-within:ring-offset-2">
             <input
               ref={fileInputRef}
               id="resume-file-input"
@@ -224,7 +224,7 @@ export default function UploadForm() {
   if (phase === 'parsing') {
     return (
       <div className="rounded-2xl border border-slate-200 p-12 text-center bg-slate-50">
-        <div className="mx-auto mb-4 w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        <div className="mx-auto mb-4 w-10 h-10 border-4 border-[#7FBC00] border-t-transparent rounded-full animate-spin" />
         <p className="font-semibold text-slate-900">Reading {fileName}…</p>
         <p className="text-sm text-slate-500 mt-1">This runs locally. No uploads yet.</p>
       </div>
@@ -234,7 +234,7 @@ export default function UploadForm() {
   if (phase === 'submitting' || phase === 'done') {
     return (
       <div className="rounded-2xl border border-slate-200 p-12 text-center bg-slate-50">
-        <div className="mx-auto mb-4 w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        <div className="mx-auto mb-4 w-10 h-10 border-4 border-[#7FBC00] border-t-transparent rounded-full animate-spin" />
         <p className="font-semibold text-slate-900">Saving your profile…</p>
       </div>
     )
@@ -420,7 +420,7 @@ export default function UploadForm() {
               </p>
             </div>
           </label>
-          <label className="flex items-start gap-3 p-3 rounded-xl border-2 border-blue-200 bg-blue-50/30 hover:border-blue-300 cursor-pointer">
+          <label className="flex items-start gap-3 p-3 rounded-xl border-2 border-[#003D5C]/20 bg-[#003D5C]/5 hover:border-[#003D5C]/30 cursor-pointer">
             <input
               type="checkbox"
               checked={form.is_public}
@@ -470,7 +470,7 @@ export default function UploadForm() {
         <button
           type="submit"
           disabled={!canSubmit()}
-          className="inline-flex items-center rounded-xl bg-blue-600 text-white px-6 py-3 font-semibold shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="inline-flex items-center rounded-xl bg-[#7FBC00] text-white px-6 py-3 font-semibold shadow-sm hover:bg-[#6DA300] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           Save profile →
         </button>
@@ -490,7 +490,7 @@ export default function UploadForm() {
 }
 
 const fieldStyle =
-  'w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+  'w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7FBC00] focus:border-transparent'
 
 function Field({
   label,

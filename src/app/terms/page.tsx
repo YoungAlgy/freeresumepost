@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Terms of Use',
-  description: 'Free Resume Post terms of use. Free candidate-resume platform operated by Ava Health Partners LLC.',
+  description: 'Ava Health terms of use. Free candidate-resume platform operated by Ava Health Partners LLC.',
   alternates: { canonical: 'https://www.freeresumepost.co/terms' },
   robots: { index: true, follow: true },
 }
@@ -14,9 +14,9 @@ export default function TermsPage() {
       <nav className="border-b border-slate-200">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="font-bold text-lg tracking-tight">
-            freeresumepost<span className="text-slate-400">.co</span>
+            Ava Health
           </Link>
-          <Link href="/upload" className="text-sm font-medium text-blue-600 hover:text-blue-700">Upload resume</Link>
+          <Link href="/upload" className="text-sm font-medium text-[#003D5C] hover:text-[#002A40]">Upload Resume</Link>
         </div>
       </nav>
 
@@ -42,7 +42,7 @@ export default function TermsPage() {
             <li>Your resume is parsed in your browser before any data reaches our servers.</li>
             <li>You review every extracted field and approve before saving.</li>
             <li>You may make your profile public (discoverable by employers) or private (matching only).</li>
-            <li>You may delete your profile at any time by emailing <a href="mailto:info@avahealth.co?subject=Delete%20my%20profile" className="underline text-blue-600 hover:text-blue-700">info@avahealth.co</a> with subject &quot;Delete my profile&quot;.</li>
+            <li>You may delete your profile at any time by emailing <a href="mailto:info@avahealth.co?subject=Delete%20my%20profile" className="underline text-[#003D5C] hover:text-[#002A40]">info@avahealth.co</a> with subject &quot;Delete my profile&quot;.</li>
           </ul>
 
           <h2 className="text-xl font-semibold mt-8 mb-2">3. Matching engine</h2>
@@ -91,11 +91,11 @@ export default function TermsPage() {
 
           <h2 className="text-xl font-semibold mt-8 mb-2">10. Contact</h2>
           <p>
-            Questions? <a href="mailto:info@avahealth.co" className="underline text-blue-600 hover:text-blue-700">info@avahealth.co</a>
+            Questions? <a href="mailto:info@avahealth.co" className="underline text-[#003D5C] hover:text-[#002A40]">info@avahealth.co</a>
           </p>
 
           <p className="mt-10 text-sm text-slate-600">
-            See also: <Link href="/privacy" className="underline text-blue-600 hover:text-blue-700">Privacy Policy</Link>
+            See also: <Link href="/privacy" className="underline text-[#003D5C] hover:text-[#002A40]">Privacy Policy</Link>
           </p>
         </div>
       </article>

@@ -52,12 +52,12 @@ export default function ResendForm() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
           aria-label="Email address"
-          className="flex-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#7FBC00]"
         />
         <button
           type="submit"
           disabled={state === 'sending'}
-          className="bg-slate-900 text-white text-sm font-semibold px-4 py-2 rounded-full hover:bg-slate-700 disabled:opacity-60 whitespace-nowrap"
+          className="bg-[#003D5C] text-white text-sm font-semibold px-4 py-2 rounded-full hover:bg-[#002A40] disabled:opacity-60 whitespace-nowrap"
         >
           {state === 'sending' ? 'Sending…' : 'Send link'}
         </button>

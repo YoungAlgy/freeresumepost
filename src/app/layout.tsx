@@ -7,6 +7,7 @@ import './globals.css'
 import { buildOrganizationGraph } from '@/lib/organization-schema'
 import { E_VERIFY } from '@/lib/e-verify-config'
 import { AvaFamilyBand } from '@/components/ava-family/AvaFamilyBand'
+import { AvaFamilyNav } from '@/components/ava-family/AvaFamilyNav'
 
 import { safeJsonLd } from '@/lib/safe-jsonld'
 const inter = Inter({
@@ -19,26 +20,26 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Free Resume Post',
-    default: 'Free Resume Post: Upload once, get matched to real healthcare jobs',
+    template: '%s | Ava Health',
+    default: 'Upload Your Healthcare Resume Free, Get Matched to Real Jobs | Ava Health',
   },
   description:
-    'Upload your resume for free and get matched to healthcare openings. No recruiter pitches, no resume databases sold to spammers. Built by a real staffing team.',
+    'Upload your healthcare resume free on Ava Health and get matched to real openings. No recruiter pitches, no resume databases sold to spammers. Built by a real staffing team.',
   metadataBase: new URL('https://www.freeresumepost.co'),
   // NO root-level `canonical` — with metadataBase set it would be inherited
   // by every page without its own alternates, claiming the homepage as
   // canonical for all of them (2026-06 audit). Pages declare their own.
   openGraph: {
-    siteName: 'Free Resume Post',
+    siteName: 'Ava Health',
     type: 'website',
     locale: 'en_US',
     url: 'https://www.freeresumepost.co',
-    title: 'Free Resume Post: Upload once, get matched',
+    title: 'Ava Health: Upload your resume, get matched',
     description: 'Upload your resume free. We match you to real healthcare openings. No recruiter spam.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Free Resume Post: Upload once, get matched',
+    title: 'Ava Health: Upload your resume, get matched',
     description: 'Upload your resume free. We match you to real openings.',
     site: '@avahealth',
   },
@@ -98,11 +99,11 @@ export default function RootLayout({
             __html: safeJsonLd(
               buildOrganizationGraph({
                 websiteUrl: 'https://www.freeresumepost.co',
-                websiteName: 'Free Resume Post',
+                websiteName: 'Ava Health',
                 websiteDescription:
-                  'Upload your resume free, get matched to real healthcare openings.',
+                  'Ava Health — upload your resume free, get matched to real healthcare openings.',
                 organizationDescription:
-                  'Healthcare staffing and recruiting firm connecting physicians, nurses, and therapists with US healthcare employers. Operates freeresumepost.co, a free candidate-resume platform that matches healthcare professionals to open roles without selling resume data.',
+                  'Healthcare staffing and recruiting firm connecting physicians, nurses, and therapists with US healthcare employers. Operates a free candidate-resume platform that matches healthcare professionals to open roles without selling resume data.',
                 searchActionTarget: 'https://freejobpost.co/jobs?q={search_term_string}',
               })
             ),
@@ -113,10 +114,11 @@ export default function RootLayout({
         {/* Skip-nav: keyboard users can jump past the nav directly to the main content */}
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:text-sm focus:font-bold focus:rounded"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[#003D5C] focus:text-white focus:text-sm focus:font-bold focus:rounded"
         >
           Skip to main content
         </a>
+        <AvaFamilyNav currentSite="freeresume" />
         <div id="main-content">
           {children}
         </div>

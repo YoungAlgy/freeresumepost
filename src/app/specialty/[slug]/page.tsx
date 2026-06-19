@@ -84,11 +84,11 @@ export async function generateMetadata(
   const title = guide?.pageTitle ?? hub.title
   const description = guide?.metaDescription ?? hub.metaDescription
   return {
-    title: { absolute: `${title} | Free Resume Post` },
+    title: { absolute: `${title} | Ava Health` },
     description,
     alternates: { canonical: `https://www.freeresumepost.co/specialty/${hub.slug}` },
     openGraph: {
-      title: `${title} | freeresumepost.co`,
+      title: `${title} | Ava Health`,
       description,
       url: `https://www.freeresumepost.co/specialty/${hub.slug}`,
       type: 'website',
@@ -96,7 +96,7 @@ export async function generateMetadata(
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${title} | freeresumepost.co`,
+      title: `${title} | Ava Health`,
       description,
       images: ['/opengraph-image'],
     },
@@ -212,11 +212,11 @@ export default async function CandidateSpecialtyPage(
         <nav className="border-b border-slate-200">
           <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
             <Link href="/" className="font-bold text-lg tracking-tight">
-              freeresumepost<span className="text-slate-400">.co</span>
+              Ava Health
             </Link>
             <div className="flex items-center gap-6 text-sm font-medium">
               <a href="https://freejobpost.co/for-employers" className="hidden sm:inline hover:text-slate-900">For employers</a>
-              <Link href="/upload" className="bg-slate-900 text-white px-4 py-2 rounded-full text-[13px] font-semibold hover:bg-slate-700">Upload resume</Link>
+              <Link href="/upload" className="bg-[#003D5C] text-white px-4 py-2 rounded-full text-[13px] font-semibold hover:bg-[#002A40]">Upload Resume</Link>
             </div>
           </div>
         </nav>
@@ -230,10 +230,10 @@ export default async function CandidateSpecialtyPage(
             <span className="text-slate-900 font-medium">{displayName}</span>
           </nav>
 
-          <p className="text-xs font-semibold tracking-wider text-blue-600 uppercase mb-3">For {displayName.toLowerCase()}s</p>
+          <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">For {displayName.toLowerCase()}s</p>
           <h1 className="text-4xl md:text-5xl font-semibold leading-tight tracking-tight text-slate-900 mb-6">
             {displayName} resume<br />
-            <span className="text-blue-600">examples, skills, and a free upload.</span>
+            <span className="text-[#003D5C]">examples, skills, and a free upload.</span>
           </h1>
           <p className={guide && guide.alsoKnownAs.length > 0 ? 'text-lg text-slate-600 leading-relaxed mb-4' : 'text-lg text-slate-600 leading-relaxed mb-10'}>
             {hub.shortDescription}{' '}Upload once, get matched, decide whether to apply. We don&apos;t sell your data. Email us any time to delete your profile.
@@ -248,8 +248,8 @@ export default async function CandidateSpecialtyPage(
             <p className="text-sm font-semibold text-slate-900 mb-2">Drop your {displayName.toLowerCase()} resume</p>
             <p className="text-sm text-slate-600 mb-4">PDF, DOCX, or text. Up to 5 MB. ~90 seconds end-to-end.</p>
             <div className="flex flex-wrap gap-3">
-              <Link href="/upload" className="inline-block bg-slate-900 text-white font-semibold px-6 py-3 rounded-full hover:bg-slate-700">
-                Upload resume →
+              <Link href="/upload" className="inline-block bg-[#003D5C] text-white font-semibold px-6 py-3 rounded-full hover:bg-[#002A40]">
+                Upload Resume →
               </Link>
               <a
                 href={jobHubUrl}
@@ -266,7 +266,7 @@ export default async function CandidateSpecialtyPage(
           </p>
           <div className="flex flex-wrap gap-2 mb-12">
             {hub.exampleRoles.map((r) => (
-              <span key={r} className="text-sm bg-blue-50 text-blue-900 px-3 py-1 rounded-full font-medium">{r}</span>
+              <span key={r} className="text-sm bg-[#003D5C]/10 text-[#003D5C] px-3 py-1 rounded-full font-medium">{r}</span>
             ))}
           </div>
 
@@ -311,7 +311,7 @@ export default async function CandidateSpecialtyPage(
               <ul className="space-y-3 mb-2">
                 {guide.tips.map((t) => (
                   <li key={t} className="flex gap-3 text-slate-700 leading-relaxed">
-                    <span className="text-blue-600 font-bold shrink-0 mt-0.5" aria-hidden="true">→</span>
+                    <span className="text-[#003D5C] font-bold shrink-0 mt-0.5" aria-hidden="true">→</span>
                     <span>{t}</span>
                   </li>
                 ))}
@@ -374,21 +374,21 @@ export default async function CandidateSpecialtyPage(
           <h2 className="text-xl font-semibold mb-4">How matching works</h2>
           <ol className="space-y-4 mb-12">
             <li className="flex gap-4">
-              <div className="shrink-0 w-7 h-7 rounded-full bg-blue-600 text-white text-sm font-semibold flex items-center justify-center">1</div>
+              <div className="shrink-0 w-7 h-7 rounded-full bg-[#7FBC00] text-white text-sm font-semibold flex items-center justify-center">1</div>
               <div>
                 <div className="font-semibold text-slate-900 mb-1">Upload</div>
                 <div className="text-slate-600 leading-relaxed text-sm">Parser fills your name, contact, credentials ({hub.commonCredentials.slice(0, 3).join(' / ')}), specialty, state, years of experience.</div>
               </div>
             </li>
             <li className="flex gap-4">
-              <div className="shrink-0 w-7 h-7 rounded-full bg-blue-600 text-white text-sm font-semibold flex items-center justify-center">2</div>
+              <div className="shrink-0 w-7 h-7 rounded-full bg-[#7FBC00] text-white text-sm font-semibold flex items-center justify-center">2</div>
               <div>
                 <div className="font-semibold text-slate-900 mb-1">Pick public or private</div>
                 <div className="text-slate-600 leading-relaxed text-sm">Public profiles get an indexed page (first name + last initial only). Private profiles only appear in the matching engine. Invisible elsewhere.</div>
               </div>
             </li>
             <li className="flex gap-4">
-              <div className="shrink-0 w-7 h-7 rounded-full bg-blue-600 text-white text-sm font-semibold flex items-center justify-center">3</div>
+              <div className="shrink-0 w-7 h-7 rounded-full bg-[#7FBC00] text-white text-sm font-semibold flex items-center justify-center">3</div>
               <div>
                 <div className="font-semibold text-slate-900 mb-1">Get matched</div>
                 <div className="text-slate-600 leading-relaxed text-sm">Your top matches surface on your private profile page (the edit URL we send on submit), refreshed daily. You decide whether to apply.</div>
@@ -412,7 +412,7 @@ export default async function CandidateSpecialtyPage(
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Can I delete my profile?</h3>
-              <p className="text-slate-600 text-sm leading-relaxed">Yes, at any time. Email <a href="mailto:info@avahealth.co?subject=Delete%20my%20profile" className="text-blue-600 hover:underline">info@avahealth.co</a> with subject "Delete my profile" and we&apos;ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
+              <p className="text-slate-600 text-sm leading-relaxed">Yes, at any time. Email <a href="mailto:info@avahealth.co?subject=Delete%20my%20profile" className="text-[#003D5C] hover:underline">info@avahealth.co</a> with subject "Delete my profile" and we&apos;ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
             </div>
           </div>
 
@@ -432,7 +432,7 @@ export default async function CandidateSpecialtyPage(
           <div className="border border-slate-200 rounded-2xl bg-slate-50 p-8 text-center">
             <p className="text-2xl font-semibold mb-3 text-slate-900">Ready when you are</p>
             <div className="flex flex-wrap justify-center gap-3">
-              <Link href="/upload" className="inline-block bg-slate-900 text-white font-semibold px-6 py-3 rounded-full hover:bg-slate-700">
+              <Link href="/upload" className="inline-block bg-[#003D5C] text-white font-semibold px-6 py-3 rounded-full hover:bg-[#002A40]">
                 Upload your {hub.name.toLowerCase()} resume →
               </Link>
               <a

@@ -113,11 +113,11 @@ export default async function UploadPage() {
       <nav className="border-b border-slate-200 bg-white/80 backdrop-blur sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-lg bg-blue-600 text-white font-black flex items-center justify-center text-sm">
-              r
+            <span className="w-7 h-7 rounded-lg bg-[#003D5C] text-white font-black flex items-center justify-center text-sm">
+              A
             </span>
             <span className="font-bold text-lg tracking-tight">
-              freeresumepost<span className="text-slate-400">.co</span>
+              Ava Health
             </span>
           </Link>
           <div className="flex items-center gap-4 md:gap-6 text-sm text-slate-600">
@@ -130,7 +130,7 @@ export default async function UploadPage() {
       </nav>
 
       <div className="max-w-3xl mx-auto px-6 py-10 md:py-16">
-        <p className="text-xs font-semibold tracking-wider text-blue-600 uppercase mb-3">
+        <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">
           Free forever. No account
         </p>
         <h1 className="text-4xl md:text-5xl font-semibold leading-tight tracking-tight text-slate-900 mb-4">
@@ -145,7 +145,7 @@ export default async function UploadPage() {
           Not ready to upload?{' '}
           <a
             href="https://freejobpost.co/jobs"
-            className="text-blue-600 font-medium hover:underline"
+            className="text-[#003D5C] font-medium hover:underline"
           >
             Browse the {activeJobs.toLocaleString()} live healthcare openings first →
           </a>
@@ -183,21 +183,21 @@ export default async function UploadPage() {
           <h2 className="text-xs font-semibold tracking-wider text-slate-500 uppercase mb-4">After you upload</h2>
           <ol className="space-y-4">
             <li className="flex gap-4">
-              <div className="shrink-0 w-7 h-7 rounded-full bg-blue-600 text-white text-xs font-semibold flex items-center justify-center mt-0.5">1</div>
+              <div className="shrink-0 w-7 h-7 rounded-full bg-[#7FBC00] text-white text-xs font-semibold flex items-center justify-center mt-0.5">1</div>
               <div>
                 <div className="font-medium text-slate-900">We parse your resume locally</div>
                 <div className="text-sm text-slate-600 mt-0.5">PDF or DOCX, ~3 seconds in your browser. Your file never reaches our servers until you click submit.</div>
               </div>
             </li>
             <li className="flex gap-4">
-              <div className="shrink-0 w-7 h-7 rounded-full bg-blue-600 text-white text-xs font-semibold flex items-center justify-center mt-0.5">2</div>
+              <div className="shrink-0 w-7 h-7 rounded-full bg-[#7FBC00] text-white text-xs font-semibold flex items-center justify-center mt-0.5">2</div>
               <div>
                 <div className="font-medium text-slate-900">You review every field</div>
                 <div className="text-sm text-slate-600 mt-0.5">Specialty, credentials, state, contact info. Fix anything we got wrong before it saves.</div>
               </div>
             </li>
             <li className="flex gap-4">
-              <div className="shrink-0 w-7 h-7 rounded-full bg-blue-600 text-white text-xs font-semibold flex items-center justify-center mt-0.5">3</div>
+              <div className="shrink-0 w-7 h-7 rounded-full bg-[#7FBC00] text-white text-xs font-semibold flex items-center justify-center mt-0.5">3</div>
               <div>
                 <div className="font-medium text-slate-900">We match you to live openings</div>
                 <div className="text-sm text-slate-600 mt-0.5">Our matching engine scores you against every active job. Your top matches appear on your private profile page (the edit URL you get on submit), refreshed daily. No spam, no auto-apply.</div>
@@ -217,7 +217,7 @@ export default async function UploadPage() {
               </h2>
               <a
                 href="https://freejobpost.co/jobs"
-                className="text-xs font-medium text-blue-600 hover:text-blue-700"
+                className="text-xs font-medium text-[#003D5C] hover:text-[#002A40]"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -271,7 +271,7 @@ export default async function UploadPage() {
           <div className="mt-14 mb-6 border-t border-slate-200 pt-10">
             <div className="flex items-baseline justify-between mb-5">
               <h2 className="text-xs font-semibold tracking-wider text-slate-500 uppercase">Recently posted on freejobpost.co</h2>
-              <a href="https://freejobpost.co/jobs" className="text-xs font-medium text-blue-600 hover:text-blue-700">
+              <a href="https://freejobpost.co/jobs" className="text-xs font-medium text-[#003D5C] hover:text-[#002A40]">
                 Browse all {activeJobs.toLocaleString()} →
               </a>
             </div>
@@ -292,7 +292,7 @@ export default async function UploadPage() {
                       <div className="text-xs text-slate-600 truncate mt-0.5">
                         {loc || '—'}
                         {job.remote_hybrid === 'remote' && <span className="ml-2 inline-block px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-semibold">Remote</span>}
-                        {job.remote_hybrid === 'hybrid' && <span className="ml-2 inline-block px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 text-[10px] font-semibold">Hybrid</span>}
+                        {job.remote_hybrid === 'hybrid' && <span className="ml-2 inline-block px-1.5 py-0.5 rounded bg-[#003D5C]/10 text-[#003D5C] text-[10px] font-semibold">Hybrid</span>}
                       </div>
                     </div>
                     {salary && <div className="text-sm font-semibold text-slate-900 tabular-nums shrink-0">{salary}</div>}

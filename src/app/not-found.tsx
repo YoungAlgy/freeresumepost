@@ -23,7 +23,7 @@ export default function NotFound() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center mb-12">
           <Link
             href="/upload"
-            className="inline-flex justify-center items-center bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors"
+            className="inline-flex justify-center items-center bg-[#7FBC00] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#6DA300] transition-colors"
           >
             Upload your resume
           </Link>
@@ -61,7 +61,7 @@ export default function NotFound() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm px-3 py-1.5 rounded-full border border-slate-300 bg-white hover:border-blue-400 hover:bg-blue-50 transition-colors font-medium text-slate-700"
+                className="text-sm px-3 py-1.5 rounded-full border border-slate-300 bg-white hover:border-[#003D5C]/40 hover:bg-[#003D5C]/5 transition-colors font-medium text-slate-700"
               >
                 {link.label}
               </Link>

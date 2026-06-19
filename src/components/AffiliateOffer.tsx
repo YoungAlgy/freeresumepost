@@ -26,7 +26,7 @@ export default function AffiliateOffer({
           href={aff.url}
           target="_blank"
           rel="sponsored nofollow noopener noreferrer"
-          className="shrink-0 inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+          className="shrink-0 inline-flex items-center rounded-lg bg-[#7FBC00] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#6DA300]"
         >
           {aff.cta}
         </a>

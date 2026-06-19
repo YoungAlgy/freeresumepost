@@ -16,9 +16,9 @@ export default function EVerifyPage() {
       <nav className="border-b border-slate-200">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="font-bold text-lg tracking-tight">
-            freeresumepost<span className="text-slate-400">.co</span>
+            Ava Health
           </Link>
-          <Link href="/upload" className="text-sm font-medium text-blue-600 hover:text-blue-700">Upload resume</Link>
+          <Link href="/upload" className="text-sm font-medium text-[#003D5C] hover:text-[#002A40]">Upload Resume</Link>
         </div>
       </nav>
 
@@ -96,7 +96,7 @@ export default function EVerifyPage() {
             <li>
               <a
                 href="https://www.e-verify.gov/sites/default/files/everify/posters/EVerifyParticipationPoster.pdf"
-                className="text-blue-600 hover:text-blue-700 underline"
+                className="text-[#003D5C] hover:text-[#002A40] underline"
               >
                 E-Verify Participation poster (English / Spanish)
               </a>
@@ -104,7 +104,7 @@ export default function EVerifyPage() {
             <li>
               <a
                 href="https://www.e-verify.gov/sites/default/files/everify/posters/IER_RighttoWorkPoster.pdf"
-                className="text-blue-600 hover:text-blue-700 underline"
+                className="text-[#003D5C] hover:text-[#002A40] underline"
               >
                 Right to Work poster (English / Spanish)
               </a>
@@ -114,11 +114,11 @@ export default function EVerifyPage() {
           <h2 className="text-xl font-semibold mt-8 mb-2">Questions</h2>
           <p>
             Questions about Ava Health&apos;s E-Verify participation:{' '}
-            <a href="mailto:info@avahealth.co" className="text-blue-600 hover:text-blue-700 underline">
+            <a href="mailto:info@avahealth.co" className="text-[#003D5C] hover:text-[#002A40] underline">
               info@avahealth.co
             </a>
             . General E-Verify support: 1-888-464-4218 or{' '}
-            <a href="https://www.e-verify.gov" className="text-blue-600 hover:text-blue-700 underline">
+            <a href="https://www.e-verify.gov" className="text-[#003D5C] hover:text-[#002A40] underline">
               e-verify.gov
             </a>
             .

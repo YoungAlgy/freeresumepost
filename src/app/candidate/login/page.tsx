@@ -16,14 +16,14 @@ export default function CandidateLoginPage() {
       <nav className="border-b border-slate-200">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="font-bold text-lg tracking-tight">
-            freeresumepost<span className="text-slate-400">.co</span>
+            Ava Health
           </Link>
-          <Link href="/upload" className="text-sm font-medium text-blue-600 hover:text-blue-700">Upload resume</Link>
+          <Link href="/upload" className="text-sm font-medium text-[#003D5C] hover:text-[#002A40]">Upload Resume</Link>
         </div>
       </nav>
 
       <div className="max-w-lg mx-auto px-6 py-16">
-        <p className="text-xs font-semibold tracking-wider text-blue-600 uppercase mb-3">Edit your profile</p>
+        <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">Edit your profile</p>
         <h1 className="text-3xl md:text-4xl font-semibold leading-tight tracking-tight text-slate-900 mb-4">
           Sign-in by email link
         </h1>
@@ -39,7 +39,7 @@ export default function CandidateLoginPage() {
           <p className="text-sm text-slate-700 mb-3">
             No profile yet? Upload your resume in 30 seconds. No account or password to create.
           </p>
-          <Link href="/upload" className="inline-block bg-slate-900 text-white text-sm font-semibold px-4 py-2 rounded-full hover:bg-slate-700">
+          <Link href="/upload" className="inline-block bg-[#003D5C] text-white text-sm font-semibold px-4 py-2 rounded-full hover:bg-[#002A40]">
             Upload your resume →
           </Link>
         </div>

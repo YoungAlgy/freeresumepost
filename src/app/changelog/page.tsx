@@ -45,7 +45,7 @@ type Entry = ChangelogEntry
 const ENTRIES = CHANGELOG_ENTRIES
 
 const TAG_STYLES: Record<Tag, string> = {
-  new: 'bg-blue-600 text-white',
+  new: 'bg-[#7FBC00] text-white',
   improved: 'bg-emerald-600 text-white',
   fixed: 'bg-amber-500 text-white',
   reliability: 'bg-slate-700 text-white',
@@ -85,24 +85,24 @@ export default function ChangelogPage() {
       <nav className="border-b border-slate-200 bg-white/80 backdrop-blur sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-lg bg-blue-600 text-white font-black flex items-center justify-center text-sm">
+            <span className="w-7 h-7 rounded-lg bg-[#003D5C] text-white font-black flex items-center justify-center text-sm">
               r
             </span>
             <span className="font-bold text-lg tracking-tight">
-              freeresumepost<span className="text-slate-400">.co</span>
+              Ava Health
             </span>
           </Link>
           <div className="flex items-center gap-4 md:gap-6 text-sm text-slate-600">
             <Link href="/" className="hidden sm:inline hover:text-slate-900 whitespace-nowrap">Home</Link>
-            <Link href="/upload" className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 whitespace-nowrap">
-              Upload resume
+            <Link href="/upload" className="bg-[#003D5C] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#002A40] whitespace-nowrap">
+              Upload Resume
             </Link>
           </div>
         </div>
       </nav>
 
       <article className="max-w-3xl mx-auto px-6 py-10 md:py-16">
-        <p className="text-xs font-semibold tracking-wider text-blue-600 uppercase mb-3">
+        <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">
           Changelog
         </p>
         <h1 className="text-4xl md:text-5xl font-semibold leading-tight tracking-tight text-slate-900 mb-4">
@@ -146,7 +146,7 @@ export default function ChangelogPage() {
                           <h3 className="text-lg font-semibold leading-tight tracking-tight text-slate-900">
                             <a
                               href={`#${anchor}`}
-                              className="hover:text-blue-600 focus:text-blue-600"
+                              className="hover:text-[#003D5C] focus:text-[#003D5C]"
                               aria-label={`Permalink to ${e.title}`}
                             >
                               {e.title}
@@ -171,7 +171,7 @@ export default function ChangelogPage() {
         <div className="mt-16 pt-8 border-t border-slate-200">
           <p className="text-sm text-slate-600">
             Want to suggest a feature or report a bug? Email{' '}
-            <a href="mailto:info@avahealth.co" className="text-blue-600 font-semibold hover:underline">
+            <a href="mailto:info@avahealth.co" className="text-[#003D5C] font-semibold hover:underline">
               info@avahealth.co
             </a>
             .

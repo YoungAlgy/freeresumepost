@@ -89,11 +89,11 @@ export default function ProfileEditForm({
       <nav className="border-b border-slate-200">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-lg bg-blue-600 text-white font-black flex items-center justify-center text-sm">
-              r
+            <span className="w-7 h-7 rounded-lg bg-[#003D5C] text-white font-black flex items-center justify-center text-sm">
+              a
             </span>
             <span className="font-bold text-lg tracking-tight">
-              freeresumepost<span className="text-slate-400">.co</span>
+              Ava Health
             </span>
           </Link>
           <p className="text-xs font-semibold text-slate-500 tracking-wider uppercase">
@@ -103,7 +103,7 @@ export default function ProfileEditForm({
       </nav>
 
       <div className="max-w-3xl mx-auto px-6 py-10 md:py-16">
-        <p className="text-xs font-semibold tracking-wider text-blue-600 uppercase mb-3">
+        <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">
           Your profile
         </p>
         <h1 className="text-3xl md:text-4xl font-semibold leading-tight tracking-tight mb-2">
@@ -116,7 +116,7 @@ export default function ProfileEditForm({
         {f.is_public && (
           <p className="text-sm text-slate-500 mb-8">
             Public URL:{' '}
-            <a href={publicUrl} className="font-mono text-xs text-blue-600 hover:underline">
+            <a href={publicUrl} className="font-mono text-xs text-[#003D5C] hover:underline">
               {publicUrl}
             </a>
           </p>
@@ -154,7 +154,7 @@ export default function ProfileEditForm({
                 href="https://freejobpost.co/jobs"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center text-sm font-semibold text-blue-600 hover:text-blue-700"
+                className="inline-flex items-center text-sm font-semibold text-[#003D5C] hover:text-[#002A40]"
               >
                 Browse all healthcare jobs →
               </a>
@@ -181,14 +181,14 @@ export default function ProfileEditForm({
                                 m.score >= 70
                                   ? 'bg-green-50 text-green-700 border border-green-200'
                                   : m.score >= 50
-                                    ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                                    ? 'bg-[#003D5C]/10 text-[#003D5C] border border-[#003D5C]/20'
                                     : 'bg-slate-50 text-slate-600 border border-slate-200'
                               }`}
                             >
                               {m.score}% MATCH
                             </span>
                           </div>
-                          <p className="font-semibold text-slate-900 leading-snug group-hover:text-blue-700 line-clamp-2">
+                          <p className="font-semibold text-slate-900 leading-snug group-hover:text-[#003D5C] line-clamp-2">
                             {m.job_title}
                           </p>
                           <p className="text-sm text-slate-600 mt-0.5 truncate">
@@ -416,7 +416,7 @@ export default function ProfileEditForm({
             <button
               type="submit"
               disabled={pending}
-              className="inline-flex items-center rounded-xl bg-blue-600 text-white px-6 py-3 font-semibold shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="inline-flex items-center rounded-xl bg-[#003D5C] text-white px-6 py-3 font-semibold shadow-sm hover:bg-[#002A40] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {pending ? 'Saving…' : 'Save changes'}
             </button>
@@ -428,7 +428,7 @@ export default function ProfileEditForm({
 }
 
 const fieldStyle =
-  'w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+  'w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7FBC00] focus:border-transparent'
 
 function Field({
   label,

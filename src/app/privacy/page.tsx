@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'Free Resume Post privacy policy. Your resume is yours; we never sell candidate data. Operated by Ava Health Partners LLC.',
+  description: 'Ava Health privacy policy. Your resume is yours; we never sell candidate data. Operated by Ava Health Partners LLC.',
   alternates: { canonical: 'https://www.freeresumepost.co/privacy' },
   robots: { index: true, follow: true },
 }
@@ -14,9 +14,9 @@ export default function PrivacyPage() {
       <nav className="border-b border-slate-200">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="font-bold text-lg tracking-tight">
-            freeresumepost<span className="text-slate-400">.co</span>
+            Ava Health
           </Link>
-          <Link href="/upload" className="text-sm font-medium text-blue-600 hover:text-blue-700">Upload resume</Link>
+          <Link href="/upload" className="text-sm font-medium text-[#003D5C] hover:text-[#002A40]">Upload Resume</Link>
         </div>
       </nav>
 
@@ -82,13 +82,13 @@ export default function PrivacyPage() {
           <ul className="list-disc pl-5 space-y-1.5">
             <li>Your profile stays active until you delete it.</li>
             <li>Inactive profiles (no logins or applications in 18 months) are auto-archived and removed from matching.</li>
-            <li>You can request full deletion by emailing <a href="mailto:info@avahealth.co?subject=Delete%20my%20profile" className="underline text-blue-600 hover:text-blue-700">info@avahealth.co</a> with subject &quot;Delete my profile&quot;. We&apos;ll wipe both the resume file and parsed data within 30 days.</li>
+            <li>You can request full deletion by emailing <a href="mailto:info@avahealth.co?subject=Delete%20my%20profile" className="underline text-[#003D5C] hover:text-[#002A40]">info@avahealth.co</a> with subject &quot;Delete my profile&quot;. We&apos;ll wipe both the resume file and parsed data within 30 days.</li>
           </ul>
 
           <h2 className="text-xl font-semibold mt-8 mb-2">Your rights (CCPA / GDPR)</h2>
           <p>
             California + EU residents: you have the right to access, correct, or delete your data.
-            Email <a href="mailto:info@avahealth.co" className="underline text-blue-600 hover:text-blue-700">info@avahealth.co</a> with the subject &quot;Privacy request&quot;. We&apos;ll respond within 30 days.
+            Email <a href="mailto:info@avahealth.co" className="underline text-[#003D5C] hover:text-[#002A40]">info@avahealth.co</a> with the subject &quot;Privacy request&quot;. We&apos;ll respond within 30 days.
           </p>
 
           <h2 className="text-xl font-semibold mt-8 mb-2">Cookies</h2>
@@ -100,13 +100,13 @@ export default function PrivacyPage() {
           <h2 className="text-xl font-semibold mt-8 mb-2">Bot protection (Cloudflare Turnstile)</h2>
           <p>
             We use{' '}
-            <a href="https://www.cloudflare.com/products/turnstile/" className="underline text-blue-600 hover:text-blue-700" rel="noopener noreferrer">
+            <a href="https://www.cloudflare.com/products/turnstile/" className="underline text-[#003D5C] hover:text-[#002A40]" rel="noopener noreferrer">
               Cloudflare Turnstile
             </a>{' '}
             on resume uploads and form submissions to detect bots and prevent spam. Turnstile may
             use browser signals (cookies, local storage, browser characteristics) to assess whether
             a submission is human. No data collected by Turnstile is used for advertising. See{' '}
-            <a href="https://www.cloudflare.com/privacypolicy/" className="underline text-blue-600 hover:text-blue-700" rel="noopener noreferrer">
+            <a href="https://www.cloudflare.com/privacypolicy/" className="underline text-[#003D5C] hover:text-[#002A40]" rel="noopener noreferrer">
               Cloudflare&apos;s Privacy Policy
             </a>{' '}
             for details.
@@ -123,11 +123,11 @@ export default function PrivacyPage() {
             <strong>Ava Health Partners LLC</strong><br />
             4532 W Kennedy Blvd, Suite 125<br />
             Tampa, FL 33609<br />
-            <a href="mailto:info@avahealth.co" className="underline text-blue-600 hover:text-blue-700">info@avahealth.co</a>
+            <a href="mailto:info@avahealth.co" className="underline text-[#003D5C] hover:text-[#002A40]">info@avahealth.co</a>
           </p>
 
           <p className="mt-10 text-sm text-slate-600">
-            See also: <Link href="/terms" className="underline text-blue-600 hover:text-blue-700">Terms of Use</Link>
+            See also: <Link href="/terms" className="underline text-[#003D5C] hover:text-[#002A40]">Terms of Use</Link>
           </p>
         </div>
       </article>
