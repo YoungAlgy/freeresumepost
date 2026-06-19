@@ -5,6 +5,21 @@ const nextConfig: NextConfig = {
   // Don't advertise the framework (X-Powered-By: Next.js) — freejobpost
   // already suppresses it; keep the pair in lockstep. 2026-06 audit.
   poweredByHeader: false,
+  async redirects() {
+    return [
+      {
+        // Modern icons live at /icon (src/app/icon.tsx) and /apple-icon
+        // (src/app/apple-icon.tsx) — Next.js auto-generates them. But many
+        // crawlers and older browsers still hit /favicon.ico directly. There
+        // is no static favicon.ico, so redirect to the canonical generated
+        // icon instead of returning a 404. Mirrors freejobpost's redirect so
+        // the sister sites stay in lockstep.
+        source: '/favicon.ico',
+        destination: '/icon',
+        permanent: true,
+      },
+    ]
+  },
   async headers() {
     return [
       {
