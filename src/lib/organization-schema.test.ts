@@ -18,9 +18,9 @@ describe('ORG_PROFILE (canonical)', () => {
     expect(ORG_PROFILE.legalName).toBe('Ava Health Partners LLC')
   })
 
-  it('uses the canonical avahealth.co identity', () => {
-    expect(ORG_PROFILE['@id']).toBe('https://avahealth.co#organization')
-    expect(ORG_PROFILE.url).toBe('https://avahealth.co')
+  it('uses the canonical providers.avahealth.co identity', () => {
+    expect(ORG_PROFILE['@id']).toBe('https://providers.avahealth.co#organization')
+    expect(ORG_PROFILE.url).toBe('https://providers.avahealth.co')
   })
 
   it('phone is in international E.164 format', () => {
@@ -59,7 +59,7 @@ describe('buildOrganizationGraph', () => {
   it('Organization @id is the same as the freejobpost build (cross-site consolidation)', () => {
     const graph = buildOrganizationGraph(FRESUME_INPUT)
     const org = graph['@graph'][0]
-    expect(org['@id']).toBe('https://avahealth.co#organization')
+    expect(org['@id']).toBe('https://providers.avahealth.co#organization')
   })
 
   it('sameAs includes both sister-site URLs (so Google links the brands)', () => {
@@ -76,6 +76,6 @@ describe('buildOrganizationGraph', () => {
     })
     const org = graph['@graph'][0] as { sameAs: string[] }
     expect(org.sameAs).toContain('https://twitter.com/freeresumepost')
-    expect(org.sameAs).toContain('https://avahealth.co')
+    expect(org.sameAs).toContain('https://providers.avahealth.co')
   })
 })
