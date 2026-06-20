@@ -14,7 +14,7 @@ The platform is candidate-controlled: profiles are public only with explicit opt
 
 ## About the data
 
-- [About Ava Health](https://www.avahealth.co): Tampa, FL-based healthcare staffing platform (parent operator)
+- [About Ava Health](https://providers.avahealth.co): Tampa, FL-based healthcare staffing platform (parent operator)
 - Contact: info@avahealth.co
 - Candidate data is candidate-owned: profiles default to private; only opt-in profiles appear on public /profile/* URLs
 - No resume-database resale, no recruiter spam — Ava Health uses the data only to match candidates to current freejobpost.co openings
