@@ -4,6 +4,7 @@ import { supabase, hourIso } from '@/lib/supabase'
 import { formatSalary } from '@/lib/format-salary'
 import { bucketizeRoles } from '@/lib/role-buckets'
 import { CANDIDATE_SPECIALTIES } from '@/lib/specialty-slugs'
+import AvaCareersNav from '@/components/ava-family/AvaCareersNav'
 
 export const metadata: Metadata = {
   // `absolute` bypasses the layout template `%s | Free Resume Post`. Without
@@ -141,6 +142,11 @@ export default async function Home() {
           </div>
         </div>
       </nav>
+
+      {/* Careers sub-nav — ties the resume tool + job board into one careers
+         flow. Homepage-only (kept out of layout) so the indexed specialty/hub
+         pages' rendered template stays byte-stable. */}
+      <AvaCareersNav currentSection="resume" />
 
       {/* Hero */}
       <section className="relative overflow-hidden">
@@ -312,78 +318,6 @@ export default async function Home() {
           </div>
         </section>
       )}
-
-      {/* Three promises */}
-      <section className="border-t border-gray-100">
-        <div className="max-w-6xl mx-auto px-6 py-20">
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                n: '01',
-                h: 'Your resume, your data',
-                p: 'We never sell your resume to third parties. Public profile or private. Your call. Delete anytime, we honor it.',
-              },
-              {
-                n: '02',
-                h: 'Matched to real jobs',
-                p: 'We score you against live openings at freejobpost.co by specialty, state, experience, and credential. You see fit, not recycled Indeed listings.',
-              },
-              {
-                n: '03',
-                h: 'Apply directly',
-                p: 'Your top matches surface on your private profile page. Click any match to go straight to the job listing and apply. No re-uploading the same resume for every portal.',
-              },
-            ].map((item) => (
-              <div key={item.n} className="rounded-2xl border border-gray-200 bg-white p-8 hover:shadow-lg hover:shadow-[#003D5C]/5 transition-shadow">
-                <div className="text-[#003D5C] font-semibold text-xs tracking-widest mb-3">{item.n}</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.h}</h3>
-                <p className="text-gray-600 leading-relaxed">{item.p}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section className="border-t border-gray-100 bg-gray-50/50">
-        <div className="max-w-6xl mx-auto px-6 py-20">
-          <div className="text-center mb-16">
-            <h2 className="text-xs font-semibold tracking-widest text-gray-500 mb-3 uppercase">How it works</h2>
-            <p className="text-3xl md:text-4xl font-semibold tracking-tight text-gray-900 max-w-2xl mx-auto">
-              Three steps. No re-uploads. No spam.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            {[
-              { n: '1', h: 'Upload PDF', p: 'Drop your resume. Any format: PDF, DOCX, whatever.' },
-              { n: '2', h: 'We parse', p: 'We auto-extract your specialty, credential, experience, location. Review in 30 seconds.' },
-              { n: '3', h: 'Get matched', p: 'Your top matches surface on your private profile page, refreshed daily. Apply directly from each listing.' },
-            ].map((step) => (
-              <div key={step.n} className="text-center">
-                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#7FBC00] text-white font-semibold mb-4">
-                  {step.n}
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">{step.h}</h3>
-                <p className="text-sm text-gray-600 leading-relaxed max-w-xs mx-auto">{step.p}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Trust row */}
-      <section className="border-t border-gray-100">
-        <div className="max-w-4xl mx-auto px-6 py-20 text-center">
-          <p className="text-3xl md:text-4xl font-semibold tracking-tight text-gray-900 mb-4">
-            Built by a working staffing team.
-          </p>
-          <p className="text-lg text-gray-600 leading-relaxed max-w-xl mx-auto">
-            Not a resume mill. Not a VC-backed disruption play. A real team that places
-            <span className="font-semibold text-gray-900"> physicians, nurses, and therapists every week</span>
-            &nbsp;and got tired of Indeed charging both sides.
-          </p>
-        </div>
-      </section>
 
       {/* Specialty hub discovery */}
       <section className="border-t border-gray-100 bg-slate-50">
