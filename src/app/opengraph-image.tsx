@@ -101,7 +101,7 @@ export default async function OG() {
             paddingTop: 22,
           }}
         >
-          <span>850K+ candidate network · Your data is yours</span>
+          <span>Healthcare candidate network · Your data is yours</span>
           <span style={{ color: '#0f172a', fontWeight: 700 }}>freeresumepost.co</span>
         </div>
       </div>
