@@ -5,6 +5,7 @@ import UploadForm from './upload-form'
 import AffiliateOffer from '@/components/AffiliateOffer'
 import { formatSalary } from '@/lib/format-salary'
 import { bucketizeRoles } from '@/lib/role-buckets'
+import AvaCareersNav from '@/components/ava-family/AvaCareersNav'
 
 export const metadata: Metadata = {
   title: 'Upload your resume free and get matched to healthcare jobs',
@@ -128,6 +129,8 @@ export default async function UploadPage() {
           </div>
         </div>
       </nav>
+
+      <AvaCareersNav currentSection="resume" />
 
       <div className="max-w-3xl mx-auto px-6 py-10 md:py-16">
         <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">

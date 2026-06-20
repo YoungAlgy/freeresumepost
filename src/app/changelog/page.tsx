@@ -95,7 +95,7 @@ export default function ChangelogPage() {
           <div className="flex items-center gap-4 md:gap-6 text-sm text-slate-600">
             <Link href="/" className="hidden sm:inline hover:text-slate-900 whitespace-nowrap">Home</Link>
             <Link href="/upload" className="bg-[#003D5C] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#002A40] whitespace-nowrap">
-              Upload Resume
+              Upload resume
             </Link>
           </div>
         </div>

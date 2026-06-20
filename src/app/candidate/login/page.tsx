@@ -18,7 +18,7 @@ export default function CandidateLoginPage() {
           <Link href="/" className="font-bold text-lg tracking-tight">
             Ava Health
           </Link>
-          <Link href="/upload" className="text-sm font-medium text-[#003D5C] hover:text-[#002A40]">Upload Resume</Link>
+          <Link href="/upload" className="text-sm font-medium text-[#003D5C] hover:text-[#002A40]">Upload resume</Link>
         </div>
       </nav>
 
