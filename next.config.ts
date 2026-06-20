@@ -18,6 +18,19 @@ const nextConfig: NextConfig = {
         destination: '/icon',
         permanent: true,
       },
+      // ─── Ava Health family cross-links: vanity paths route to the sibling
+      // tool so the family reads as one product. All target non-existent
+      // freeresume paths → zero risk to real pages. ───
+      { source: '/jobs', destination: 'https://freejobpost.co', permanent: true },
+      { source: '/job', destination: 'https://freejobpost.co', permanent: true },
+      { source: '/post-job', destination: 'https://freejobpost.co', permanent: true },
+      { source: '/providers', destination: 'https://providers.avahealth.co', permanent: true },
+      { source: '/find-providers', destination: 'https://providers.avahealth.co', permanent: true },
+      { source: '/recruiters', destination: 'https://app.avahealth.co', permanent: true },
+      { source: '/for-recruiters', destination: 'https://app.avahealth.co', permanent: true },
+      { source: '/platform', destination: 'https://app.avahealth.co', permanent: true },
+      { source: '/outreach', destination: 'https://app.avahealth.co/outreach', permanent: true },
+      { source: '/beacon', destination: 'https://app.avahealth.co/outreach', permanent: true },
     ]
   },
   async headers() {
