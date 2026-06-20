@@ -3,8 +3,8 @@ import { ImageResponse } from 'next/og'
 export const runtime = 'edge'
 export const contentType = 'image/png'
 
-// 512x512 PWA / maskable app icon. Same bold white "r" on the Ava Health navy
-// gradient as /icon and /apple-icon, but full-bleed (no border radius — the
+// 512x512 PWA / maskable app icon. Same bold white "A" on the Ava Health navy
+// gradient as /icon and /apple-icon, but full-bleed (no border radius, the
 // platform mask supplies the shape) and with the mark kept well inside the
 // maskable safe zone so it isn't clipped by Android's circular / squircle
 // mask. Referenced from manifest.ts. Uses the Ava Health navy (#003D5C).
@@ -26,7 +26,7 @@ export function GET() {
           letterSpacing: -8,
         }}
       >
-        r
+        A
       </div>
     ),
     { width: 512, height: 512 },

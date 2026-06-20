@@ -4,7 +4,7 @@ export const runtime = 'edge'
 export const size = { width: 180, height: 180 }
 export const contentType = 'image/png'
 
-// iOS home-screen icon — refined "r" mark on the same Ava navy gradient,
+// iOS home-screen icon. Refined "A" mark on the same Ava navy gradient,
 // scaled with iOS's 18-unit corner radius for a native feel.
 export default function AppleIcon() {
   return new ImageResponse(
@@ -24,7 +24,7 @@ export default function AppleIcon() {
           letterSpacing: -6,
         }}
       >
-        r
+        A
       </div>
     ),
     { ...size },

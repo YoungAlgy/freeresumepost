@@ -7,9 +7,9 @@ import { CANDIDATE_SPECIALTIES } from '@/lib/specialty-slugs'
 import AvaCareersNav from '@/components/ava-family/AvaCareersNav'
 
 export const metadata: Metadata = {
-  // `absolute` bypasses the layout template `%s | Free Resume Post`. Without
-  // it the rendered title would be the double-branded "Free Resume Post —
-  // Upload once, get matched | Free Resume Post".
+  // `absolute` bypasses the layout template `%s | Ava Health`. Without it the
+  // rendered title would be the double-branded "Upload Your Resume, Get Matched
+  // | Ava Health | Ava Health".
   title: { absolute: 'Upload Your Resume, Get Matched | Ava Health' },
   description:
     'Upload your resume free and get matched to real healthcare openings. No recruiter spam, no resume databases sold to the highest bidder.',

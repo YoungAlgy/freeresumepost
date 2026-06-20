@@ -3,7 +3,7 @@ import { getAffiliate } from '@/lib/affiliates'
 /**
  * Tasteful, FTC-compliant affiliate offer. Renders nothing unless the program's
  * link is configured (so it is safe to place before a program is approved).
- * Matches the freeresumepost clean/blue aesthetic.
+ * Matches the Ava Health navy/lime aesthetic.
  */
 export default function AffiliateOffer({
   program,

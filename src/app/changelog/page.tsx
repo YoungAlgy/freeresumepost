@@ -86,7 +86,7 @@ export default function ChangelogPage() {
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <span className="w-7 h-7 rounded-lg bg-[#003D5C] text-white font-black flex items-center justify-center text-sm">
-              r
+              A
             </span>
             <span className="font-bold text-lg tracking-tight">
               Ava Health

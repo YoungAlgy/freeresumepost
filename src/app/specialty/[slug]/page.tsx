@@ -253,7 +253,7 @@ export default async function CandidateSpecialtyPage(
               </Link>
               <a
                 href={jobHubUrl}
-                className="inline-block border border-slate-300 text-slate-700 font-semibold px-6 py-3 rounded-full hover:bg-slate-900 hover:text-white hover:border-slate-900"
+                className="inline-block border border-slate-300 text-slate-700 font-semibold px-6 py-3 rounded-full hover:bg-[#003D5C] hover:text-white hover:border-[#003D5C]"
               >
                 Browse {displayName} jobs →
               </a>
@@ -422,7 +422,7 @@ export default async function CandidateSpecialtyPage(
               <Link
                 key={s.slug}
                 href={`/specialty/${s.slug}`}
-                className="text-sm border border-slate-300 px-3 py-1.5 rounded-full hover:bg-slate-900 hover:text-white hover:border-slate-900"
+                className="text-sm border border-slate-300 px-3 py-1.5 rounded-full hover:bg-[#003D5C] hover:text-white hover:border-[#003D5C]"
               >
                 {s.name}
               </Link>
@@ -437,7 +437,7 @@ export default async function CandidateSpecialtyPage(
               </Link>
               <a
                 href={jobHubUrl}
-                className="inline-block border border-slate-300 text-slate-700 font-semibold px-6 py-3 rounded-full hover:bg-slate-900 hover:text-white hover:border-slate-900"
+                className="inline-block border border-slate-300 text-slate-700 font-semibold px-6 py-3 rounded-full hover:bg-[#003D5C] hover:text-white hover:border-[#003D5C]"
               >
                 Browse {displayName} jobs
               </a>

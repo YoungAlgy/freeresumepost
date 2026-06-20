@@ -4,7 +4,7 @@ export const runtime = 'edge'
 export const size = { width: 32, height: 32 }
 export const contentType = 'image/png'
 
-// Apple/Stripe-style favicon — single bold "r" on a soft gradient,
+// Apple/Stripe-style favicon. Single bold "A" on a soft gradient,
 // matching the Ava Health brand (navy = #003D5C).
 export default function Icon() {
   return new ImageResponse(
@@ -25,7 +25,7 @@ export default function Icon() {
           borderRadius: 7,
         }}
       >
-        r
+        A
       </div>
     ),
     { ...size },

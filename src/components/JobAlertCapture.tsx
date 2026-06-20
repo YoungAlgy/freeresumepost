@@ -7,8 +7,8 @@ import TurnstileWidget from '@/components/TurnstileWidget'
 /**
  * Candidate-side job-alert capture. Framed as the lower-commitment alternative
  * to uploading a resume — captures the email of candidates not ready to upload
- * as a re-contactable CRM lead tagged with specialty intent. freeresumepost
- * (blue/slate/rounded) styling.
+ * as a re-contactable CRM lead tagged with specialty intent. Ava Health
+ * navy/lime styling.
  */
 type Props = {
   defaultSpecialty?: string
@@ -101,7 +101,7 @@ export default function JobAlertCapture({
         <button
           type="submit"
           disabled={pending || !emailValid}
-          className="inline-flex items-center justify-center bg-slate-900 text-white px-6 py-3 rounded-full font-semibold hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+          className="inline-flex items-center justify-center bg-[#003D5C] text-white px-6 py-3 rounded-full font-semibold hover:bg-[#002A40] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
         >
           {pending ? 'Subscribing…' : 'Email me jobs →'}
         </button>
