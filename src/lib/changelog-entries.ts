@@ -22,7 +22,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     date: "2026-06-17",
     title: "Part of the Ava Health family",
     body:
-      "Free Resume Post now shows a 'Part of Ava Health' footer with quick links to the free job board, the provider directory, and the rest of the family. Your resume and your privacy work exactly the same.",
+      "This site now shows a 'Part of Ava Health' footer with quick links to the free job board, the provider directory, and the rest of the family. Your resume and your privacy work exactly the same.",
     tag: "improved",
   },
   {
@@ -93,7 +93,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     date: '2026-05-22',
     title: 'Polish pass: link previews, error pages, page titles',
     body:
-      'Six pages were rendering blank or default link-preview cards when shared to LinkedIn / iMessage / Slack. Now every page emits the branded Free Resume Post Open Graph card. Added a styled error page that catches transient failures (Supabase timeout, network blip) with a one-click retry. Stopped browser tabs from showing the brand twice ("Free Resume Post: Upload once, get matched | Free Resume Post"). Now just renders once.',
+      'Six pages were rendering blank or default link-preview cards when shared to LinkedIn / iMessage / Slack. Now every page emits the branded Ava Health Open Graph card. Added a styled error page that catches transient failures (Supabase timeout, network blip) with a one-click retry. Stopped browser tabs from showing the brand twice ("Ava Health: Upload once, get matched | Ava Health"). Now just renders once.',
     tag: 'improved',
   },
   {
