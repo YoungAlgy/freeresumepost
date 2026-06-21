@@ -6,7 +6,6 @@ import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import { buildOrganizationGraph } from '@/lib/organization-schema'
 import { E_VERIFY } from '@/lib/e-verify-config'
-import { AvaFamilyBand } from '@/components/ava-family/AvaFamilyBand'
 import { AvaFamilyNav } from '@/components/ava-family/AvaFamilyNav'
 import { SiteHeader } from '@/components/SiteHeader'
 
@@ -125,10 +124,6 @@ export default function RootLayout({
           {children}
         </div>
         <footer className="max-w-6xl mx-auto px-4 py-8 mt-12 border-t border-gray-200">
-          {/* Ava Health family band — shared parent signal + cross-links to
-             the rest of the family. Renders above the freeresumepost-specific
-             footer nav. Keeps this site's blue accent untouched. */}
-          <AvaFamilyBand currentSite="freeresume" />
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500">
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <Link href="/upload" className="hover:text-gray-900">
