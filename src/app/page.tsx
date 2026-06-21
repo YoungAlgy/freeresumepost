@@ -68,7 +68,11 @@ export default async function Home() {
   // role/title/salary, so those windows fetch just those columns (the hero
   // preview below keeps the full display set).
   const BATCH_SIZE = 1000
-  const MAX_BATCHES = 40 // safety bound (~40K jobs) against a runaway count
+  // ~60K-job safety bound (bumped from 40 on 2026-06-21). Active inventory hit
+  // ~31,208 = 32 batches, 80% of the old 40K cap. Past 40K the cap would clamp
+  // numBatches and the specialty-tile counts would silently UNDERCOUNT (a wrong
+  // public stat). Keep in sync with upload/page.tsx + freejobpost active-batch-count.
+  const MAX_BATCHES = 60
   const nowIso = hourIso()
   const previewFields = 'slug, title, city, state, role, remote_hybrid, salary_min, salary_max'
   const bucketFields = 'role, title, salary_min, salary_max'

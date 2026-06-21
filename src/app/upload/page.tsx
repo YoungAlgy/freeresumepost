@@ -60,7 +60,10 @@ export default async function UploadPage() {
   // Aggregation only reads role/title/salary, so those windows fetch just those
   // columns (the recent-jobs preview keeps the full display set).
   const BATCH_SIZE = 1000
-  const MAX_BATCHES = 40 // safety bound (~40K jobs) against a runaway count
+  // ~60K-job safety bound (bumped from 40 on 2026-06-21). Active inventory hit
+  // ~31,208 = 32 batches, 80% of the old 40K cap. Past 40K the cap would clamp
+  // numBatches and under-fetch the corpus. Keep in sync with page.tsx.
+  const MAX_BATCHES = 60
   const nowIso = hourIso()
   const recentFields = 'slug, title, city, state, role, salary_min, salary_max, remote_hybrid'
   const bucketFields = 'role, title, salary_min, salary_max'
