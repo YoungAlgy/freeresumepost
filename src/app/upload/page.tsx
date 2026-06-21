@@ -5,7 +5,6 @@ import UploadForm from './upload-form'
 import AffiliateOffer from '@/components/AffiliateOffer'
 import { formatSalary } from '@/lib/format-salary'
 import { bucketizeRoles } from '@/lib/role-buckets'
-import { Logo } from '@/components/Logo'
 
 export const metadata: Metadata = {
   title: 'Upload your resume free and get matched to healthcare jobs',
@@ -110,24 +109,6 @@ export default async function UploadPage() {
 
   return (
     <main className="min-h-screen bg-white text-slate-900">
-      {/* Nav */}
-      <nav className="border-b border-slate-200 bg-white/80 backdrop-blur sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <Logo size={32} className="shrink-0" />
-            <span className="font-bold text-lg tracking-tight text-[#003D5C]">
-              Ava Health
-            </span>
-          </Link>
-          <div className="flex items-center gap-4 md:gap-6 text-sm text-slate-600">
-            <Link href="/" className="hidden sm:inline hover:text-slate-900 whitespace-nowrap">Home</Link>
-            <a href="https://freejobpost.co/for-employers" className="hidden md:inline hover:text-slate-900">
-              For employers
-            </a>
-          </div>
-        </div>
-      </nav>
-
       <div className="max-w-3xl mx-auto px-6 py-10 md:py-16">
         <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">
           Free forever. No account

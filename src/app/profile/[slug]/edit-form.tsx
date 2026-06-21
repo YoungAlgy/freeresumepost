@@ -1,11 +1,9 @@
 'use client'
 
-import Link from 'next/link'
 import { useState, useTransition } from 'react'
 import { updateCandidate } from './actions'
 import type { CandidateMatch } from './page'
 import { formatSalary } from '@/lib/format-salary'
-import { Logo } from '@/components/Logo'
 
 const STATES = [
   'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID',
@@ -87,20 +85,6 @@ export default function ProfileEditForm({
 
   return (
     <main className="min-h-screen bg-white text-slate-900">
-      <nav className="border-b border-slate-200">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <Logo size={32} className="shrink-0" />
-            <span className="font-bold text-lg tracking-tight">
-              Ava Health
-            </span>
-          </Link>
-          <p className="text-xs font-semibold text-slate-500 tracking-wider uppercase">
-            Edit mode
-          </p>
-        </div>
-      </nav>
-
       <div className="max-w-3xl mx-auto px-6 py-10 md:py-16">
         <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">
           Your profile

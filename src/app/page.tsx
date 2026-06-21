@@ -4,7 +4,6 @@ import { supabase, hourIso } from '@/lib/supabase'
 import { formatSalary } from '@/lib/format-salary'
 import { bucketizeRoles } from '@/lib/role-buckets'
 import { CANDIDATE_SPECIALTIES } from '@/lib/specialty-slugs'
-import { Logo } from '@/components/Logo'
 
 export const metadata: Metadata = {
   // `absolute` bypasses the layout template `%s | Ava Health`. Without it the
@@ -118,29 +117,6 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-white text-gray-900">
-      {/* Nav */}
-      <nav className="border-b border-gray-200/80 bg-white/95 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
-          <Link href="/" className="flex items-center gap-2 min-w-0">
-            <Logo size={32} className="shrink-0" />
-            <span className="font-bold text-lg tracking-tight text-[#003D5C]">
-              Ava Health
-            </span>
-          </Link>
-          <div className="flex items-center gap-4 lg:gap-7 text-[14px] font-medium text-gray-700">
-            <Link href="/how-it-works" className="hidden lg:inline hover:text-gray-900">How it works</Link>
-            <a href="https://freejobpost.co/for-employers" className="hidden lg:inline hover:text-gray-900">For employers</a>
-            <Link href="/candidate/login" className="hidden min-[360px]:inline hover:text-gray-900 whitespace-nowrap">Sign in</Link>
-            <Link
-              href="/upload"
-              className="bg-[#7FBC00] text-white px-3 md:px-4 py-2 rounded-lg text-[13px] font-semibold hover:bg-[#6DA300] transition-colors whitespace-nowrap"
-            >
-              Upload resume
-            </Link>
-          </div>
-        </div>
-      </nav>
-
       {/* Hero */}
       <section className="relative overflow-hidden">
         {/* Subtle navy gradient */}
@@ -151,7 +127,7 @@ export default async function Home() {
         <div className="max-w-6xl mx-auto px-6 py-24 md:py-32 text-center">
           <div className="inline-flex items-center gap-2 rounded-full bg-[#003D5C]/5 border border-[#003D5C]/10 px-4 py-1.5 text-xs font-semibold text-[#003D5C] mb-8">
             <span className="w-2 h-2 bg-[#7FBC00] rounded-full" />
-            Now in beta. Free for candidates
+            Free for candidates
           </div>
           <h1 className="text-5xl md:text-7xl font-semibold tracking-[-0.03em] leading-[1.02] text-gray-900 max-w-4xl mx-auto">
             Browse jobs first. <span className="text-[#003D5C]">Upload when ready.</span>

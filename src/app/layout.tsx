@@ -8,6 +8,7 @@ import { buildOrganizationGraph } from '@/lib/organization-schema'
 import { E_VERIFY } from '@/lib/e-verify-config'
 import { AvaFamilyBand } from '@/components/ava-family/AvaFamilyBand'
 import { AvaFamilyNav } from '@/components/ava-family/AvaFamilyNav'
+import { SiteHeader } from '@/components/SiteHeader'
 
 import { safeJsonLd } from '@/lib/safe-jsonld'
 const inter = Inter({
@@ -119,6 +120,7 @@ export default function RootLayout({
           Skip to main content
         </a>
         <AvaFamilyNav currentSite="freeresume" />
+        <SiteHeader />
         <div id="main-content">
           {children}
         </div>

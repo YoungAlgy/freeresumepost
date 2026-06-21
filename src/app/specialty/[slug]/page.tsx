@@ -209,18 +209,6 @@ export default async function CandidateSpecialtyPage(
       />
 
       <main className="min-h-screen bg-white text-slate-900">
-        <nav className="border-b border-slate-200">
-          <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-            <Link href="/" className="font-bold text-lg tracking-tight">
-              Ava Health
-            </Link>
-            <div className="flex items-center gap-6 text-sm font-medium">
-              <a href="https://freejobpost.co/for-employers" className="hidden sm:inline hover:text-slate-900">For employers</a>
-              <Link href="/upload" className="bg-[#003D5C] text-white px-4 py-2 rounded-lg text-[13px] font-semibold hover:bg-[#002A40]">Upload resume</Link>
-            </div>
-          </div>
-        </nav>
-
         <article className="max-w-3xl mx-auto px-6 py-12 md:py-20">
           <nav className="text-xs text-slate-500 mb-4" aria-label="breadcrumb">
             <Link href="/" className="hover:text-slate-900">Home</Link>

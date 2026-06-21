@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import {
   CHANGELOG_ENTRIES,
   entryAnchor,
@@ -7,7 +6,6 @@ import {
   type ChangelogEntry,
 } from '@/lib/changelog-entries'
 import { safeJsonLd } from '@/lib/safe-jsonld'
-import { Logo } from '@/components/Logo'
 
 export const metadata: Metadata = {
   title: 'Changelog',
@@ -83,23 +81,6 @@ export default function ChangelogPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbJsonLd) }}
       />
-      <nav className="border-b border-slate-200 bg-white/80 backdrop-blur sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <Logo size={32} className="shrink-0" />
-            <span className="font-bold text-lg tracking-tight">
-              Ava Health
-            </span>
-          </Link>
-          <div className="flex items-center gap-4 md:gap-6 text-sm text-slate-600">
-            <Link href="/" className="hidden sm:inline hover:text-slate-900 whitespace-nowrap">Home</Link>
-            <Link href="/upload" className="bg-[#003D5C] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#002A40] whitespace-nowrap">
-              Upload resume
-            </Link>
-          </div>
-        </div>
-      </nav>
-
       <article className="max-w-3xl mx-auto px-6 py-10 md:py-16">
         <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">
           Changelog

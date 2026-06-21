@@ -5,7 +5,6 @@ import { supabase } from '@/lib/supabase'
 import ProfileEditForm from './edit-form'
 
 import { safeJsonLd } from '@/lib/safe-jsonld'
-import { Logo } from '@/components/Logo'
 const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,120}$/
 
 type Props = {
@@ -174,23 +173,6 @@ export default async function ProfilePage({ params, searchParams }: Props) {
         dangerouslySetInnerHTML={{ __html: safeJsonLd(personJsonLd) }}
       />
       <main className="min-h-screen bg-white text-slate-900">
-        <nav className="border-b border-slate-200">
-          <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
-              <Logo size={32} className="shrink-0" />
-              <span className="font-bold text-lg tracking-tight">
-                Ava Health
-              </span>
-            </Link>
-            <Link
-              href="/upload"
-              className="text-sm font-semibold text-[#003D5C] hover:text-[#002A40]"
-            >
-              Upload yours →
-            </Link>
-          </div>
-        </nav>
-
         <div className="max-w-3xl mx-auto px-6 py-12 md:py-16">
           <div className="rounded-3xl border border-slate-200 p-8 md:p-10 shadow-sm">
             <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">
@@ -247,23 +229,6 @@ export default async function ProfilePage({ params, searchParams }: Props) {
 function EditLinkInvalid() {
   return (
     <main className="min-h-screen bg-white text-slate-900">
-      <nav className="border-b border-slate-200">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <Logo size={32} className="shrink-0" />
-            <span className="font-bold text-lg tracking-tight">
-              Ava Health
-            </span>
-          </Link>
-          <Link
-            href="/upload"
-            className="text-sm font-semibold text-[#003D5C] hover:text-[#002A40]"
-          >
-            Upload yours →
-          </Link>
-        </div>
-      </nav>
-
       <div className="max-w-xl mx-auto px-6 py-16">
         <div className="rounded-3xl border border-slate-200 p-8 md:p-10 shadow-sm">
           <h1 className="text-2xl md:text-3xl font-semibold tracking-tight mb-3">

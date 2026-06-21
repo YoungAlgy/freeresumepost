@@ -13,15 +13,6 @@ export const metadata: Metadata = {
 export default function CandidateLoginPage() {
   return (
     <main className="min-h-screen bg-white text-slate-900">
-      <nav className="border-b border-slate-200">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="font-bold text-lg tracking-tight">
-            Ava Health
-          </Link>
-          <Link href="/upload" className="text-sm font-medium text-[#003D5C] hover:text-[#002A40]">Upload resume</Link>
-        </div>
-      </nav>
-
       <div className="max-w-lg mx-auto px-6 py-16">
         <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">Manage your profile</p>
         <h1 className="text-3xl md:text-4xl font-semibold leading-tight tracking-tight text-slate-900 mb-4">

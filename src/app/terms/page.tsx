@@ -11,15 +11,6 @@ export const metadata: Metadata = {
 export default function TermsPage() {
   return (
     <main className="min-h-screen bg-white text-slate-900">
-      <nav className="border-b border-slate-200">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="font-bold text-lg tracking-tight">
-            Ava Health
-          </Link>
-          <Link href="/upload" className="text-sm font-medium text-[#003D5C] hover:text-[#002A40]">Upload resume</Link>
-        </div>
-      </nav>
-
       <article className="max-w-3xl mx-auto px-6 py-12 prose prose-slate">
         <h1 className="text-4xl md:text-5xl font-semibold tracking-tight mb-2 not-prose">Terms of Use</h1>
         <p className="text-sm text-slate-600 mb-10 not-prose">Last updated April 27, 2026</p>
