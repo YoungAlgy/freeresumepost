@@ -7,6 +7,7 @@ import {
   type ChangelogEntry,
 } from '@/lib/changelog-entries'
 import { safeJsonLd } from '@/lib/safe-jsonld'
+import { Logo } from '@/components/Logo'
 
 export const metadata: Metadata = {
   title: 'Changelog',
@@ -85,9 +86,7 @@ export default function ChangelogPage() {
       <nav className="border-b border-slate-200 bg-white/80 backdrop-blur sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-lg bg-[#003D5C] text-white font-black flex items-center justify-center text-sm">
-              A
-            </span>
+            <Logo size={32} className="shrink-0" />
             <span className="font-bold text-lg tracking-tight">
               Ava Health
             </span>

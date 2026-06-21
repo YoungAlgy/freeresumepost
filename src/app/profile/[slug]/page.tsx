@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 import ProfileEditForm from './edit-form'
 
 import { safeJsonLd } from '@/lib/safe-jsonld'
+import { Logo } from '@/components/Logo'
 const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,120}$/
 
 type Props = {
@@ -176,9 +177,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
         <nav className="border-b border-slate-200">
           <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
-              <span className="w-7 h-7 rounded-lg bg-[#003D5C] text-white font-black flex items-center justify-center text-sm">
-                a
-              </span>
+              <Logo size={32} className="shrink-0" />
               <span className="font-bold text-lg tracking-tight">
                 Ava Health
               </span>
@@ -251,9 +250,7 @@ function EditLinkInvalid() {
       <nav className="border-b border-slate-200">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-lg bg-[#003D5C] text-white font-black flex items-center justify-center text-sm">
-              a
-            </span>
+            <Logo size={32} className="shrink-0" />
             <span className="font-bold text-lg tracking-tight">
               Ava Health
             </span>

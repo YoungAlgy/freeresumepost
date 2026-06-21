@@ -4,6 +4,7 @@ import { supabase, hourIso } from '@/lib/supabase'
 import { formatSalary } from '@/lib/format-salary'
 import { bucketizeRoles } from '@/lib/role-buckets'
 import { CANDIDATE_SPECIALTIES } from '@/lib/specialty-slugs'
+import { Logo } from '@/components/Logo'
 
 export const metadata: Metadata = {
   // `absolute` bypasses the layout template `%s | Ava Health`. Without it the
@@ -121,7 +122,7 @@ export default async function Home() {
       <nav className="border-b border-gray-200/80 bg-white/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
           <Link href="/" className="flex items-center gap-2 min-w-0">
-            <span className="w-7 h-7 rounded-lg bg-[#003D5C] text-white font-black flex items-center justify-center text-sm shrink-0">A</span>
+            <Logo size={32} className="shrink-0" />
             <span className="font-bold text-lg tracking-tight text-[#003D5C]">
               Ava Health
             </span>

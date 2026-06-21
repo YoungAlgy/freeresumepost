@@ -5,6 +5,7 @@ import { useState, useTransition } from 'react'
 import { updateCandidate } from './actions'
 import type { CandidateMatch } from './page'
 import { formatSalary } from '@/lib/format-salary'
+import { Logo } from '@/components/Logo'
 
 const STATES = [
   'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID',
@@ -89,9 +90,7 @@ export default function ProfileEditForm({
       <nav className="border-b border-slate-200">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-lg bg-[#003D5C] text-white font-black flex items-center justify-center text-sm">
-              a
-            </span>
+            <Logo size={32} className="shrink-0" />
             <span className="font-bold text-lg tracking-tight">
               Ava Health
             </span>
