@@ -4,7 +4,6 @@ import { supabase, hourIso } from '@/lib/supabase'
 import { formatSalary } from '@/lib/format-salary'
 import { bucketizeRoles } from '@/lib/role-buckets'
 import { CANDIDATE_SPECIALTIES } from '@/lib/specialty-slugs'
-import AvaCareersNav from '@/components/ava-family/AvaCareersNav'
 
 export const metadata: Metadata = {
   // `absolute` bypasses the layout template `%s | Ava Health`. Without it the
@@ -142,11 +141,6 @@ export default async function Home() {
           </div>
         </div>
       </nav>
-
-      {/* Careers sub-nav — ties the resume tool + job board into one careers
-         flow. Homepage-only (kept out of layout) so the indexed specialty/hub
-         pages' rendered template stays byte-stable. */}
-      <AvaCareersNav currentSection="resume" />
 
       {/* Hero */}
       <section className="relative overflow-hidden">
