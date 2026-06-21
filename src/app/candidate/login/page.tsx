@@ -39,7 +39,7 @@ export default function CandidateLoginPage() {
           <p className="text-sm text-slate-700 mb-3">
             No profile yet? Upload your resume in 30 seconds. No account or password to create.
           </p>
-          <Link href="/upload" className="inline-block bg-[#003D5C] text-white text-sm font-semibold px-4 py-2 rounded-full hover:bg-[#002A40]">
+          <Link href="/upload" className="inline-block bg-[#003D5C] text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-[#002A40]">
             Upload your resume →
           </Link>
         </div>

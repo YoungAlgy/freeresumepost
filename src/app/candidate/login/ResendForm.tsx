@@ -57,7 +57,7 @@ export default function ResendForm() {
         <button
           type="submit"
           disabled={state === 'sending'}
-          className="bg-[#003D5C] text-white text-sm font-semibold px-4 py-2 rounded-full hover:bg-[#002A40] disabled:opacity-60 whitespace-nowrap"
+          className="bg-[#003D5C] text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-[#002A40] disabled:opacity-60 whitespace-nowrap"
         >
           {state === 'sending' ? 'Sending…' : 'Send link'}
         </button>

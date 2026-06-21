@@ -69,12 +69,12 @@ export default function OtpLoginForm() {
           onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
           placeholder="123456"
           aria-label="6-digit sign-in code"
-          className="w-full text-center tracking-[0.4em] text-lg font-semibold rounded-md border border-slate-300 bg-white px-3 py-2.5 mb-3 focus:outline-none focus:ring-2 focus:ring-[#7FBC00]"
+          className="w-full text-center tracking-[0.4em] text-lg font-semibold rounded-lg border border-slate-300 bg-white px-3 py-2.5 mb-3 focus:outline-none focus:ring-2 focus:ring-[#7FBC00]"
         />
         <button
           type="submit"
           disabled={loading || code.length !== 6}
-          className="w-full bg-[#003D5C] text-white text-sm font-semibold px-4 py-2.5 rounded-full hover:bg-[#002A40] disabled:opacity-60"
+          className="w-full bg-[#003D5C] text-white text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-[#002A40] disabled:opacity-60"
         >
           {loading ? 'Verifying…' : 'Verify & sign in'}
         </button>
@@ -122,12 +122,12 @@ export default function OtpLoginForm() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
           aria-label="Email address"
-          className="flex-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#7FBC00]"
+          className="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#7FBC00]"
         />
         <button
           type="submit"
           disabled={loading}
-          className="bg-[#003D5C] text-white text-sm font-semibold px-4 py-2 rounded-full hover:bg-[#002A40] disabled:opacity-60 whitespace-nowrap"
+          className="bg-[#003D5C] text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-[#002A40] disabled:opacity-60 whitespace-nowrap"
         >
           {loading ? 'Sending…' : 'Send code'}
         </button>

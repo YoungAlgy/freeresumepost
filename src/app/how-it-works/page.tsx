@@ -34,7 +34,7 @@ export default function HowItWorksPage() {
           </Link>
           <div className="flex items-center gap-6 text-sm font-medium">
             <a href="https://freejobpost.co/for-employers" className="hidden sm:inline hover:text-slate-900">For employers</a>
-            <Link href="/upload" className="bg-[#003D5C] text-white px-4 py-2 rounded-full text-[13px] font-semibold hover:bg-[#002A40]">Upload resume</Link>
+            <Link href="/upload" className="bg-[#003D5C] text-white px-4 py-2 rounded-lg text-[13px] font-semibold hover:bg-[#002A40]">Upload resume</Link>
           </div>
         </div>
       </nav>
@@ -147,7 +147,7 @@ export default function HowItWorksPage() {
 
         <div className="border border-slate-200 rounded-2xl bg-slate-50 p-8 text-center">
           <p className="text-2xl font-semibold mb-3 text-slate-900">Ready when you are</p>
-          <Link href="/upload" className="inline-block bg-[#003D5C] text-white font-semibold px-6 py-3 rounded-full hover:bg-[#002A40]">
+          <Link href="/upload" className="inline-block bg-[#003D5C] text-white font-semibold px-6 py-3 rounded-lg hover:bg-[#002A40]">
             Upload Your Resume →
           </Link>
         </div>

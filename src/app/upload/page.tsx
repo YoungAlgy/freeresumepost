@@ -157,7 +157,7 @@ export default async function UploadPage() {
             <div className="text-[10px] font-semibold tracking-wider text-slate-500 uppercase mb-1">Open roles</div>
             <div className="text-2xl font-semibold text-slate-900 tabular-nums flex items-baseline gap-1.5">
               {activeJobs.toLocaleString()}
-              {activeJobs > 0 && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" aria-hidden="true" />}
+              {activeJobs > 0 && <span className="w-1.5 h-1.5 rounded-full bg-[#7FBC00] inline-block" aria-hidden="true" />}
             </div>
           </div>
           <div className="bg-slate-50 rounded-lg px-4 py-3 border border-slate-200/60">
@@ -291,7 +291,7 @@ export default async function UploadPage() {
                       <div className="font-medium text-sm text-slate-900 truncate">{job.title}</div>
                       <div className="text-xs text-slate-600 truncate mt-0.5">
                         {loc || '—'}
-                        {job.remote_hybrid === 'remote' && <span className="ml-2 inline-block px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-semibold">Remote</span>}
+                        {job.remote_hybrid === 'remote' && <span className="ml-2 inline-block px-1.5 py-0.5 rounded bg-[#7FBC00]/10 text-[#7FBC00] border border-[#7FBC00]/30 text-[10px] font-semibold">Remote</span>}
                         {job.remote_hybrid === 'hybrid' && <span className="ml-2 inline-block px-1.5 py-0.5 rounded bg-[#003D5C]/10 text-[#003D5C] text-[10px] font-semibold">Hybrid</span>}
                       </div>
                     </div>

@@ -29,7 +29,7 @@ export default async function OG() {
               background: '#eef6e6',
               border: '1px solid #cbe39a',
               padding: '3px 8px',
-              borderRadius: 999,
+              borderRadius: 8,
               letterSpacing: 1.5,
             }}
           >

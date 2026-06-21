@@ -245,7 +245,7 @@ export default function UploadForm() {
     <form onSubmit={onSubmit} className="space-y-8">
       <div className="rounded-2xl border border-slate-200 p-5 bg-slate-50">
         <div className="flex items-start gap-3 mb-2">
-          <span className="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-bold shrink-0">
+          <span className="w-8 h-8 rounded-full bg-[#7FBC00] text-white flex items-center justify-center text-sm font-bold shrink-0">
             ✓
           </span>
           <div>

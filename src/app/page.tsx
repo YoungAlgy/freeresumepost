@@ -167,13 +167,13 @@ export default async function Home() {
           <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
             <a
               href="https://freejobpost.co/jobs"
-              className="inline-flex items-center justify-center px-6 py-3.5 bg-[#7FBC00] text-white font-semibold rounded-full hover:bg-[#6DA300] transition-colors shadow-sm"
+              className="inline-flex items-center justify-center px-6 py-3.5 bg-[#7FBC00] text-white font-semibold rounded-lg hover:bg-[#6DA300] transition-colors shadow-sm"
             >
               Browse healthcare jobs →
             </a>
             <Link
               href="/upload"
-              className="inline-flex items-center justify-center px-6 py-3.5 bg-white text-gray-900 font-semibold rounded-full border border-gray-200 hover:border-gray-300 transition-colors"
+              className="inline-flex items-center justify-center px-6 py-3.5 bg-white text-gray-900 font-semibold rounded-lg border border-gray-200 hover:border-gray-300 transition-colors"
             >
               Upload resume to match
             </Link>
@@ -200,7 +200,7 @@ export default async function Home() {
               <div className="flex items-center justify-between text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
                 <span className="flex items-center gap-2">
                   Live healthcare openings
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" aria-hidden="true" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#7FBC00] inline-block" aria-hidden="true" />
                 </span>
                 <a href="https://freejobpost.co/jobs" className="text-[#003D5C] hover:text-[#002A40] normal-case tracking-normal font-medium text-[11px]">
                   See all &rarr;
@@ -230,7 +230,7 @@ export default async function Home() {
                         <div className="flex items-center gap-3 shrink-0 ml-4">
                           {salary && <span className="text-sm font-medium text-gray-700 hidden sm:inline tabular-nums">{salary}</span>}
                           {job.remote_hybrid === 'remote' ? (
-                            <span className="inline-flex items-center rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 px-2.5 py-0.5 text-xs font-semibold">
+                            <span className="inline-flex items-center rounded-full bg-[#7FBC00]/10 text-[#7FBC00] border border-[#7FBC00]/30 px-2.5 py-0.5 text-xs font-semibold">
                               Remote
                             </span>
                           ) : job.remote_hybrid === 'hybrid' ? (
@@ -326,7 +326,7 @@ export default async function Home() {
           </p>
           <Link
             href="/specialty"
-            className="inline-flex items-center px-6 py-3 border border-slate-300 rounded-full text-base font-semibold text-slate-900 hover:bg-[#003D5C] hover:text-white hover:border-[#003D5C] transition-colors"
+            className="inline-flex items-center px-6 py-3 border border-slate-300 rounded-lg text-base font-semibold text-slate-900 hover:bg-[#003D5C] hover:text-white hover:border-[#003D5C] transition-colors"
           >
             See all specialties →
           </Link>
@@ -384,7 +384,7 @@ export default async function Home() {
           </p>
           <Link
             href="/upload"
-            className="inline-flex items-center px-8 py-4 bg-[#7FBC00] text-white text-base font-semibold rounded-full hover:bg-[#6DA300] transition-colors shadow-lg shadow-[#003D5C]/10"
+            className="inline-flex items-center px-8 py-4 bg-[#7FBC00] text-white text-base font-semibold rounded-lg hover:bg-[#6DA300] transition-colors shadow-lg shadow-[#003D5C]/10"
           >
             Upload your resume free →
           </Link>

@@ -44,13 +44,13 @@ export default function Error({
         <button
           type="button"
           onClick={() => reset()}
-          className="inline-flex justify-center items-center bg-[#003D5C] text-white px-6 py-3 rounded-full font-semibold hover:bg-[#002A40] transition-colors"
+          className="inline-flex justify-center items-center bg-[#003D5C] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#002A40] transition-colors"
         >
           Try again
         </button>
         <Link
           href="/upload"
-          className="inline-flex justify-center items-center bg-white text-slate-900 px-6 py-3 rounded-full font-semibold border border-slate-300 hover:bg-slate-100 transition-colors"
+          className="inline-flex justify-center items-center bg-white text-slate-900 px-6 py-3 rounded-lg font-semibold border border-slate-300 hover:bg-slate-100 transition-colors"
         >
           Upload your resume
         </Link>

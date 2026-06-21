@@ -46,7 +46,7 @@ const ENTRIES = CHANGELOG_ENTRIES
 
 const TAG_STYLES: Record<Tag, string> = {
   new: 'bg-[#7FBC00] text-white',
-  improved: 'bg-emerald-600 text-white',
+  improved: 'bg-[#7FBC00] text-white',
   fixed: 'bg-amber-500 text-white',
   reliability: 'bg-slate-700 text-white',
   security: 'bg-red-600 text-white',

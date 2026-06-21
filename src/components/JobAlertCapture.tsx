@@ -96,12 +96,12 @@ export default function JobAlertCapture({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           maxLength={254}
-          className="flex-1 px-4 py-3 bg-white border border-slate-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[#7FBC00]"
+          className="flex-1 px-4 py-3 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#7FBC00]"
         />
         <button
           type="submit"
           disabled={pending || !emailValid}
-          className="inline-flex items-center justify-center bg-[#003D5C] text-white px-6 py-3 rounded-full font-semibold hover:bg-[#002A40] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+          className="inline-flex items-center justify-center bg-[#003D5C] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#002A40] transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
         >
           {pending ? 'Subscribing…' : 'Email me jobs →'}
         </button>
