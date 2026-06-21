@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import ResendForm from './ResendForm'
+import OtpLoginForm from './OtpLoginForm'
 
 export const metadata: Metadata = {
   title: 'Candidate sign-in',
-  description: 'Edit your freeresumepost.co profile. We sent you an edit link when you uploaded your resume.',
+  description: 'Sign in to manage your freeresumepost.co profile. We send a 6-digit code to your email.',
   alternates: { canonical: 'https://www.freeresumepost.co/candidate/login' },
   // Don't index — auth-adjacent + user-specific destination
   robots: { index: false, follow: false },
@@ -23,16 +23,16 @@ export default function CandidateLoginPage() {
       </nav>
 
       <div className="max-w-lg mx-auto px-6 py-16">
-        <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">Edit your profile</p>
+        <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">Manage your profile</p>
         <h1 className="text-3xl md:text-4xl font-semibold leading-tight tracking-tight text-slate-900 mb-4">
-          Sign-in by email link
+          Sign in with a code
         </h1>
         <p className="text-slate-600 mb-8 leading-relaxed">
-          We don&apos;t use passwords. When you uploaded your resume, we emailed you a unique edit link
-          you can click anytime to update your profile. The link is valid for 7 days.
+          No password. Enter the email you uploaded with and we&apos;ll send a 6-digit code. Sign in to
+          view and edit your resume profile anytime.
         </p>
 
-        <ResendForm />
+        <OtpLoginForm />
 
         <div className="rounded-lg border-2 border-dashed border-slate-300 p-5 mb-6">
           <h2 className="font-semibold text-slate-900 mb-2">Never uploaded?</h2>
@@ -45,9 +45,9 @@ export default function CandidateLoginPage() {
         </div>
 
         <p className="text-xs text-slate-500">
-          Why no password? Healthcare candidates change emails / phones often. Magic links keep your
-          profile reachable from any device, and one-time tokens are more secure than passwords for
-          a low-risk profile (no payment info, no PII beyond what you already shared on your resume).
+          Why a code and no password? Healthcare candidates switch devices and emails often. A one-time
+          code keeps your profile reachable from anywhere, with nothing to remember and nothing to leak.
+          Your existing edit links still work too.
         </p>
       </div>
     </main>
