@@ -121,7 +121,8 @@ export default async function Home() {
       <nav className="border-b border-gray-200/80 bg-white/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
           <Link href="/" className="flex items-center gap-2 min-w-0">
-            <span className="font-semibold text-[15px] sm:text-[17px] tracking-tight text-gray-900">
+            <span className="w-7 h-7 rounded-lg bg-[#003D5C] text-white font-black flex items-center justify-center text-sm shrink-0">A</span>
+            <span className="font-bold text-lg tracking-tight text-[#003D5C]">
               Ava Health
             </span>
             <span className="hidden sm:inline-block text-[10px] font-semibold tracking-wider text-[#003D5C] bg-[#003D5C]/5 border border-[#003D5C]/20 px-1.5 py-0.5 rounded-full shrink-0">
@@ -134,7 +135,7 @@ export default async function Home() {
             <Link href="/candidate/login" className="hidden min-[360px]:inline hover:text-gray-900 whitespace-nowrap">Sign in</Link>
             <Link
               href="/upload"
-              className="bg-[#7FBC00] text-white px-3 md:px-4 py-2 rounded-full text-[13px] font-semibold hover:bg-[#6DA300] transition-colors whitespace-nowrap"
+              className="bg-[#7FBC00] text-white px-3 md:px-4 py-2 rounded-lg text-[13px] font-semibold hover:bg-[#6DA300] transition-colors whitespace-nowrap"
             >
               Upload resume
             </Link>

@@ -113,10 +113,10 @@ export default async function UploadPage() {
       <nav className="border-b border-slate-200 bg-white/80 backdrop-blur sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-lg bg-[#003D5C] text-white font-black flex items-center justify-center text-sm">
+            <span className="w-7 h-7 rounded-lg bg-[#003D5C] text-white font-black flex items-center justify-center text-sm shrink-0">
               A
             </span>
-            <span className="font-bold text-lg tracking-tight">
+            <span className="font-bold text-lg tracking-tight text-[#003D5C]">
               Ava Health
             </span>
           </Link>
