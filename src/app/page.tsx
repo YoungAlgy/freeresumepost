@@ -126,9 +126,6 @@ export default async function Home() {
             <span className="font-bold text-lg tracking-tight text-[#003D5C]">
               Ava Health
             </span>
-            <span className="hidden sm:inline-block text-[10px] font-semibold tracking-wider text-[#003D5C] bg-[#003D5C]/5 border border-[#003D5C]/20 px-1.5 py-0.5 rounded-full shrink-0">
-              BETA
-            </span>
           </Link>
           <div className="flex items-center gap-4 lg:gap-7 text-[14px] font-medium text-gray-700">
             <Link href="/how-it-works" className="hidden lg:inline hover:text-gray-900">How it works</Link>

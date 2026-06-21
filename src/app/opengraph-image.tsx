@@ -21,20 +21,6 @@ export default async function OG() {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: 26, fontWeight: 700, color: '#003D5C' }}>
           Ava Health
-          <span
-            style={{
-              fontSize: 12,
-              fontWeight: 600,
-              color: '#003D5C',
-              background: '#eef6e6',
-              border: '1px solid #cbe39a',
-              padding: '3px 8px',
-              borderRadius: 8,
-              letterSpacing: 1.5,
-            }}
-          >
-            BETA
-          </span>
         </div>
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
