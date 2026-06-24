@@ -4,7 +4,6 @@ import { createClient } from '@supabase/supabase-js'
 import { headers } from 'next/headers'
 import { verifyTurnstileToken } from '@/lib/turnstile'
 import { track } from '@vercel/analytics/server'
-import { addToMailchimpAudience } from '@/lib/mailchimp'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -26,8 +25,10 @@ export type JobAlertResult =
  * re-contactable lead into the shared Ava CRM as freejobpost, via the
  * `subscribe_job_alert_rpc` SECURITY DEFINER RPC. Mirrors the freejobpost
  * action: Turnstile (fail-open when unconfigured), email validation, PII-free
- * conversion event, fail-soft Mailchimp add. Unsubscribe is handled centrally
- * on freejobpost.co/unsubscribe (shared token).
+ * conversion event. Fulfillment (the matching-jobs digest email) runs off the
+ * shared public_job_alert_subscribers table via freejobpost's job-alert-digest
+ * cron on Resend. Unsubscribe is handled centrally on freejobpost.co/unsubscribe
+ * (shared token).
  */
 export async function subscribeJobAlert(
   input: JobAlertInput,
@@ -74,17 +75,6 @@ export async function subscribeJobAlert(
     })
   } catch {
     /* analytics is best-effort */
-  }
-
-  try {
-    await addToMailchimpAudience(email, {
-      specialty: input.specialty ?? '',
-      state: input.state ?? '',
-      city: input.city ?? '',
-      source: input.source,
-    })
-  } catch {
-    /* mailchimp is best-effort */
   }
 
   return { success: true, already_subscribed: r.already_subscribed }
