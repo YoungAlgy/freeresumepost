@@ -46,7 +46,7 @@ const SPECIALTY_HINTS: Array<[RegExp, string]> = [
   [/\b(cath\s*lab|RCIS|RCES|electrophysiology|EP\s*lab)\b/i, 'Cath Lab Tech'],
   [/\b(BCBA|BCaBA|behavior analyst|ABA therap|applied behavior analysis)\b/i, 'BCBA'],
   [/\b(mental health tech|behavioral health tech|psych tech\b|MHT\b|BHT\b)\b/i, 'Mental Health Tech'],
-  [/\b(dental hygienist|RDH\b|registered dental hygien)\b/i, 'Dental Hygienist'],
+  [/\b(dental hygienist|RDH\b|registered dental hygien)/i, 'Dental Hygienist'], // stem: also "registered dental hygienist"
   [/\b(sleep tech|polysomnograph|RPSGT|sleep lab)\b/i, 'Sleep Tech'],
   [/\b(patient care tech|PCT\b|nurse aide|CNA tech|ED tech|dialysis tech)\b/i, 'Patient Care Tech'],
   [/\b(phlebotom)/i, 'Phlebotomist'], // stem, no trailing boundary: phlebotomist + phlebotomy
@@ -61,7 +61,7 @@ const SPECIALTY_HINTS: Array<[RegExp, string]> = [
   [/\b(anesthesiolog(y|ist))\b/i, 'Anesthesiology'],
   [/\b(neurolog(y|ist))\b/i, 'Neurology'],
   [/\b(pediatr(ic|ician|ics))\b/i, 'Pediatrics'],
-  [/\b(ob-?gyn|obstetrics|gynecolog)\b/i, 'OB/GYN'],
+  [/\b(ob-?gyn|obstetrics|gynecolog)/i, 'OB/GYN'], // stem: also "gynecology" / "gynecologist"
   [/\b(orthopedic|ortho surgery|orthopaedic)\b/i, 'Orthopedics'],
   [/\b(gastroenterolog)/i, 'Gastroenterology'],
   [/\b(urolog(y|ist))\b/i, 'Urology'],

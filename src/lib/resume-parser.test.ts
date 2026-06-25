@@ -46,6 +46,10 @@ describe('parseFields', () => {
       ['Radiology Technologist', 'Radiology'],
       ['Gastroenterology RN', 'Gastroenterology'],
       ['Certified Phlebotomist', 'Phlebotomist'],
+      // Same stem bug in two multi-alternative groups (each had a working
+      // fallback, so the common phrasing still matched). Now fully closed.
+      ['Gynecology Fellowship', 'OB/GYN'],
+      ['Registered Dental Hygiene credential', 'Dental Hygienist'],
     ])('infers %j as %s', (text, specialty) => {
       expect(parseFields(text).inferredSpecialty).toBe(specialty)
     })
