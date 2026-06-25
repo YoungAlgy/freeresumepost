@@ -24,6 +24,10 @@ export type SubmitCandidateInput = {
   is_public: boolean
   // Parsed-profile payload — stored as-is in public_candidates.parsed_profile
   raw_text: string
+  // Storage path of the uploaded resume FILE in the private `resumes` bucket
+  // (e.g. "3f2a...-uuid.pdf"). Set client-side after the file uploads. Optional
+  // and fail-open: a storage hiccup submits text-only with this null.
+  resume_path?: string | null
   // Cross-app attribution (e.g. the freejobpost resume-match bridge). Read
   // from the /upload URL's utm params client-side; stored in parsed_profile
   // for durable, queryable conversion measurement. Optional — direct uploads
@@ -68,6 +72,15 @@ export async function submitCandidate(
   // Cap parsed_profile payload so we don't balloon the jsonb column
   const rawText = (input.raw_text ?? '').slice(0, 50_000)
 
+  // Sanity-check the resume file path before persisting it. It must be a bare
+  // storage path inside the `resumes` bucket (uuid + pdf/doc/docx), never a full
+  // URL — the CRM mints a signed URL from this path, so a stray http(s) value
+  // would defeat the private-bucket design. Anything else → null (text-only).
+  const resumePath =
+    input.resume_path && /^[a-f0-9-]+\.(pdf|docx?)$/i.test(input.resume_path)
+      ? input.resume_path
+      : null
+
   const { data, error } = await sb.rpc('submit_public_candidate_rpc', {
     p_email: normalizedEmail,
     p_first_name: input.first_name,
@@ -82,7 +95,7 @@ export async function submitCandidate(
     p_contact_via_email: input.contact_via_email,
     p_contact_via_sms: input.contact_via_sms,
     p_is_public: input.is_public,
-    p_resume_url: null, // resume bytes stay client-side in v1
+    p_resume_url: resumePath, // bare storage path in the private `resumes` bucket (null if no/invalid file)
     p_parsed_profile: {
       raw_text: rawText,
       extracted_at: new Date().toISOString(),

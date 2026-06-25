@@ -9,7 +9,23 @@ import {
   type ParsedResume,
 } from '@/lib/resume-parser'
 import { submitCandidate, type SubmitCandidateInput } from './actions'
+import { supabaseBrowser } from '@/lib/supabase-browser'
 import TurnstileWidget from '@/components/TurnstileWidget'
+
+// Map a chosen File to a safe storage extension. We only ever store pdf/doc/docx
+// (the bucket's allowed_mime_types enforce the same — see the resume_file_storage
+// migration). Falls back to a sniff of the file name when the browser-supplied
+// MIME type is blank, then to 'pdf' as a last resort.
+function resumeExt(file: File): 'pdf' | 'doc' | 'docx' {
+  const type = (file.type || '').toLowerCase()
+  if (type === 'application/pdf') return 'pdf'
+  if (type === 'application/msword') return 'doc'
+  if (type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') return 'docx'
+  const name = (file.name || '').toLowerCase()
+  if (name.endsWith('.docx')) return 'docx'
+  if (name.endsWith('.doc')) return 'doc'
+  return 'pdf'
+}
 
 const STATES = [
   'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID',
@@ -24,6 +40,9 @@ type Phase = 'drop' | 'parsing' | 'review' | 'submitting' | 'done'
 export default function UploadForm() {
   const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
+  // The raw chosen File, kept around so we can upload the actual bytes to the
+  // private `resumes` bucket on submit (the parsed text is stored separately).
+  const chosenFileRef = useRef<File | null>(null)
   const [phase, setPhase] = useState<Phase>('drop')
   const [dragOver, setDragOver] = useState(false)
   const [parseErr, setParseErr] = useState<string | null>(null)
@@ -65,6 +84,10 @@ export default function UploadForm() {
       return
     }
     setFileName(file.name)
+    // Hold onto the raw File. We upload the actual bytes to the resumes bucket
+    // on submit (not here) so a returning user changing files never leaves a
+    // stale upload, and so a storage hiccup can't block the parse/review step.
+    chosenFileRef.current = file
     setPhase('parsing')
     try {
       const text = await extractTextFromFile(file)
@@ -126,9 +149,37 @@ export default function UploadForm() {
       // Cross-app attribution: read utm params off the /upload URL (set by the
       // freejobpost resume-match bridge) so the upload is traceable to its source.
       const _utm = new URLSearchParams(window.location.search)
+
+      // Upload the actual resume file to the private `resumes` bucket so the
+      // recruiter CRM can pull the real document, not just the parsed text.
+      // FAIL-OPEN: a storage hiccup (or a missing client) must NOT block the
+      // candidate's submission — we log, drop the path, and submit text-only.
+      let resumePath: string | null = null
+      const file = chosenFileRef.current
+      if (file) {
+        try {
+          const ext = resumeExt(file)
+          const path = `${crypto.randomUUID()}.${ext}`
+          const { error: upErr } = await supabaseBrowser.storage
+            .from('resumes')
+            .upload(path, file, { contentType: file.type, upsert: false })
+          if (upErr) {
+            console.error('resume file upload failed (continuing text-only):', upErr.message)
+          } else {
+            resumePath = path
+          }
+        } catch (err) {
+          console.error(
+            'resume file upload threw (continuing text-only):',
+            err instanceof Error ? err.message : 'unknown',
+          )
+        }
+      }
+
       const res = await submitCandidate(
         {
           ...form,
+          resume_path: resumePath,
           utm_source: _utm.get('utm_source') || undefined,
           utm_campaign: _utm.get('utm_campaign') || undefined,
         },
