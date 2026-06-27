@@ -19,6 +19,34 @@ export interface ChangelogEntry {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
   // ── June 2026 ────────────────────────────────────
   {
+    date: "2026-06-25",
+    title: "Your real resume file gets saved now",
+    body:
+      "When you upload, we now keep the actual file you sent, not just the text we pulled from it. Recruiters can open the real document. If the file save ever hiccups, your upload still goes through on the text alone.",
+    tag: "improved",
+  },
+  {
+    date: "2026-06-25",
+    title: "More specialties detected from your resume",
+    body:
+      "The parser was missing some fields when it read a resume, so a few specialties never got picked up. Fixed oncology, dermatology, radiology, gastroenterology, phlebotomy, gynecology, and dental hygiene. If you work in one of these, your resume now lands in the right specialty.",
+    tag: "fixed",
+  },
+  {
+    date: "2026-06-21",
+    title: "Sign in with an email code",
+    body:
+      "You can now get back to your profile with a 6-digit code sent to your email instead of waiting on a link. Signing in takes you to a new account page where you can see your profile, re-upload, or request your secure edit link.",
+    tag: "new",
+  },
+  {
+    date: "2026-06-19",
+    title: "Fresh Ava Health look",
+    body:
+      "The whole site moved to the Ava Health colors, navy and lime, with a matching logo and a family nav strip up top. Same pages, same links, just a cleaner look. The old 'beta' labels are gone too.",
+    tag: "improved",
+  },
+  {
     date: "2026-06-17",
     title: "Part of the Ava Health family",
     body:
