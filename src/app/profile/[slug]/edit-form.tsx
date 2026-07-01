@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { updateCandidate } from './actions'
 import type { CandidateMatch } from './page'
 import { formatSalary } from '@/lib/format-salary'
+import ApplyKitCTA from '@/components/ApplyKitCTA'
 
 const STATES = [
   'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID',
@@ -104,6 +105,8 @@ export default function ProfileEditForm({
             </a>
           </p>
         )}
+
+        <ApplyKitCTA specialtyLabel={candidate.specialty} />
 
         {/* Matches section — top of the page so candidates see jobs first,
            profile editing second. Matches refresh on the marketplace cron. */}
