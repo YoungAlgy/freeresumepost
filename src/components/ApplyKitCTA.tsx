@@ -6,10 +6,16 @@
 // First-party, so no approval gate like an affiliate — always renders.
 // The outbound link carries UTM params so ApplyKit can attribute signups back
 // to this bridge. Cross-domain -> plain <a>.
+//
+// NOTE: "applykit.vercel.app" is NOT ours — that global vanity alias is
+// already taken by an unrelated live product (an ATS at applykit.co). Using
+// the real per-deployment URL until Algy picks a permanent domain (possibly
+// a rename, given the name collision). Update via NEXT_PUBLIC_APPLYKIT_URL
+// once that's decided — don't let this default silently go stale.
 
 const APPLYKIT_URL =
   process.env.NEXT_PUBLIC_APPLYKIT_URL ??
-  'https://applykit.vercel.app?utm_source=freeresumepost&utm_medium=referral&utm_campaign=profile_cta'
+  'https://applykit-f6dm0hhss-youngalgys-projects.vercel.app?utm_source=freeresumepost&utm_medium=referral&utm_campaign=profile_cta'
 
 type Props = {
   /** e.g. "Registered Nurse" — used to make the pitch feel specific, not generic */
