@@ -17,6 +17,14 @@ export interface ChangelogEntry {
 }
 
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
+  // ── July 2026 ────────────────────────────────────
+  {
+    date: "2026-07-01",
+    title: "Tailor your resume before you apply",
+    body:
+      "Your profile page now has a quick way to shape your resume for one specific job. Paste the posting into ApplyKit with your resume and it rewrites your bullets to fit, drafts a cover letter, and preps you for the interview. First one is free. It's a sister product we built, no extra sign-up on this site.",
+    tag: "new",
+  },
   // ── June 2026 ────────────────────────────────────
   {
     date: "2026-06-25",
