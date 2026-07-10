@@ -32,6 +32,14 @@ export const metadata: Metadata = {
 // upload landing page — no need to regen every 5 min. See freejobpost.
 export const revalidate = 21600
 
+// 2026-07-09 build fix: same shape/failure as the homepage — this page eagerly
+// aggregates the FULL active corpus (count + up to ~44 parallel .range() OFFSET
+// windows over public_jobs) with no param space to shrink. Building it once at
+// deploy time exceeds Next's 60s fetch timeout on the 57K-row table. force-
+// dynamic moves the render to first-request time; the supabase client's 1h
+// fetch cache (src/lib/supabase.ts) keeps output identical and cost bounded.
+export const dynamic = 'force-dynamic'
+
 interface JobRow {
   slug: string
   title: string

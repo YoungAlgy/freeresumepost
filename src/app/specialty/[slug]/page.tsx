@@ -67,8 +67,21 @@ const RESUME_TO_FREEJOB_SPECIALTY: Record<string, string> = {
 // that hit freejobpost as this surface grows.
 export const revalidate = 86400
 
+// 2026-07-09 build fix: prebuild NOTHING at build time. Each page's
+// fetchMatchingJobs() fires 5 parallel leading-wildcard ILIKE scans of
+// public_jobs (a seq scan, can't use any index). Prebuilding all 38 specialties
+// fired ~190 of those concurrently across 19 build workers and blew past Next's
+// 60s build-time fetch timeout (3 retries, then the whole build aborts). Even a
+// 6-slug subset still timed out on the broadest matches (physician/NP/RN) under
+// that build-time storm, so no subset is safe to prebuild. Returning [] renders
+// every specialty on FIRST REQUEST via ISR instead: dynamicParams defaults to
+// true and revalidate=86400 (above) caches each page for 24h after its first
+// hit. Spreading the renders over time (vs all-at-once at build) keeps any one
+// request cheap — a single cold render measured ~0.7s via `next start`, then
+// instant from the ISR cache. Output is identical for every specialty; only WHEN
+// the fetch runs moves from build time to first request.
 export async function generateStaticParams() {
-  return CANDIDATE_SPECIALTIES.map((s) => ({ slug: s.slug }))
+  return []
 }
 
 export async function generateMetadata(

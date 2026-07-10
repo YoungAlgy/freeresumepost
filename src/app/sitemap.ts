@@ -5,6 +5,17 @@ import { CHANGELOG_ENTRIES } from '@/lib/changelog-entries'
 
 export const revalidate = 21600
 
+// 2026-07-09 build fix: generate the sitemap on-demand, not at build time. A
+// route with only `revalidate` set still gets prerendered ONCE during the build,
+// and this route's public_candidates fetch reliably exceeded Next's 60s
+// build-time fetch timeout (failed all 3 retries and aborted the deploy) even
+// after the specialty/homepage build-time DB load was removed. It is a
+// build-environment pathology, not an inherent query cost: at request time this
+// same query returns in ~0.3s (verified via `next start`). force-dynamic moves
+// generation to request time; the supabase client's 1h fetch cache
+// (src/lib/supabase.ts) keeps it cached between crawls. Output is unchanged.
+export const dynamic = 'force-dynamic'
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = 'https://www.freeresumepost.co'
 

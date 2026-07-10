@@ -35,6 +35,16 @@ export const metadata: Metadata = {
 // preview fresh at a fraction of the regen cost. See freejobpost jobs/[slug].
 export const revalidate = 21600
 
+// 2026-07-09 build fix: this page has no param space to shrink — it eagerly
+// aggregates the FULL active corpus (a count then up to ~44 parallel .range()
+// OFFSET windows over public_jobs). At build time Next prerenders it once, and
+// on the now-57K-row table the deep-offset windows blow past the 60s build
+// fetch timeout, aborting the whole build. force-dynamic moves that render to
+// first-request time; the supabase client already caches every fetch for 1h
+// (next.revalidate=3600 in src/lib/supabase.ts), so the output is unchanged and
+// only the first visitor per cache window pays the latency, not the build.
+export const dynamic = 'force-dynamic'
+
 interface PreviewJob {
   slug: string
   title: string
