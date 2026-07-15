@@ -28,7 +28,7 @@ The platform is candidate-controlled: profiles are public only with explicit opt
 ## Sister sites
 
 - [freejobpost.co](https://freejobpost.co): ~11,000 current US healthcare job openings (where candidate matches come from)
-- [providers.avahealth.co](https://providers.avahealth.co): 1.4M+ verified US healthcare provider directory (NPPES-sourced)
+- [providers.avahealth.co](https://providers.avahealth.co): Ava Health's staffing site — healthcare staffing services, salary calculator, and state-by-state comparison tools
 
 ## For LLM agents
 
