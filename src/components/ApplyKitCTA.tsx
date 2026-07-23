@@ -1,21 +1,14 @@
-// Cross-promo bridge: freeresumepost.co candidate traffic → ApplyKit (Algy's
-// own product, not an affiliate). Placed right after the candidate lands on
-// their profile/edit page post-upload — they already have a resume in hand,
-// this is the natural next step before they actually apply anywhere.
+// Cross-promo bridge: point candidates at the native tailoring feature
+// (/account/tailor) instead of the old standalone ApplyKit product. Placed
+// right after the candidate lands on their profile/edit page post-upload —
+// they already have a resume in hand, this is the natural next step before
+// they actually apply anywhere.
 //
-// First-party, so no approval gate like an affiliate — always renders.
-// The outbound link carries UTM params so ApplyKit can attribute signups back
-// to this bridge. Cross-domain -> plain <a>.
-//
-// NOTE: "applykit.vercel.app" is NOT ours — that global vanity alias is
-// already taken by an unrelated live product (an ATS at applykit.co). Vercel
-// assigned "applykit-beryl.vercel.app" as our stable alias instead. Update
-// via NEXT_PUBLIC_APPLYKIT_URL once Algy picks a permanent custom domain
-// (possibly a rename, given the name collision) — don't let this go stale.
-
-const APPLYKIT_URL =
-  process.env.NEXT_PUBLIC_APPLYKIT_URL ??
-  'https://applykit-beryl.vercel.app?utm_source=freeresumepost&utm_medium=referral&utm_campaign=profile_cta'
+// Formerly linked out to a separate paid product (applykit-beryl.vercel.app).
+// That product's tailoring logic now lives here as a free, logged-in feature
+// (/account/tailor) that reuses the resume already on file — no re-paste,
+// no payment. A visitor without an active session just hits the existing
+// sign-in-with-a-code flow first.
 
 type Props = {
   /** e.g. "Registered Nurse" — used to make the pitch feel specific, not generic */
@@ -34,19 +27,15 @@ export default function ApplyKitCTA({ specialtyLabel }: Props) {
         {role ? `Tailor this resume for a specific ${role} job` : 'Tailor this resume for a specific job'}
       </h3>
       <p className="text-sm text-slate-700 mb-4 leading-relaxed max-w-xl">
-        Paste any job posting into ApplyKit along with this resume. It rewrites your bullets to
-        match what that job wants, writes a real cover letter, and preps you for the interview.
-        A dollar to run it.
+        Paste any job posting and we&apos;ll rewrite your bullets to match what that job wants, write a
+        real cover letter, and prep you for the interview. Free, using the resume already on your account.
       </p>
       <a
-        href={APPLYKIT_URL}
-        target="_blank"
-        rel="noopener noreferrer"
+        href="/account/tailor"
         className="inline-flex items-center bg-[#003D5C] text-white px-5 py-2.5 font-bold rounded-lg hover:bg-[#002a42] transition-colors"
       >
         Tailor my resume →
       </a>
-      <p className="text-[11px] text-slate-500 mt-2.5">Built by the person who runs this site.</p>
     </aside>
   )
 }

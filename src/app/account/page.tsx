@@ -136,6 +136,13 @@ export default function AccountPage() {
               )}
             </div>
 
+            <Link
+              href="/account/tailor"
+              className="block w-full text-center bg-[#003D5C] text-white text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-[#002A40] mb-3"
+            >
+              Tailor my resume to a job posting →
+            </Link>
+
             {editSent ? (
               <div className="rounded-lg border border-[#7FBC00]/30 bg-[#7FBC00]/10 p-5 mb-3">
                 <p className="text-sm text-slate-800">

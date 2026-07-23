@@ -91,6 +91,21 @@ export async function extractTextFromFile(file: File): Promise<string> {
   throw new Error('Unsupported file type. Use PDF, DOCX, or TXT.')
 }
 
+// Same extraction, but starting from the candidate's already-stored resume_url
+// (the signed URL to their file in the private `resumes` bucket) instead of a
+// fresh file picked in a form. Used by /account/tailor so a returning
+// candidate doesn't have to re-upload or re-paste their resume.
+export async function extractTextFromUrl(url: string): Promise<string> {
+  const res = await fetch(url)
+  if (!res.ok) throw new Error(`Could not fetch resume file (${res.status})`)
+  const ab = await res.arrayBuffer()
+  const path = new URL(url).pathname.toLowerCase()
+  if (path.endsWith('.pdf')) return extractPdfText(ab)
+  if (path.endsWith('.docx')) return extractDocxText(ab)
+  if (path.endsWith('.txt')) return new TextDecoder().decode(ab)
+  throw new Error('Unsupported file type on record. Use PDF, DOCX, or TXT.')
+}
+
 async function extractPdfText(ab: ArrayBuffer): Promise<string> {
   const pdfjs = await import('pdfjs-dist')
   // Use the worker bundled under node_modules — Next puts it next to the app
