@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { unstable_cache } from 'next/cache'
@@ -5,7 +6,7 @@ import { supabase, hourIso } from '@/lib/supabase'
 import UploadForm from './upload-form'
 import AffiliateOffer from '@/components/AffiliateOffer'
 import { formatSalary } from '@/lib/format-salary'
-import { bucketizeRoles } from '@/lib/role-buckets'
+import { bucketizeRoles, type RoleBucket } from '@/lib/role-buckets'
 
 export const metadata: Metadata = {
   title: 'Upload your resume free and get matched to healthcare jobs',
@@ -57,9 +58,47 @@ interface JobRow {
   remote_hybrid: 'remote' | 'hybrid' | 'onsite' | null
 }
 
-// Live signal — pull active job count + 6 most-recent jobs + a wider slice
-// for role-bucket aggregation in one render.
-//
+// Live signal — active job count + 6 most-recent jobs. Both cheap, single,
+// indexed queries -- kept separate from the full-corpus role-bucket
+// aggregation below, which is NOT cheap and must never block this fast path.
+type ActiveJobsAndRecent = {
+  activeJobs: number
+  recentJobs: JobRow[]
+}
+
+async function _fetchActiveJobsAndRecentUncached(): Promise<ActiveJobsAndRecent> {
+  const nowIso = hourIso()
+  const recentFields = 'slug, title, city, state, role, salary_min, salary_max, remote_hybrid'
+
+  const [{ count: activeCount }, recentRes] = await Promise.all([
+    supabase
+      .from('public_jobs')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'active')
+      .is('deleted_at', null)
+      .gt('expires_at', nowIso),
+    supabase
+      .from('public_jobs')
+      .select(recentFields)
+      .eq('status', 'active')
+      .is('deleted_at', null)
+      .gt('expires_at', nowIso)
+      .order('created_at', { ascending: false })
+      .limit(6),
+  ])
+
+  return {
+    activeJobs: activeCount ?? 0,
+    recentJobs: (recentRes.data ?? []) as JobRow[],
+  }
+}
+
+const _cachedActiveJobsAndRecent = unstable_cache(
+  _fetchActiveJobsAndRecentUncached,
+  ['upload-page-active-and-recent-v1'],
+  { revalidate: 21600 },
+)
+
 // The role-bucket tiles aggregate counts + salary ranges over the FULL active
 // corpus. Supabase's anon PostgREST caps a query at 1,000 rows, so we fetch
 // the corpus as parallel .range() windows. 2026-05-29 audit fixed two bugs
@@ -73,25 +112,21 @@ interface JobRow {
 // columns (the recent-jobs preview keeps the full display set).
 //
 // 🔴 2026-07-23 INCIDENT FIX (same root cause as freejobpost's sitemap.ts and
-// this app's own homepage — see page.tsx's incident note): force-dynamic
-// disables the Data Cache, so this ~44-batch aggregation ran on EVERY
-// request, uncached. Fine on the old Micro-compute Postgres; hung outright
-// once the shared DB moved to Nano compute. Wrapped in Next's data cache: one
-// full scan per 6h globally, matching the revalidate window above.
-type UploadPageData = {
-  activeJobs: number
-  recentJobs: JobRow[]
-  aggJobs: Array<{ role: string | null; title: string; salary_min: number | null; salary_max: number | null }>
-}
-
-async function _fetchUploadPageDataUncached(): Promise<UploadPageData> {
+// this app's own homepage — see page.tsx's incident note): this ~44-60 batch
+// aggregation ran on EVERY request, uncached, and used to block the WHOLE
+// page. Fine on the old Micro-compute Postgres; hung/504'd outright once the
+// shared DB moved to Nano compute -- even after wrapping it in unstable_cache
+// (helps repeat hits, not the first) and raising maxDuration to 120s, a cold
+// cache miss still blew past that budget. Split into its own component
+// behind <Suspense> so this slow, non-critical aggregation can never again
+// take the entire page down with it.
+async function _fetchRoleBucketsUncached(): Promise<RoleBucket[]> {
   const BATCH_SIZE = 1000
   // ~60K-job safety bound (bumped from 40 on 2026-06-21). Active inventory hit
   // ~31,208 = 32 batches, 80% of the old 40K cap. Past 40K the cap would clamp
   // numBatches and under-fetch the corpus. Keep in sync with page.tsx.
   const MAX_BATCHES = 60
   const nowIso = hourIso()
-  const recentFields = 'slug, title, city, state, role, salary_min, salary_max, remote_hybrid'
   const bucketFields = 'role, title, salary_min, salary_max'
 
   const { count: activeCount } = await supabase
@@ -100,8 +135,7 @@ async function _fetchUploadPageDataUncached(): Promise<UploadPageData> {
     .eq('status', 'active')
     .is('deleted_at', null)
     .gt('expires_at', nowIso)
-  const activeJobs = activeCount ?? 0
-  const numBatches = Math.min(MAX_BATCHES, Math.max(1, Math.ceil(activeJobs / BATCH_SIZE)))
+  const numBatches = Math.min(MAX_BATCHES, Math.max(1, Math.ceil((activeCount ?? 0) / BATCH_SIZE)))
 
   const baseAgg = () => supabase
     .from('public_jobs')
@@ -110,21 +144,12 @@ async function _fetchUploadPageDataUncached(): Promise<UploadPageData> {
     .is('deleted_at', null)
     .gt('expires_at', nowIso)
     .order('id', { ascending: true })
-  const aggBatchPromises = Array.from({ length: numBatches }, (_, i) =>
-    baseAgg().range(i * BATCH_SIZE, (i + 1) * BATCH_SIZE - 1)
+  const aggBatches = await Promise.all(
+    Array.from({ length: numBatches }, (_, i) =>
+      baseAgg().range(i * BATCH_SIZE, (i + 1) * BATCH_SIZE - 1)
+    )
   )
-  const [recentRes, ...aggBatches] = await Promise.all([
-    supabase
-      .from('public_jobs')
-      .select(recentFields)
-      .eq('status', 'active')
-      .is('deleted_at', null)
-      .gt('expires_at', nowIso)
-      .order('created_at', { ascending: false })
-      .limit(6),
-    ...aggBatchPromises,
-  ])
-  const recentJobs = (recentRes.data ?? []) as JobRow[]
+
   const aggJobs = aggBatches.flatMap(
     (b) =>
       (b.data ?? []) as Array<{
@@ -134,18 +159,79 @@ async function _fetchUploadPageDataUncached(): Promise<UploadPageData> {
         salary_max: number | null
       }>
   )
-  return { activeJobs, recentJobs, aggJobs }
+  return bucketizeRoles(aggJobs).slice(0, 6)
 }
 
-const _cachedUploadPageData = unstable_cache(
-  _fetchUploadPageDataUncached,
-  ['upload-page-jobs-and-buckets-v1'],
+const _cachedRoleBuckets = unstable_cache(
+  _fetchRoleBucketsUncached,
+  ['upload-page-role-buckets-v1'],
   { revalidate: 21600 },
 )
 
+async function SpecialtyTiles({ activeJobs }: { activeJobs: number }) {
+  const roleBuckets = await _cachedRoleBuckets()
+  if (roleBuckets.length === 0) return null
+
+  return (
+    <div className="mt-14 mb-6 border-t border-slate-200 pt-10">
+      <div className="flex items-baseline justify-between mb-5">
+        <h2 className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
+          Open roles by specialty
+        </h2>
+        <a
+          href="https://freejobpost.co/jobs"
+          className="text-xs font-medium text-[#003D5C] hover:text-[#002A40]"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Browse all {activeJobs.toLocaleString()} →
+        </a>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        {roleBuckets.map((b) => {
+          const fmtK = (n: number) =>
+            n >= 1000 ? `$${Math.round(n / 1000)}K` : `$${n}`
+          const range =
+            b.salaryFloor && b.salaryCeiling
+              ? b.salaryFloor === b.salaryCeiling
+                ? fmtK(b.salaryFloor)
+                : `${fmtK(b.salaryFloor)}-${fmtK(b.salaryCeiling)}`
+              : null
+          return (
+            <a
+              key={b.label}
+              href={`https://freejobpost.co/jobs?q=${encodeURIComponent(b.searchKeyword)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group block rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-200/60 px-4 py-4"
+            >
+              <div className="flex items-baseline justify-between gap-2 mb-1.5">
+                <span className="text-sm font-medium text-slate-900 truncate">
+                  <span className="mr-1.5" aria-hidden="true">{b.emoji}</span>
+                  {b.label}
+                </span>
+                <span className="text-xs font-semibold text-slate-500 tabular-nums shrink-0">
+                  {b.count}
+                </span>
+              </div>
+              {range ? (
+                <div className="text-xs text-slate-600 tabular-nums">{range} typical</div>
+              ) : (
+                <div className="text-xs text-slate-500">{b.count === 1 ? '1 role' : `${b.count} active`}</div>
+              )}
+            </a>
+          )
+        })}
+      </div>
+      <p className="text-xs text-slate-500 mt-4">
+        Upload your resume above to be matched with roles in your specialty + state. Or browse openings on freejobpost.co first if you want to see what&apos;s out there.
+      </p>
+    </div>
+  )
+}
+
 export default async function UploadPage() {
-  const { activeJobs, recentJobs, aggJobs } = await _cachedUploadPageData()
-  const roleBuckets = bucketizeRoles(aggJobs).slice(0, 6)
+  const { activeJobs, recentJobs } = await _cachedActiveJobsAndRecent()
 
   return (
     <main className="min-h-screen bg-white text-slate-900">
@@ -228,63 +314,12 @@ export default async function UploadPage() {
 
         {/* Specialty preview — show role-level counts so candidates see demand
            specific to their specialty BEFORE committing to upload. Highest-
-           leverage candidate-side conversion lever per the strategic plan. */}
-        {roleBuckets.length > 0 && (
-          <div className="mt-14 mb-6 border-t border-slate-200 pt-10">
-            <div className="flex items-baseline justify-between mb-5">
-              <h2 className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
-                Open roles by specialty
-              </h2>
-              <a
-                href="https://freejobpost.co/jobs"
-                className="text-xs font-medium text-[#003D5C] hover:text-[#002A40]"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Browse all {activeJobs.toLocaleString()} →
-              </a>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {roleBuckets.map((b) => {
-                const fmtK = (n: number) =>
-                  n >= 1000 ? `$${Math.round(n / 1000)}K` : `$${n}`
-                const range =
-                  b.salaryFloor && b.salaryCeiling
-                    ? b.salaryFloor === b.salaryCeiling
-                      ? fmtK(b.salaryFloor)
-                      : `${fmtK(b.salaryFloor)}-${fmtK(b.salaryCeiling)}`
-                    : null
-                return (
-                  <a
-                    key={b.label}
-                    href={`https://freejobpost.co/jobs?q=${encodeURIComponent(b.searchKeyword)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group block rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-200/60 px-4 py-4"
-                  >
-                    <div className="flex items-baseline justify-between gap-2 mb-1.5">
-                      <span className="text-sm font-medium text-slate-900 truncate">
-                        <span className="mr-1.5" aria-hidden="true">{b.emoji}</span>
-                        {b.label}
-                      </span>
-                      <span className="text-xs font-semibold text-slate-500 tabular-nums shrink-0">
-                        {b.count}
-                      </span>
-                    </div>
-                    {range ? (
-                      <div className="text-xs text-slate-600 tabular-nums">{range} typical</div>
-                    ) : (
-                      <div className="text-xs text-slate-500">{b.count === 1 ? '1 role' : `${b.count} active`}</div>
-                    )}
-                  </a>
-                )
-              })}
-            </div>
-            <p className="text-xs text-slate-500 mt-4">
-              Upload your resume above to be matched with roles in your specialty + state. Or browse openings on freejobpost.co first if you want to see what&apos;s out there.
-            </p>
-          </div>
-        )}
+           leverage candidate-side conversion lever per the strategic plan.
+           Behind Suspense (see SpecialtyTiles above) so this slow, full-corpus
+           aggregation can never block the rest of the page from rendering. */}
+        <Suspense fallback={null}>
+          <SpecialtyTiles activeJobs={activeJobs} />
+        </Suspense>
 
         {/* Live jobs preview — most recent active roles, demonstrates real demand */}
         {recentJobs.length > 0 && (
