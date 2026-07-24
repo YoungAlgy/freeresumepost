@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next'
+import { unstable_cache } from 'next/cache'
 import { supabase } from '@/lib/supabase'
 import { CANDIDATE_SPECIALTIES } from '@/lib/specialty-slugs'
 import { CHANGELOG_ENTRIES } from '@/lib/changelog-entries'
@@ -16,16 +17,24 @@ export const revalidate = 21600
 // (src/lib/supabase.ts) keeps it cached between crawls. Output is unchanged.
 export const dynamic = 'force-dynamic'
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = 'https://www.freeresumepost.co'
+// Drop thin profiles (no specialty AND no credential): profile/[slug]
+// noindexes them, so advertising them in the sitemap would trip GSC's
+// "Submitted URL marked noindex" + waste crawl budget. The page stays
+// crawlable; it just isn't listed until it's filled in. Mirrors the page's
+// own thin gate. 2026-05-28 audit (P3-1).
+type ProfileRow = {
+  slug: string
+  updated_at: string
+  specialty: string | null
+  credential: string | null
+}
 
-  // Pull candidate profiles once, ordered by updated_at DESC. We use the first
-  // row's updated_at as the lastmod signal for routes that aggregate the
-  // candidate table.
-  //
-  // Why not `new Date()`? Google's sitemap docs are explicit: if `lastmod`
-  // consistently lies (every URL = "today" on every refresh), Google stops
-  // trusting all `lastmod` values from the host. Tying signal to real data.
+// 🔴 2026-07-23 INCIDENT FIX (same root cause as freejobpost's sitemap.ts —
+// see that file's incident note): force-dynamic disables the Data Cache, so
+// this batched profile fetch ran on every crawl hit, uncached. Fine on the
+// old Micro-compute Postgres; started failing once the shared DB moved to
+// Nano compute. Wrapped in Next's data cache: one full scan per 6h globally.
+async function _fetchSitemapCandidatesUncached(): Promise<ProfileRow[]> {
   // Count active public profiles, then fetch exactly ceil(count/1000) batches.
   // PostgREST's anon role silently caps a single .limit(>1000) at 1,000
   // (db_max_rows) — so the prior bare .limit(5000) would silently drop profile
@@ -57,20 +66,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         .range(i * PROFILE_PAGE, (i + 1) * PROFILE_PAGE - 1)
     )
   )
-  // Drop thin profiles (no specialty AND no credential): profile/[slug]
-  // noindexes them, so advertising them in the sitemap would trip GSC's
-  // "Submitted URL marked noindex" + waste crawl budget. The page stays
-  // crawlable; it just isn't listed until it's filled in. Mirrors the page's
-  // own thin gate. 2026-05-28 audit (P3-1).
-  type ProfileRow = {
-    slug: string
-    updated_at: string
-    specialty: string | null
-    credential: string | null
-  }
-  const candidates = profileBatches
+  return profileBatches
     .flatMap((b) => (b.data ?? []) as ProfileRow[])
     .filter((c) => (c.specialty ?? '').trim() || (c.credential ?? '').trim())
+}
+
+const _cachedSitemapCandidates = unstable_cache(
+  _fetchSitemapCandidatesUncached,
+  ['sitemap-candidates-v1'],
+  { revalidate: 21600 },
+)
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const base = 'https://www.freeresumepost.co'
+
+  // Pull candidate profiles once, ordered by updated_at DESC. We use the first
+  // row's updated_at as the lastmod signal for routes that aggregate the
+  // candidate table.
+  //
+  // Why not `new Date()`? Google's sitemap docs are explicit: if `lastmod`
+  // consistently lies (every URL = "today" on every refresh), Google stops
+  // trusting all `lastmod` values from the host. Tying signal to real data.
+  const candidates = await _cachedSitemapCandidates()
   const newestCandidate = candidates[0]?.updated_at
     ? new Date(candidates[0].updated_at)
     : null

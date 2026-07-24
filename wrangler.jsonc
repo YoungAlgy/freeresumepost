@@ -4,10 +4,40 @@
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-07-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "cache": {
+    "enabled": true
+  },
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
+  "r2_buckets": [
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "freeresumepost-inc-cache"
+    }
+  ],
+  "d1_databases": [
+    {
+      "binding": "NEXT_TAG_CACHE_D1",
+      "database_id": "28d3df97-14ce-449c-a7ae-376c6c66d8f8",
+      "database_name": "freeresumepost-tag-cache"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "NEXT_CACHE_DO_QUEUE",
+        "class_name": "DOQueueHandler"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["DOQueueHandler"]
+    }
+  ],
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",

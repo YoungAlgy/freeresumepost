@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { unstable_cache } from 'next/cache'
 import { supabase, hourIso } from '@/lib/supabase'
 import { formatSalary } from '@/lib/format-salary'
 import { bucketizeRoles } from '@/lib/role-buckets'
@@ -44,6 +45,12 @@ export const revalidate = 21600
 // (next.revalidate=3600 in src/lib/supabase.ts), so the output is unchanged and
 // only the first visitor per cache window pays the latency, not the build.
 export const dynamic = 'force-dynamic'
+// 2026-07-23: the shared Postgres moved to Nano compute (see the incident
+// note on _fetchHomepageDataUncached below) and the first-hit aggregation
+// alone has been observed taking 100s+ there. Default function duration
+// isn't enough headroom for that first, cache-populating request to
+// actually finish. Raise it; every request after the first is a cache hit.
+export const maxDuration = 120
 
 interface PreviewJob {
   slug: string
@@ -61,22 +68,31 @@ function compactLocation(job: Pick<PreviewJob, 'city' | 'state' | 'remote_hybrid
   return [job.city, job.state].filter(Boolean).join(', ')
 }
 
-export default async function Home() {
-  // The "Browse by specialty" tiles aggregate role-bucket counts + salary
-  // ranges over the FULL active corpus. Supabase's anon PostgREST caps a query
-  // at 1,000 rows (pgrst.db_max_rows), so we fetch the corpus as parallel
-  // .range() windows. 2026-05-29 audit fixed two correctness bugs (keep in sync
-  // with src/app/upload/page.tsx):
-  //   (1) windows were ordered by the NON-UNIQUE `updated_at` — it has
-  //       tie-clusters of hundreds of rows, and Postgres gives no order within a
-  //       tie, so the same row could land in two windows (or none), corrupting
-  //       the counts. Now ordered by the unique `id` → clean partitioning.
-  //   (2) the batch count was a fixed 12 (12,000 rows) while inventory had grown
-  //       to ~13.7K, silently truncating ~12%. Now count-based so it never
-  //       under-fetches (capped at MAX_BATCHES as a runaway guard).
-  // Runs at ISR revalidate, not per-request. Aggregation only reads
-  // role/title/salary, so those windows fetch just those columns (the hero
-  // preview below keeps the full display set).
+// The "Browse by specialty" tiles aggregate role-bucket counts + salary
+// ranges over the FULL active corpus. Supabase's anon PostgREST caps a query
+// at 1,000 rows (pgrst.db_max_rows), so we fetch the corpus as parallel
+// .range() windows. 2026-05-29 audit fixed two correctness bugs (keep in sync
+// with src/app/upload/page.tsx):
+//   (1) windows were ordered by the NON-UNIQUE `updated_at` — it has
+//       tie-clusters of hundreds of rows, and Postgres gives no order within a
+//       tie, so the same row could land in two windows (or none), corrupting
+//       the counts. Now ordered by the unique `id` → clean partitioning.
+//   (2) the batch count was a fixed 12 (12,000 rows) while inventory had grown
+//       to ~13.7K, silently truncating ~12%. Now count-based so it never
+//       under-fetches (capped at MAX_BATCHES as a runaway guard).
+//
+// 🔴 2026-07-23 INCIDENT FIX (same root cause as freejobpost's sitemap.ts —
+// see that file's incident note): force-dynamic disables the Data Cache for
+// the whole route, so this ~44-batch aggregation was firing on EVERY request,
+// uncached. Fine against the old Micro-compute Postgres; hung outright once
+// the shared DB moved to Nano compute. Wrapped in Next's data cache: one full
+// scan per 6h globally, matching the revalidate window above.
+type PreviewJobsAndBuckets = {
+  previewJobs: PreviewJob[]
+  aggJobs: Array<{ role: string | null; title: string; salary_min: number | null; salary_max: number | null }>
+}
+
+async function _fetchHomepageDataUncached(): Promise<PreviewJobsAndBuckets> {
   const BATCH_SIZE = 1000
   // ~60K-job safety bound (bumped from 40 on 2026-06-21). Active inventory hit
   // ~31,208 = 32 batches, 80% of the old 40K cap. Past 40K the cap would clamp
@@ -127,6 +143,17 @@ export default async function Home() {
         salary_max: number | null
       }>
   )
+  return { previewJobs, aggJobs }
+}
+
+const _cachedHomepageData = unstable_cache(
+  _fetchHomepageDataUncached,
+  ['homepage-jobs-and-buckets-v1'],
+  { revalidate: 21600 },
+)
+
+export default async function Home() {
+  const { previewJobs, aggJobs } = await _cachedHomepageData()
   const roleBuckets = bucketizeRoles(aggJobs).slice(0, 6)
 
   return (

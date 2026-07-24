@@ -107,23 +107,10 @@ export async function extractTextFromUrl(url: string): Promise<string> {
 }
 
 async function extractPdfText(ab: ArrayBuffer): Promise<string> {
-  const pdfjs = await import('pdfjs-dist')
-  // Use the worker bundled under node_modules — Next puts it next to the app
-  // via dynamic import; fall back to inline parsing if worker unavailable.
-  try {
-    const workerSrc = (await import('pdfjs-dist/build/pdf.worker.min.mjs?url' as unknown as string)).default
-    ;(pdfjs.GlobalWorkerOptions as { workerSrc: string }).workerSrc = workerSrc
-  } catch {
-    /* no-op — pdfjs will run in main thread if worker can't load */
-  }
-  const doc = await pdfjs.getDocument({ data: ab }).promise
-  let text = ''
-  for (let i = 1; i <= doc.numPages; i++) {
-    const page = await doc.getPage(i)
-    const content = await page.getTextContent()
-    text += content.items.map((it) => ('str' in it ? it.str : '')).join(' ') + '\n'
-  }
-  return text
+  const { extractText, getDocumentProxy } = await import('unpdf')
+  const pdf = await getDocumentProxy(new Uint8Array(ab))
+  const { text } = await extractText(pdf, { mergePages: false })
+  return text.join('\n')
 }
 
 async function extractDocxText(ab: ArrayBuffer): Promise<string> {

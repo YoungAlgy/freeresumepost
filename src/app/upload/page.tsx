@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { unstable_cache } from 'next/cache'
 import { supabase, hourIso } from '@/lib/supabase'
 import UploadForm from './upload-form'
 import AffiliateOffer from '@/components/AffiliateOffer'
@@ -39,6 +40,11 @@ export const revalidate = 21600
 // dynamic moves the render to first-request time; the supabase client's 1h
 // fetch cache (src/lib/supabase.ts) keeps output identical and cost bounded.
 export const dynamic = 'force-dynamic'
+// 2026-07-23: same Nano-compute incident as the homepage (see its note) —
+// the first-hit aggregation alone has been observed taking 100s+. Raise the
+// duration budget so that first, cache-populating request can actually
+// finish instead of hard-timing out before anyone benefits from the cache.
+export const maxDuration = 120
 
 interface JobRow {
   slug: string
@@ -51,22 +57,34 @@ interface JobRow {
   remote_hybrid: 'remote' | 'hybrid' | 'onsite' | null
 }
 
-export default async function UploadPage() {
-  // Live signal — pull active job count + 6 most-recent jobs + a wider slice
-  // for role-bucket aggregation in one render. Aggregation runs at ISR
-  // revalidate, not per-request, so cost stays bounded.
-  //
-  // The role-bucket tiles aggregate counts + salary ranges over the FULL active
-  // corpus. Supabase's anon PostgREST caps a query at 1,000 rows, so we fetch
-  // the corpus as parallel .range() windows. 2026-05-29 audit fixed two bugs
-  // (mirrored from src/app/page.tsx — keep both in sync):
-  //   (1) windows ordered by the non-unique `updated_at` (tie-clusters of
-  //       hundreds) could put a row in two windows or none → corrupt counts;
-  //       now ordered by the unique `id`.
-  //   (2) a fixed 12-batch cap (12,000) silently truncated ~12% once inventory
-  //       passed 13K; now count-based (capped at MAX_BATCHES as a guard).
-  // Aggregation only reads role/title/salary, so those windows fetch just those
-  // columns (the recent-jobs preview keeps the full display set).
+// Live signal — pull active job count + 6 most-recent jobs + a wider slice
+// for role-bucket aggregation in one render.
+//
+// The role-bucket tiles aggregate counts + salary ranges over the FULL active
+// corpus. Supabase's anon PostgREST caps a query at 1,000 rows, so we fetch
+// the corpus as parallel .range() windows. 2026-05-29 audit fixed two bugs
+// (mirrored from src/app/page.tsx — keep both in sync):
+//   (1) windows ordered by the non-unique `updated_at` (tie-clusters of
+//       hundreds) could put a row in two windows or none → corrupt counts;
+//       now ordered by the unique `id`.
+//   (2) a fixed 12-batch cap (12,000) silently truncated ~12% once inventory
+//       passed 13K; now count-based (capped at MAX_BATCHES as a guard).
+// Aggregation only reads role/title/salary, so those windows fetch just those
+// columns (the recent-jobs preview keeps the full display set).
+//
+// 🔴 2026-07-23 INCIDENT FIX (same root cause as freejobpost's sitemap.ts and
+// this app's own homepage — see page.tsx's incident note): force-dynamic
+// disables the Data Cache, so this ~44-batch aggregation ran on EVERY
+// request, uncached. Fine on the old Micro-compute Postgres; hung outright
+// once the shared DB moved to Nano compute. Wrapped in Next's data cache: one
+// full scan per 6h globally, matching the revalidate window above.
+type UploadPageData = {
+  activeJobs: number
+  recentJobs: JobRow[]
+  aggJobs: Array<{ role: string | null; title: string; salary_min: number | null; salary_max: number | null }>
+}
+
+async function _fetchUploadPageDataUncached(): Promise<UploadPageData> {
   const BATCH_SIZE = 1000
   // ~60K-job safety bound (bumped from 40 on 2026-06-21). Active inventory hit
   // ~31,208 = 32 batches, 80% of the old 40K cap. Past 40K the cap would clamp
@@ -116,6 +134,17 @@ export default async function UploadPage() {
         salary_max: number | null
       }>
   )
+  return { activeJobs, recentJobs, aggJobs }
+}
+
+const _cachedUploadPageData = unstable_cache(
+  _fetchUploadPageDataUncached,
+  ['upload-page-jobs-and-buckets-v1'],
+  { revalidate: 21600 },
+)
+
+export default async function UploadPage() {
+  const { activeJobs, recentJobs, aggJobs } = await _cachedUploadPageData()
   const roleBuckets = bucketizeRoles(aggJobs).slice(0, 6)
 
   return (
