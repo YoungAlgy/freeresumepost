@@ -165,6 +165,18 @@ const _cachedRoleBuckets = unstable_cache(
 )
 
 async function SpecialtyTiles() {
+  // 2026-07-24 EMERGENCY DISABLE: the up-to-60-batch aggregation this pulls
+  // from (_cachedRoleBuckets → _fetchRoleBucketsUncached) is genuinely too
+  // slow against the Nano-compute Postgres to finish within Vercel's function
+  // duration limit -- Suspense doesn't help, since the function must stay
+  // alive until every streamed chunk resolves, so a slow chunk still kills
+  // the whole request at maxDuration. That was taking the ENTIRE page down
+  // (confirmed live via Vercel runtime logs: "Task timed out after 120s" on
+  // every request). Disabled outright until the real fix (SQL-side GROUP BY
+  // aggregation instead of fetch-then-bucket-in-JS) ships. Do not re-enable
+  // by reverting this line alone -- the underlying query is still too slow.
+  return null
+  // eslint-disable-next-line no-unreachable
   const roleBuckets = await _cachedRoleBuckets()
   if (roleBuckets.length === 0) return null
 

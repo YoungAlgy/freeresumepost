@@ -169,6 +169,16 @@ const _cachedRoleBuckets = unstable_cache(
 )
 
 async function SpecialtyTiles({ activeJobs }: { activeJobs: number }) {
+  // 2026-07-24 EMERGENCY DISABLE: see page.tsx's SpecialtyTiles for the full
+  // writeup -- the up-to-60-batch aggregation this pulls from is too slow
+  // against the Nano-compute Postgres to finish within Vercel's function
+  // duration limit, and Suspense doesn't help (the function stays alive
+  // until every streamed chunk resolves). That was taking the entire /upload
+  // page down. Disabled until the real fix (SQL-side GROUP BY aggregation)
+  // ships. Do not re-enable by reverting this line alone.
+  void activeJobs
+  return null
+  // eslint-disable-next-line no-unreachable
   const roleBuckets = await _cachedRoleBuckets()
   if (roleBuckets.length === 0) return null
 
