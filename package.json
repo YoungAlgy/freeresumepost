@@ -14,8 +14,6 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.102.1",
-    "@vercel/analytics": "^2.0.1",
-    "@vercel/speed-insights": "^2.0.0",
     "mammoth": "^1.12.0",
     "next": "^16.2.6",
     "react": "19.2.4",
