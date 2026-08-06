@@ -11,6 +11,7 @@ import {
 import { submitCandidate, type SubmitCandidateInput } from './actions'
 import { supabaseBrowser } from '@/lib/supabase-browser'
 import TurnstileWidget from '@/components/TurnstileWidget'
+import { US_STATES as STATES } from '@/lib/us-states'
 
 // Map a chosen File to a safe storage extension. We only ever store pdf/doc/docx
 // (the bucket's allowed_mime_types enforce the same — see the resume_file_storage
@@ -26,14 +27,6 @@ function resumeExt(file: File): 'pdf' | 'doc' | 'docx' {
   if (name.endsWith('.doc')) return 'doc'
   return 'pdf'
 }
-
-const STATES = [
-  'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID',
-  'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS',
-  'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK',
-  'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV',
-  'WI', 'WY', 'DC',
-]
 
 type Phase = 'drop' | 'parsing' | 'review' | 'submitting' | 'done'
 

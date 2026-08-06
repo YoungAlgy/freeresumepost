@@ -35,18 +35,28 @@ export default function AccountPage() {
   const [candidate, setCandidate] = useState<Candidate | null>(null)
   const [editSent, setEditSent] = useState(false)
   const [editLoading, setEditLoading] = useState(false)
+  const [editError, setEditError] = useState<string | null>(null)
+  const [loadError, setLoadError] = useState(false)
+  const [reloadKey, setReloadKey] = useState(0)
 
   useEffect(() => {
     let active = true
     async function load() {
+      setLoadError(false)
       const { data: { session } } = await supabaseBrowser.auth.getSession()
       if (!session) {
         router.replace('/candidate/login')
         return
       }
       if (active) setEmail(session.user.email ?? '')
-      const { data } = await supabaseBrowser.rpc('get_my_candidate')
+      const { data, error } = await supabaseBrowser.rpc('get_my_candidate')
       if (!active) return
+      if (error) {
+        console.error('get_my_candidate failed:', error.message)
+        setLoadError(true)
+        setLoading(false)
+        return
+      }
       const row = Array.isArray(data) ? (data[0] ?? null) : (data ?? null)
       setCandidate((row as Candidate | null) ?? null)
       setLoading(false)
@@ -55,14 +65,24 @@ export default function AccountPage() {
     return () => {
       active = false
     }
-  }, [router])
+  }, [router, reloadKey])
+
+  function retryLoad() {
+    setLoading(true)
+    setReloadKey((k) => k + 1)
+  }
 
   async function sendEditLink() {
     if (!email || editLoading) return
     setEditLoading(true)
-    await requestEditLink(email)
+    setEditError(null)
+    const res = await requestEditLink(email)
     setEditLoading(false)
-    setEditSent(true)
+    if (res.ok) {
+      setEditSent(true)
+    } else {
+      setEditError(res.error)
+    }
   }
 
   async function signOut() {
@@ -88,6 +108,22 @@ export default function AccountPage() {
 
         {loading ? (
           <p className="text-slate-600 mt-8">Loading your profile&hellip;</p>
+        ) : loadError ? (
+          <>
+            <h1 className="text-3xl md:text-4xl font-semibold leading-tight tracking-tight text-slate-900 mb-3">
+              Could not load your profile
+            </h1>
+            <p className="text-slate-600 mb-8">
+              Something went wrong loading your account. Please retry &mdash; if it keeps happening, sign out and
+              back in.
+            </p>
+            <button
+              onClick={retryLoad}
+              className="inline-block bg-[#7FBC00] text-white text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-[#6da300]"
+            >
+              Retry
+            </button>
+          </>
         ) : candidate ? (
           <>
             <h1 className="text-3xl md:text-4xl font-semibold leading-tight tracking-tight text-slate-900 mb-1">
@@ -150,13 +186,20 @@ export default function AccountPage() {
                 </p>
               </div>
             ) : (
-              <button
-                onClick={sendEditLink}
-                disabled={editLoading}
-                className="w-full bg-[#7FBC00] text-white text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-[#6da300] disabled:opacity-60 mb-3"
-              >
-                {editLoading ? 'Sending&hellip;' : 'Email me a link to edit my resume'}
-              </button>
+              <>
+                {editError && (
+                  <div className="rounded-lg border border-red-200 bg-red-50 p-4 mb-3 text-sm text-red-700">
+                    {editError}
+                  </div>
+                )}
+                <button
+                  onClick={sendEditLink}
+                  disabled={editLoading}
+                  className="w-full bg-[#7FBC00] text-white text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-[#6da300] disabled:opacity-60 mb-3"
+                >
+                  {editLoading ? 'Sending&hellip;' : 'Email me a link to edit my resume'}
+                </button>
+              </>
             )}
 
             <Link

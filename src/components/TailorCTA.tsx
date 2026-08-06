@@ -15,7 +15,7 @@ type Props = {
   specialtyLabel?: string | null
 }
 
-export default function ApplyKitCTA({ specialtyLabel }: Props) {
+export default function TailorCTA({ specialtyLabel }: Props) {
   const role = (specialtyLabel || '').trim()
 
   return (

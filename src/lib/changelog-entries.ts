@@ -19,6 +19,13 @@ export interface ChangelogEntry {
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
   // ── July 2026 ────────────────────────────────────
   {
+    date: "2026-07-23",
+    title: "Resume tailoring moved in-house",
+    body:
+      "The tailor tool used to send you to ApplyKit, a separate product. It's now part of your account at /account/tailor and reuses the resume you already have on file. No re-pasting, no payment, no extra sign-up.",
+    tag: "improved",
+  },
+  {
     date: "2026-07-01",
     title: "Tailor your resume before you apply",
     body:

@@ -67,7 +67,9 @@ ${opts.resumeText.slice(0, 8000)}
 
 Produce tailored resume bullets, a cover letter, interview prep, and a keyword gap list specific to this exact job. Find the candidate's real name in their resume and sign the cover letter with it. Do not leave any placeholder brackets like [Your Name], [Company Name], or [Date] anywhere. If a detail like the hiring manager's name isn't available, use a natural greeting like "Dear Hiring Team" instead of a bracket.`;
 
-  const apiKey = process.env.GEMINI_API_KEY || "missing";
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error("gemini_api_key_not_configured");
+
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
     {

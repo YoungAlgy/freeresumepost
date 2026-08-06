@@ -85,7 +85,11 @@ export default function OtpLoginForm() {
             className="text-slate-600 hover:text-[#003D5C]"
             onClick={async () => {
               setError('')
-              await supabaseBrowser.auth.signInWithOtp({ email: cleanEmail })
+              const { error } = await supabaseBrowser.auth.signInWithOtp({ email: cleanEmail })
+              if (error) {
+                setError(error.message)
+                return
+              }
               setCode('')
             }}
           >

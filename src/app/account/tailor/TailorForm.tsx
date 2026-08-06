@@ -29,17 +29,26 @@ export default function TailorPage() {
   const [result, setResult] = useState<TailorResult | null>(null)
   const [usesRemainingToday, setUsesRemainingToday] = useState<number | null>(null)
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
+  const [loadError, setLoadError] = useState(false)
+  const [reloadKey, setReloadKey] = useState(0)
 
   useEffect(() => {
     let active = true
     async function load() {
+      setLoadError(false)
       const { data: { session } } = await supabaseBrowser.auth.getSession()
       if (!session) {
         router.replace('/candidate/login')
         return
       }
-      const { data } = await supabaseBrowser.rpc('get_my_candidate')
+      const { data, error } = await supabaseBrowser.rpc('get_my_candidate')
       if (!active) return
+      if (error) {
+        console.error('get_my_candidate failed:', error.message)
+        setLoadError(true)
+        setLoading(false)
+        return
+      }
       const row = (Array.isArray(data) ? data[0] : data) as Candidate | null
       setCandidate(row ?? null)
 
@@ -66,7 +75,12 @@ export default function TailorPage() {
     return () => {
       active = false
     }
-  }, [router])
+  }, [router, reloadKey])
+
+  function retryLoad() {
+    setLoading(true)
+    setReloadKey((k) => k + 1)
+  }
 
   async function copy(key: string, text: string) {
     await navigator.clipboard.writeText(text)
@@ -121,6 +135,20 @@ export default function TailorPage() {
 
         {loading ? (
           <p className="text-slate-600">Loading your profile&hellip;</p>
+        ) : loadError ? (
+          <div className="rounded-lg border-2 border-dashed border-slate-300 p-5">
+            <h2 className="font-semibold text-slate-900 mb-2">Could not load your profile</h2>
+            <p className="text-sm text-slate-700 mb-3">
+              Something went wrong loading your account. Please retry &mdash; if it keeps happening, sign out and
+              back in.
+            </p>
+            <button
+              onClick={retryLoad}
+              className="inline-block bg-[#7FBC00] text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-[#6da300]"
+            >
+              Retry
+            </button>
+          </div>
         ) : resumeSource === 'none' ? (
           <div className="rounded-lg border-2 border-dashed border-slate-300 p-5">
             <h2 className="font-semibold text-slate-900 mb-2">No resume on file yet</h2>

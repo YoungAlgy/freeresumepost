@@ -4,15 +4,8 @@ import { useState, useTransition } from 'react'
 import { updateCandidate } from './actions'
 import type { CandidateMatch } from './page'
 import { formatSalary } from '@/lib/format-salary'
-import ApplyKitCTA from '@/components/ApplyKitCTA'
-
-const STATES = [
-  'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID',
-  'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS',
-  'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK',
-  'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV',
-  'WI', 'WY', 'DC',
-]
+import TailorCTA from '@/components/TailorCTA'
+import { US_STATES as STATES } from '@/lib/us-states'
 
 type Candidate = {
   id: string
@@ -106,7 +99,7 @@ export default function ProfileEditForm({
           </p>
         )}
 
-        <ApplyKitCTA specialtyLabel={candidate.specialty} />
+        <TailorCTA specialtyLabel={candidate.specialty} />
 
         {/* Matches section — top of the page so candidates see jobs first,
            profile editing second. Matches refresh on the marketplace cron. */}
