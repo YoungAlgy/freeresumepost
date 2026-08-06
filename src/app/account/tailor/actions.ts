@@ -7,6 +7,7 @@ import {
   readTailorUsageCookie,
   signTailorUsageCookie,
   hasTailorUseRemaining,
+  isTailorCookieSecretConfigured,
   TAILOR_USAGE_COOKIE,
   TAILOR_USAGE_COOKIE_OPTS,
   DAILY_FREE_USES,
@@ -28,6 +29,17 @@ export async function tailorForCandidate(
   resumeText: string
 ): Promise<TailorActionResult> {
   if (!accessToken) return { ok: false, error: 'Please sign in again.', code: 'unauthenticated' }
+
+  // Fail fast, before the (paid, external) Gemini call — mirrors
+  // gemini-tailor.ts's own apiKey guard. Without this, a missing secret
+  // would only surface once tailor-entitlement.ts's hmac() is reached,
+  // which happens AFTER a successful Gemini call when signing the updated
+  // usage cookie (see the try/catch below) — burning a real API call and
+  // crashing unhandled instead of returning the result or a clean error.
+  if (!isTailorCookieSecretConfigured()) {
+    console.error('tailorForCandidate: TAILOR_COOKIE_SECRET is not configured')
+    return { ok: false, error: 'This feature is temporarily unavailable. Please try again later.', code: 'tailor_failed' }
+  }
 
   const jd = (jobDescription || '').trim()
   const rt = (resumeText || '').trim()
@@ -76,11 +88,20 @@ export async function tailorForCandidate(
   }
 
   const newUsesToday = usageState.usesToday + 1
-  cookieStore.set(
-    TAILOR_USAGE_COOKIE,
-    signTailorUsageCookie({ candidateId: candidate.id, usesToday: newUsesToday, day: usageState.day }),
-    TAILOR_USAGE_COOKIE_OPTS
-  )
+  // Belt-and-suspenders: the isTailorCookieSecretConfigured() guard above
+  // should make this unreachable with an unset secret, but the Gemini call
+  // above already succeeded (and was paid for) by this point — if signing
+  // the usage cookie throws for any other reason, fail open and still
+  // return the result rather than losing it to an unhandled exception.
+  try {
+    cookieStore.set(
+      TAILOR_USAGE_COOKIE,
+      signTailorUsageCookie({ candidateId: candidate.id, usesToday: newUsesToday, day: usageState.day }),
+      TAILOR_USAGE_COOKIE_OPTS
+    )
+  } catch (e) {
+    console.error('signTailorUsageCookie failed (usage count not persisted this call):', e instanceof Error ? e.message : 'unknown')
+  }
 
   return { ok: true, result, usesRemainingToday: Math.max(0, DAILY_FREE_USES - newUsesToday) }
 }

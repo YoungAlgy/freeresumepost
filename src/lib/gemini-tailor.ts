@@ -86,6 +86,16 @@ Produce tailored resume bullets, a cover letter, interview prep, and a keyword g
   );
 
   const data = await res.json();
+  if (!res.ok) {
+    // A non-2xx (quota exceeded, invalid key, model overloaded, etc.) still
+    // has a parseable JSON body, but data.candidates is absent — without this
+    // check that fell through to the generic "empty_gemini_response" below,
+    // which reads identically in logs to a genuine safety-filter empty
+    // response. Surfacing the real Gemini error message here makes prod
+    // errors (e.g. a quota cutoff) distinguishable from a content refusal.
+    const apiMessage = typeof data?.error?.message === "string" ? data.error.message : `HTTP ${res.status}`;
+    throw new Error(`gemini_api_error: ${apiMessage}`);
+  }
   const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
   if (!text) throw new Error("empty_gemini_response");
 

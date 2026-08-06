@@ -4,13 +4,36 @@
  * candidate's id rather than anonymous, so it survives across devices/cookie
  * clears the same way their account does, and can't be reset by just
  * clearing cookies for a *different* candidate id.
+ *
+ * KNOWN LIMITATION (2026-08-06 audit): this is a read-cookie → call Gemini →
+ * write-cookie flow with no server-side atomic counter, so two concurrent
+ * requests from the same candidate (double-click, two tabs) can both read
+ * usesToday=N before either writes N+1, letting both through even at the
+ * limit — a TOCTOU race. Acceptable for now since this only affects a
+ * capped-cost free feature (worst case: a couple of extra Gemini calls, not
+ * a security issue), but a real fix needs a shared atomic store (D1/KV) this
+ * app doesn't currently have wired up — flagged, not fixed, this pass.
  */
 import { createHmac } from "crypto";
 
-const SECRET = process.env.TAILOR_COOKIE_SECRET!;
+const SECRET = process.env.TAILOR_COOKIE_SECRET;
 export const DAILY_FREE_USES = 10;
 
+/**
+ * Whether the cookie-signing secret is configured. Callers should check this
+ * BEFORE doing any expensive work (e.g. the Gemini call in
+ * account/tailor/actions.ts) and fail with a friendly message — see
+ * gemini-tailor.ts's identical apiKey guard for the established pattern.
+ * Without this check, a missing secret surfaces as an unhandled
+ * crypto.createHmac TypeError deep in hmac() below, potentially AFTER a real
+ * (paid) Gemini call has already succeeded and its result thrown away.
+ */
+export function isTailorCookieSecretConfigured(): boolean {
+  return !!SECRET;
+}
+
 function hmac(value: string): string {
+  if (!SECRET) throw new Error("tailor_cookie_secret_not_configured");
   return createHmac("sha256", SECRET).update(value).digest("hex").slice(0, 16);
 }
 

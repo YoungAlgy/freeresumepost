@@ -13,7 +13,7 @@ export default function PrivacyPage() {
     <main className="min-h-screen bg-white text-slate-900">
       <article className="max-w-3xl mx-auto px-6 py-12">
         <h1 className="text-4xl md:text-5xl font-semibold tracking-tight mb-2">Privacy Policy</h1>
-        <p className="text-sm text-slate-600 mb-10">Last updated April 27, 2026</p>
+        <p className="text-sm text-slate-600 mb-10">Last updated August 6, 2026</p>
 
         <div className="space-y-6 text-slate-800 leading-relaxed">
           <p>
@@ -32,14 +32,14 @@ export default function PrivacyPage() {
           <h2 className="text-xl font-semibold mt-8 mb-2">What we collect</h2>
           <ul className="list-disc pl-5 space-y-1.5">
             <li>Profile fields you save: name, email, phone, credential, specialty, city, state, years of experience.</li>
-            <li>The raw text of your resume (stored as you saved it; not the original PDF/DOCX file).</li>
+            <li>The raw text of your resume, as you approved it after we parsed it.</li>
+            <li>The resume file itself (PDF, DOCX, or TXT), kept in a private file store so recruiters can open the real document. If saving the file ever fails, your profile still saves on the text alone.</li>
             <li>Standard server logs (IP address, user agent) for traffic analytics + abuse prevention.</li>
             <li>Match-engine scores against active jobs on freejobpost.co.</li>
           </ul>
 
           <h2 className="text-xl font-semibold mt-8 mb-2">What we don&apos;t collect</h2>
           <ul className="list-disc pl-5 space-y-1.5">
-            <li>The original resume file. After parsing in your browser, only the text you approve is sent to us.</li>
             <li>Social Security number, date of birth, financial info. Never asked.</li>
             <li>Behavioral tracking data from third-party advertisers.</li>
           </ul>
@@ -84,8 +84,9 @@ export default function PrivacyPage() {
 
           <h2 className="text-xl font-semibold mt-8 mb-2">Cookies</h2>
           <p>
-            We use cookies only for: session continuity (the edit-link verification token) and
-            basic analytics (Vercel Analytics, page views). No advertising cookies. No cross-site trackers.
+            We use cookies only for: keeping you signed in after you verify your email code, and a
+            small daily-use counter on the resume-tailoring tool so we can cap free usage. No
+            advertising cookies, no analytics cookies, no cross-site trackers.
           </p>
 
           <h2 className="text-xl font-semibold mt-8 mb-2">Bot protection (Cloudflare Turnstile)</h2>
