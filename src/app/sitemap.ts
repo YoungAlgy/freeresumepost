@@ -45,9 +45,13 @@ async function _fetchSitemapCandidatesUncached(): Promise<ProfileRow[]> {
   // table: it's small and grows slower than jobs, so a fixed fan-out would
   // fire ~30 mostly-empty queries at the shared DB on every regen. 2026-05-28
   // cross-app drift fix.
+  // public_candidates_directory (2026-08-13): anon has no grant on the base
+  // table; this view bakes in the same is_public/active/not-deleted filter
+  // this query redundantly repeats below (kept for clarity/defense-in-depth —
+  // harmless no-ops against a view that already only contains such rows).
   const PROFILE_PAGE = 1000
   const { count: publicCount } = await supabase
-    .from('public_candidates')
+    .from('public_candidates_directory')
     .select('slug', { count: 'exact', head: true })
     .eq('is_public', true)
     .eq('status', 'active')
@@ -56,7 +60,7 @@ async function _fetchSitemapCandidatesUncached(): Promise<ProfileRow[]> {
   const profileBatches = await Promise.all(
     Array.from({ length: numProfileBatches }, (_, i) =>
       supabase
-        .from('public_candidates')
+        .from('public_candidates_directory')
         .select('slug, updated_at, specialty, credential')
         .eq('is_public', true)
         .eq('status', 'active')
@@ -73,7 +77,12 @@ async function _fetchSitemapCandidatesUncached(): Promise<ProfileRow[]> {
 
 const _cachedSitemapCandidates = unstable_cache(
   _fetchSitemapCandidatesUncached,
-  ['sitemap-candidates-v1'],
+  // v2 (2026-08-13): bump busts the v1 entry cached before the
+  // public_candidates_directory fix -- it was caching an empty result from
+  // when anon reads of the underlying table were broken (see that
+  // migration's comment). Without the bump this would otherwise sit stale
+  // for up to the 6h revalidate window.
+  ['sitemap-candidates-v2'],
   { revalidate: 21600 },
 )
 

@@ -1,6 +1,11 @@
 import { ImageResponse } from 'next/og'
 
-export const runtime = 'edge'
+// No explicit edge runtime (2026-08-13 fix, matches freejobpost's per-job OG
+// route, which has never declared one): under this OpenNext/Cloudflare
+// deploy, `runtime = 'edge'` broke next/og's font loading here with
+// "TypeError: Cannot read properties of undefined (reading 'default')" on
+// every request (confirmed live, both of this app's OG routes). The default
+// (Node-compat) runtime renders fine.
 export const alt = 'Upload Your Resume, Get Matched | Ava Health'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'

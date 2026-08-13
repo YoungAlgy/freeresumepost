@@ -9,7 +9,10 @@
 import { ImageResponse } from 'next/og'
 import { supabase } from '@/lib/supabase'
 
-export const runtime = 'edge'
+// No explicit edge runtime (2026-08-13 fix) -- see src/app/opengraph-image.tsx
+// for why: it broke next/og's font loading under this OpenNext/Cloudflare
+// deploy (confirmed live 500 on every request). Matches freejobpost's
+// per-job OG route, which has never declared one.
 export const alt = 'Healthcare candidate on Ava Health'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
@@ -45,9 +48,10 @@ export default async function Image({ params }: { params: Promise<{ slug: string
 
   if (SLUG_RE.test(slug)) {
     const { data } = await supabase
-      .from('public_candidates')
-      // last_initial (public-safe generated col), NOT last_name — keep the full
-      // last name off every anon read path (privacy promise).
+      // public_candidates_directory (2026-08-13): anon has no grant on the base
+      // table. last_initial (public-safe generated col), NOT last_name — keep
+      // the full last name off every anon read path (privacy promise).
+      .from('public_candidates_directory')
       .select('first_name, last_initial, credential, specialty, city, state, years_experience')
       .eq('slug', slug)
       .eq('is_public', true)

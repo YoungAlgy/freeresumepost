@@ -53,11 +53,15 @@ export type CandidateMatch = {
 async function getPublicCandidate(slug: string): Promise<Candidate | null> {
   if (!SLUG_RE.test(slug)) return null
   const { data } = await supabase
-    .from('public_candidates')
+    // public_candidates_directory (2026-08-13): anon has no grant on the base
+    // table (by design — it carries email/phone/resume PII); this view bakes
+    // in the same is_public/active/not-deleted filter and exposes only the
+    // safe columns below. last_initial (generated, public-safe), NOT last_name
+    // — anon must never read the full last name (privacy promise). The owner's
+    // edit view still gets the full name via the SECURITY DEFINER
+    // consume_candidate_edit_rpc.
+    .from('public_candidates_directory')
     .select(
-      // last_initial (generated, public-safe), NOT last_name — anon must never
-      // read the full last name (privacy promise). The owner's edit view still
-      // gets the full name via the SECURITY DEFINER consume_candidate_edit_rpc.
       'id, slug, first_name, last_initial, credential, specialty, city, state, years_experience, remote_only, contact_via_email, contact_via_sms, is_public, source, created_at'
     )
     .eq('slug', slug)
