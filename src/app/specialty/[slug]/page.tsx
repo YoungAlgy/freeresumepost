@@ -4,6 +4,7 @@
 
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { CANDIDATE_SPECIALTIES, getCandidateSpecialty } from '@/lib/specialty-slugs'
 import { supabase, hourIso } from '@/lib/supabase'
@@ -139,13 +140,24 @@ type MatchingJob = {
  * actual matches were averaging across 1-2 rows). 5,000 rows covers
  * even the largest specialties (RN ≈ 3,500 matches) with headroom.
  */
-async function fetchMatchingJobs(specialtyName: string): Promise<MatchingJob[]> {
+// 2026-08-13 — this fired 5 concurrent leading-wildcard ILIKE batches (a
+// seq scan, can't use any index) against public_jobs on EVERY cold render,
+// with only page-level ISR (revalidate=86400) as protection. That's not a
+// real single-flight guarantee across concurrent cold hits — confirmed live
+// via Supabase's unified logs: ~10 different specialty pages fired their
+// full 5-batch ILIKE storm simultaneously (same shared instance freejobpost
+// also hammers), the exact "page cache isn't the same as a compute-once
+// cache" failure mode already found and fixed in freejobpost's matrix
+// helpers. Wrapping in unstable_cache gives a real per-specialty cache the
+// Next Data Cache dedupes across concurrent instances, not just per-URL ISR.
+async function _fetchMatchingJobsUncached(specialtyName: string): Promise<MatchingJob[]> {
   // Strip a trailing " / X" alias (e.g. "LPN / LVN" → "LPN") for the
   // primary search; the alias is rarely the actual posted title.
   const primary = specialtyName.split(' /')[0].trim()
   if (!primary) return []
   const pattern = `%${primary}%`
   const NUM_BATCHES = 5
+  const BATCH_CONCURRENCY = 2
   const BATCH_SIZE = 1000
   const nowIso = hourIso()
   const baseQuery = () => supabase
@@ -164,13 +176,31 @@ async function fetchMatchingJobs(specialtyName: string): Promise<MatchingJob[]> 
     // row window boundary still shuffles rows across windows.
     .order('created_at', { ascending: false })
     .order('id', { ascending: false })
-  const batches = await Promise.all(
-    Array.from({ length: NUM_BATCHES }, (_, i) =>
-      baseQuery().range(i * BATCH_SIZE, (i + 1) * BATCH_SIZE - 1)
+  const batches = []
+  for (let start = 0; start < NUM_BATCHES; start += BATCH_CONCURRENCY) {
+    const chunk = await Promise.all(
+      Array.from(
+        { length: Math.min(BATCH_CONCURRENCY, NUM_BATCHES - start) },
+        (_, j) => {
+          const i = start + j
+          return baseQuery().range(i * BATCH_SIZE, (i + 1) * BATCH_SIZE - 1)
+        }
+      )
     )
-  )
+    batches.push(...chunk)
+  }
   return batches.flatMap((b) => (b.data ?? []) as MatchingJob[])
 }
+
+// 6h — same window the freejobpost matrix helpers use for the identical
+// batch-scan-into-JS-aggregate pattern. Salary/count aggregates don't need
+// to be fresher than that; the point is capping this to at most once per
+// specialty per window, no matter how many concurrent renders hit it cold.
+const fetchMatchingJobs = unstable_cache(
+  _fetchMatchingJobsUncached,
+  ['freeresumepost-matching-jobs-v1'],
+  { revalidate: 21600 },
+)
 
 export default async function CandidateSpecialtyPage(
   { params }: { params: Promise<{ slug: string }> },
