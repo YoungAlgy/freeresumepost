@@ -54,7 +54,7 @@ export default function PrivacyPage() {
           <h2 className="text-xl font-semibold mt-8 mb-2">Public vs private profiles</h2>
           <p>
             When you save your profile, you choose whether it&apos;s <strong>public</strong> (discoverable
-            by employers searching freejobpost.co for matched candidates) or <strong>private</strong>
+            by employers searching freejobpost.co for matched candidates) or <strong>private</strong>{' '}
             (matching engine surfaces you to employers only when they post a role you match).
           </p>
           <p>

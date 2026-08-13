@@ -2,7 +2,26 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { supabaseBrowser } from '@/lib/supabase-browser'
+
+// Supabase Auth error messages are written for developers, not candidates
+// ("Signups not allowed for this instance" is what you get when an email has
+// no existing account and this project has new-signup creation disabled at
+// the auth level) — translate the ones we actually see into copy a candidate
+// can act on instead of showing the raw backend string.
+function friendlyAuthError(raw: string): string {
+  if (/signups not allowed/i.test(raw)) {
+    return "We don't have a resume on file for that email yet. Upload your resume first, then come back and sign in with a code."
+  }
+  if (/rate limit|too many requests/i.test(raw)) {
+    return 'Too many attempts. Wait a minute and try again.'
+  }
+  if (/token|code/i.test(raw) && /invalid|expired/i.test(raw)) {
+    return "That code is incorrect or expired. Double-check your email for the latest one, or resend."
+  }
+  return "Something went wrong sending your code. Please try again in a moment."
+}
 
 // Candidate sign-in by 6-digit email code (Supabase OTP), on the same shared
 // auth pool the recruiter CRM uses. Replaces the old emailed magic edit-link as
@@ -17,6 +36,7 @@ export default function OtpLoginForm() {
   const [step, setStep] = useState<'email' | 'code'>('email')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [noAccount, setNoAccount] = useState(false)
 
   const cleanEmail = email.trim().toLowerCase()
 
@@ -25,10 +45,12 @@ export default function OtpLoginForm() {
     if (loading || !cleanEmail) return
     setLoading(true)
     setError('')
+    setNoAccount(false)
     const { error } = await supabaseBrowser.auth.signInWithOtp({ email: cleanEmail })
     setLoading(false)
     if (error) {
-      setError(error.message)
+      setError(friendlyAuthError(error.message))
+      setNoAccount(/signups not allowed/i.test(error.message))
       return
     }
     setStep('code')
@@ -45,7 +67,7 @@ export default function OtpLoginForm() {
       type: 'email',
     })
     if (error) {
-      setError(error.message)
+      setError(friendlyAuthError(error.message))
       setLoading(false)
       return
     }
@@ -87,7 +109,7 @@ export default function OtpLoginForm() {
               setError('')
               const { error } = await supabaseBrowser.auth.signInWithOtp({ email: cleanEmail })
               if (error) {
-                setError(error.message)
+                setError(friendlyAuthError(error.message))
                 return
               }
               setCode('')
@@ -136,7 +158,20 @@ export default function OtpLoginForm() {
           {loading ? 'Sending…' : 'Send code'}
         </button>
       </div>
-      {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
+      {error && (
+        <p className="text-sm text-red-600 mt-2">
+          {error}
+          {noAccount && (
+            <>
+              {' '}
+              <Link href="/upload" className="underline hover:text-red-700">
+                Upload your resume
+              </Link>
+              .
+            </>
+          )}
+        </p>
+      )}
     </form>
   )
 }
