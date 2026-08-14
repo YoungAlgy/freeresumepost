@@ -25,6 +25,16 @@ export type UpdateCandidateInput = {
 export async function updateCandidate(
   input: UpdateCandidateInput
 ): Promise<{ success: true } | { success: false; error: string }> {
+  // Defense-in-depth validation (mirrors submitCandidate in
+  // src/app/upload/actions.ts). The SECURITY DEFINER RPC is the authority,
+  // but rejecting a blanked-out name here avoids persisting a junk row.
+  // Email isn't part of this input — the edit form renders it disabled and
+  // update_public_candidate_rpc never takes a p_email — so there's no email
+  // format check to mirror here.
+  if (!input.first_name?.trim() || !input.last_name?.trim()) {
+    return { success: false, error: 'First and last name are required.' }
+  }
+
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } })
   const { data, error } = await sb.rpc('update_public_candidate_rpc', {
     p_candidate_id: input.candidate_id,
