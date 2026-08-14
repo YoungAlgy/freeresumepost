@@ -1,7 +1,12 @@
 import { ImageResponse } from 'next/og'
 
-export const runtime = 'edge'
+// No explicit edge runtime (2026-08-13 fix) -- broke next/og's font loading
+// under this OpenNext/Cloudflare deploy, same as opengraph-image.tsx and
+// profile/[slug]/opengraph-image.tsx (fixed earlier tonight; this route was
+// missed in that pass). Also adding a cache: 100% static content (no params,
+// no DB query) with no revalidate re-rendered via Satori on every request.
 export const contentType = 'image/png'
+export const revalidate = 604800
 
 // 512x512 PWA / maskable app icon = the Ava Health mark (navy medical cross +
 // lime leaf) centered on white, inside the maskable safe zone so Android's

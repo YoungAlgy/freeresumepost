@@ -9,6 +9,11 @@ import { ImageResponse } from 'next/og'
 export const alt = 'Upload Your Resume, Get Matched | Ava Health'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
+// 2026-08-13 audit: 100% static content (no params, no DB query) with no
+// revalidate, so it re-rendered via Satori on every single request instead
+// of serving a cached PNG -- same gap found and fixed on freejobpost's
+// equivalent route.
+export const revalidate = 604800
 
 export default async function OG() {
   return new ImageResponse(
