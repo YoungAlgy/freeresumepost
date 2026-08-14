@@ -14,7 +14,7 @@
 - **Next.js 16** (app router) + **React 19** + **TypeScript**
 - **Tailwind CSS v4**
 - **Supabase** (Postgres + auth + storage), row-level security throughout
-- **Vercel**
+- **Cloudflare Workers** (via OpenNext)
 - Vitest test suite
 
 ## Engineering notes
