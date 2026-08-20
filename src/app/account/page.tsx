@@ -197,7 +197,7 @@ export default function AccountPage() {
                   disabled={editLoading}
                   className="w-full bg-[#7FBC00] text-white text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-[#6da300] disabled:opacity-60 mb-3"
                 >
-                  {editLoading ? 'Sending&hellip;' : 'Email me a link to edit my resume'}
+                  {editLoading ? 'Sending…' : 'Email me a link to edit my resume'}
                 </button>
               </>
             )}

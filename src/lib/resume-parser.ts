@@ -42,13 +42,13 @@ const CREDENTIAL_TOKENS = [
 const SPECIALTY_HINTS: Array<[RegExp, string]> = [
   // Order matters: more specific hints first, so allied health doesn't get
   // shadowed by broad terms like "radiology" matching "MRI tech".
-  [/\b(MRI tech|magnetic resonance imag|ARRT.{0,4}MR)\b/i, 'MRI Tech'],
+  [/\b(MRI tech|magnetic resonance imag|ARRT.{0,4}MR)/i, 'MRI Tech'],
   [/\b(cath\s*lab|RCIS|RCES|electrophysiology|EP\s*lab)\b/i, 'Cath Lab Tech'],
-  [/\b(BCBA|BCaBA|behavior analyst|ABA therap|applied behavior analysis)\b/i, 'BCBA'],
-  [/\b(mental health tech|behavioral health tech|psych tech\b|MHT\b|BHT\b)\b/i, 'Mental Health Tech'],
+  [/\b(BCBA|BCaBA|behavior analyst|ABA therap|applied behavior analysis)/i, 'BCBA'],
+  [/\b(mental health tech|behavioral health tech|psych tech\b|MHT\b|BHT\b)/i, 'Mental Health Tech'],
   [/\b(dental hygienist|RDH\b|registered dental hygien)/i, 'Dental Hygienist'], // stem: also "registered dental hygienist"
   [/\b(sleep tech|polysomnograph|RPSGT|sleep lab)\b/i, 'Sleep Tech'],
-  [/\b(patient care tech|PCT\b|nurse aide|CNA tech|ED tech|dialysis tech)\b/i, 'Patient Care Tech'],
+  [/\b(patient care tech|PCT\b|nurse aide|CNA tech|ED tech|dialysis tech)/i, 'Patient Care Tech'],
   [/\b(phlebotom)/i, 'Phlebotomist'], // stem, no trailing boundary: phlebotomist + phlebotomy
   [/\b(occupational therapy assistant|COTA\b)\b/i, 'Occupational Therapy Assistant'],
   [/\b(physical therapy assistant|PTA\b)\b/i, 'Physical Therapy Assistant'],
