@@ -473,12 +473,12 @@ export default function UploadForm() {
             />
             <div>
               <p className="font-medium text-slate-900">
-                Show my profile publicly. Get found by employers searching Google
+                Show my limited profile at a public link
               </p>
               <p className="text-sm text-slate-600 mt-1">
                 <strong>Off by default.</strong> When on, your first name + last initial + specialty + state appear at
-                <span className="font-mono text-xs"> /profile/[your-slug]</span>{' '}
-                so hospitals and clinics searching for your specialty in your state can find you. <strong>Email + phone always stay private</strong>. Employers see your public profile, not your contact info, and have to go through us to reach you. Turn off any time from your private profile page.
+                <span className="font-mono text-xs"> /profile/[your-slug]</span>, a page you can
+                share or link from anywhere. It is not indexed by Google. <strong>Email + phone always stay private</strong>. Anyone who finds the page has to go through us to reach you. Turn off any time from your private profile page.
               </p>
             </div>
           </label>
@@ -521,7 +521,7 @@ export default function UploadForm() {
       </div>
 
       <p className="text-xs text-slate-500">
-        By saving, you agree your profile can be shown to verified employers on
+        By saving, you agree we can match your profile against active jobs on
         freejobpost.co. You can edit it anytime from your unique profile URL. Email
         info@avahealth.co to delete. See{' '}
         <Link href="/privacy" className="underline hover:text-slate-900">

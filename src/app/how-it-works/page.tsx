@@ -60,8 +60,8 @@ export default function HowItWorksPage() {
             <div>
               <div className="font-semibold text-slate-900 mb-1">Pick public or private</div>
               <div className="text-slate-600 leading-relaxed">
-                <strong>Public:</strong> first name, last initial, specialty, state, and years of experience are visible at /profile/[your-slug], discoverable by employers.<br />
-                <strong>Private:</strong> only the matching engine sees you. New matches surface on your private profile page (the edit URL we send when you upload). Nobody else can find you.
+                <strong>Public:</strong> first name, last initial, specialty, state, and years of experience are visible at /profile/[your-slug] to anyone with the link.<br />
+                <strong>Private:</strong> only the matching engine and our recruiters see you. New matches surface on your private profile page (the edit URL we send when you upload). Nobody else can find you.
               </div>
             </div>
           </li>
@@ -78,7 +78,7 @@ export default function HowItWorksPage() {
 
         <h2 className="text-xl font-semibold mb-4">For employers</h2>
         <p className="text-slate-600 leading-relaxed mb-4">
-          Employers post jobs at <a href="https://freejobpost.co/post-job" className="underline text-[#003D5C] hover:text-[#002A40]">freejobpost.co/post-job</a>. The matching engine surfaces matched candidates to them. Candidates apply directly through the job listing. No middlemen, no &quot;unlock this resume&quot; fee.
+          Employers post jobs at <a href="https://freejobpost.co/post-job" className="underline text-[#003D5C] hover:text-[#002A40]">freejobpost.co/post-job</a>. Candidates whose profile fits see the role on their private matches page and apply directly through the listing. No middlemen, no &quot;unlock this resume&quot; fee.
         </p>
 
         <h2 className="text-xl font-semibold mt-12 mb-4">What you don&apos;t get</h2>
@@ -109,7 +109,7 @@ export default function HowItWorksPage() {
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Will my resume be sold to recruiters?</h3>
-            <p className="text-slate-600">No. We don&apos;t sell, license, or share your data with third parties. Only verified employers with active job posts on our network can see profiles that match their roles.</p>
+            <p className="text-slate-600">No. We don&apos;t sell, license, or share your data with third parties. Your matches are shown to you, and you decide where to apply. The only people with access to your full profile are Ava Health Partners recruiters, the placement side that keeps this free.</p>
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">What healthcare roles can I upload as?</h3>
@@ -125,7 +125,7 @@ export default function HowItWorksPage() {
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Do I need to make my profile public?</h3>
-            <p className="text-slate-600">No. Most candidates keep profiles private. Public profiles show your first name, last initial, specialty, and state at your own page, so employers matching your specialty can find you. We don&apos;t index public profiles in Google search.</p>
+            <p className="text-slate-600">No. Most candidates keep profiles private. Public profiles show your first name, last initial, specialty, and state at your own page, which you can share or link from anywhere. We don&apos;t index public profiles in Google search.</p>
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Is my license info verified?</h3>
