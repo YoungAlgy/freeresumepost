@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'Ava Health privacy policy. Your resume is yours; we never sell candidate data. Operated by Ava Health Partners LLC.',
+  description: 'Ava Health privacy policy. Your resume is yours. We never sell candidate data. Operated by Ava Health Partners LLC.',
   alternates: { canonical: 'https://www.freeresumepost.co/privacy' },
   robots: { index: true, follow: true },
 }
@@ -59,8 +59,8 @@ export default function PrivacyPage() {
             see you).
           </p>
           <p>
-            Public profiles show: first name, last initial, specialty, state, years of experience.
-            Public profiles never expose: email, phone, or full last name.
+            Public profiles show: first name, last initial, credential, specialty, city, state,
+            years of experience. Public profiles never expose: email, phone, or full last name.
           </p>
 
           <h2 className="text-xl font-semibold mt-8 mb-2">When you apply for a job</h2>

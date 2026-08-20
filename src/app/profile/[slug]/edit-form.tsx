@@ -363,7 +363,8 @@ export default function ProfileEditForm({
                 <div>
                   <p className="font-medium text-slate-900">Public profile</p>
                   <p className="text-sm text-slate-500">
-                    Show your name + specialty + state at your public URL. Email + phone stay private.
+                    Shows your first name, last initial, credential, specialty, city + state, and
+                    years of experience at your public URL. Email + phone stay private.
                   </p>
                 </div>
               </label>

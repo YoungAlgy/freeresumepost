@@ -394,7 +394,7 @@ export default async function CandidateSpecialtyPage(
                 </div>
               )}
               <p className="text-xs text-slate-500 mt-3 leading-relaxed">
-                Salary ranges are pulled from real published listings on freejobpost.co. Some roles publish a range, others don&apos;t; the table reflects only roles with both a floor and ceiling.
+                Salary ranges are pulled from real published listings on freejobpost.co. Some roles publish a range, others don&apos;t. The table reflects only roles with both a floor and ceiling.
               </p>
             </section>
           )}
@@ -419,7 +419,7 @@ export default async function CandidateSpecialtyPage(
               <div className="shrink-0 w-7 h-7 rounded-full bg-[#7FBC00] text-white text-sm font-semibold flex items-center justify-center">2</div>
               <div>
                 <div className="font-semibold text-slate-900 mb-1">Pick public or private</div>
-                <div className="text-slate-600 leading-relaxed text-sm">Public profiles show your first name, last initial, specialty, and state at your own page (not indexed in Google search). Private profiles only appear in the matching engine. Invisible elsewhere.</div>
+                <div className="text-slate-600 leading-relaxed text-sm">Public profiles show your first name, last initial, credential, specialty, city, state, and years of experience at your own page (not indexed in Google search). Private profiles only appear in the matching engine. Invisible elsewhere.</div>
               </div>
             </li>
             <li className="flex gap-4">

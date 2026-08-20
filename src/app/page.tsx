@@ -412,7 +412,7 @@ export default async function Home() {
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Do I have to make my profile public?</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">No. Most candidates keep profiles private. Public profiles show your first name, last initial, specialty, and state at your own page, so employers matching your specialty can find you. We don&apos;t index public profiles in Google search.</p>
+              <p className="text-slate-600 leading-relaxed text-sm">No. Most candidates keep profiles private. Public profiles show your first name, last initial, credential, specialty, city, state, and years of experience at your own page, so employers matching your specialty can find you. We don&apos;t index public profiles in Google search.</p>
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Is my license info verified?</h3>

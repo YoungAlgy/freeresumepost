@@ -199,7 +199,7 @@ export default function AccountPage() {
             {editSent ? (
               <div className="rounded-lg border border-[#7FBC00]/30 bg-[#7FBC00]/10 p-5 mb-3">
                 <p className="text-sm text-slate-800">
-                  Check <strong>{email}</strong> for a secure link to edit your profile. It expires shortly.
+                  Check <strong>{email}</strong> for a secure link to edit your profile. It works for 7 days.
                 </p>
               </div>
             ) : (

@@ -476,7 +476,7 @@ export default function UploadForm() {
                 Show my limited profile at a public link
               </p>
               <p className="text-sm text-slate-600 mt-1">
-                <strong>Off by default.</strong> When on, your first name + last initial + specialty + state appear at
+                <strong>Off by default.</strong> When on, your first name, last initial, credential, specialty, city, state, and years of experience appear at
                 <span className="font-mono text-xs"> /profile/[your-slug]</span>, a page you can
                 share or link from anywhere. It is not indexed by Google. <strong>Email + phone always stay private</strong>. Anyone who finds the page has to go through us to reach you. Turn off any time from your private profile page.
               </p>

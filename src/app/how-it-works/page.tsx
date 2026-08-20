@@ -60,7 +60,7 @@ export default function HowItWorksPage() {
             <div>
               <div className="font-semibold text-slate-900 mb-1">Pick public or private</div>
               <div className="text-slate-600 leading-relaxed">
-                <strong>Public:</strong> first name, last initial, specialty, state, and years of experience are visible at /profile/[your-slug] to anyone with the link.<br />
+                <strong>Public:</strong> first name, last initial, credential, specialty, city, state, and years of experience are visible at /profile/[your-slug] to anyone with the link.<br />
                 <strong>Private:</strong> only the matching engine and our recruiters see you. New matches surface on your private profile page (the edit URL we send when you upload). Nobody else can find you.
               </div>
             </div>
@@ -125,7 +125,7 @@ export default function HowItWorksPage() {
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Do I need to make my profile public?</h3>
-            <p className="text-slate-600">No. Most candidates keep profiles private. Public profiles show your first name, last initial, specialty, and state at your own page, which you can share or link from anywhere. We don&apos;t index public profiles in Google search.</p>
+            <p className="text-slate-600">No. Most candidates keep profiles private. Public profiles show your first name, last initial, credential, specialty, city, state, and years of experience at your own page, which you can share or link from anywhere. We don&apos;t index public profiles in Google search.</p>
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Is my license info verified?</h3>
