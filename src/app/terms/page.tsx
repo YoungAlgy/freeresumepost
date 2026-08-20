@@ -32,7 +32,7 @@ export default function TermsPage() {
           <ul className="list-disc pl-5 space-y-1.5">
             <li>Your resume is parsed in your browser before any data reaches our servers.</li>
             <li>You review every extracted field and approve before saving.</li>
-            <li>You may make your profile public (discoverable by employers) or private (matching only).</li>
+            <li>You may make your profile public (a limited page viewable by anyone with the link, not indexed by search engines) or private (only the matching engine and Ava Health Partners recruiters see you).</li>
             <li>You may delete your profile at any time by emailing <a href="mailto:info@avahealth.co?subject=Delete%20my%20profile" className="underline text-[#003D5C] hover:text-[#002A40]">info@avahealth.co</a> with subject &quot;Delete my profile&quot;.</li>
           </ul>
 
@@ -40,8 +40,7 @@ export default function TermsPage() {
           <p>
             Once your profile is saved, our matching engine scores you against active jobs on
             freejobpost.co. Your top matches appear on your private profile page, refreshed daily, when an opening fits your
-            specialty + state. Your matches appear on your private profile page. You decide whether
-            to apply. Your application goes directly to the posting employer.
+            specialty + state. You decide whether to apply. Your application goes directly to the posting employer.
           </p>
 
           <h2 className="text-xl font-semibold mt-8 mb-2">4. Account-free access</h2>
