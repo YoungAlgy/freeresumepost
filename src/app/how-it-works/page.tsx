@@ -117,7 +117,7 @@ export default function HowItWorksPage() {
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">How fast will I get matched?</h3>
-            <p className="text-slate-600">Initial matches typically surface within a day of upload. Florida + Texas + California candidates see the highest match volume.</p>
+            <p className="text-slate-600">Initial matches typically surface within a day of upload. Match volume depends on how many open roles match your specialty and state.</p>
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Can I delete my profile later?</h3>

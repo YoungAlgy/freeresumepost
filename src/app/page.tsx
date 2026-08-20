@@ -404,7 +404,7 @@ export default async function Home() {
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">How fast will I get matched?</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">Initial matches typically surface within a day of upload. Your top matches appear on your private profile page (the edit URL we send on submit). Florida + Texas + California candidates see the highest match volume. Never automatic application.</p>
+              <p className="text-slate-600 leading-relaxed text-sm">Initial matches typically surface within a day of upload. Your top matches appear on your private profile page (the edit URL we send on submit). Match volume depends on how many open roles match your specialty and state. Never automatic application.</p>
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Can I delete my profile?</h3>

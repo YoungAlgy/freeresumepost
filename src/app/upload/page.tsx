@@ -267,18 +267,21 @@ export default async function UploadPage() {
           </a>
         </p>
 
-        {/* Live trust strip — gives visitors a real reason to upload now */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-10 max-w-2xl">
+        {/* Live trust strip — gives visitors a real reason to upload now.
+            2026-08-20 audit: dropped the "Provider network: 10K+" tile. That
+            number was nurses_base + therapists_base row counts (internal CRM
+            cold-outreach sourcing tables — recruiter-assigned, screening-
+            tracked prospect lists with 0 of 7,168 nurses_base rows carrying
+            consent_freeresumepost_at). It's not a network this product has a
+            relationship with, and reads as false credibility to a candidate
+            deciding whether to hand over PII. See audit notes. */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-10 max-w-2xl">
           <div className="bg-slate-50 rounded-lg px-4 py-3 border border-slate-200/60">
             <div className="text-[10px] font-semibold tracking-wider text-slate-500 uppercase mb-1">Open roles</div>
             <div className="text-2xl font-semibold text-slate-900 tabular-nums flex items-baseline gap-1.5">
               {activeJobs.toLocaleString()}
               {activeJobs > 0 && <span className="w-1.5 h-1.5 rounded-full bg-[#7FBC00] inline-block" aria-hidden="true" />}
             </div>
-          </div>
-          <div className="bg-slate-50 rounded-lg px-4 py-3 border border-slate-200/60">
-            <div className="text-[10px] font-semibold tracking-wider text-slate-500 uppercase mb-1">Provider network</div>
-            <div className="text-2xl font-semibold text-slate-900 tabular-nums">10K+</div>
           </div>
           <div className="bg-slate-50 rounded-lg px-4 py-3 border border-slate-200/60">
             <div className="text-[10px] font-semibold tracking-wider text-slate-500 uppercase mb-1">Recruiter spam</div>
