@@ -212,7 +212,7 @@ export default function TailorPage() {
             </button>
             {usesRemainingToday !== null && (
               <p className="text-xs text-slate-500 text-center mt-2">
-                You can do this {usesRemainingToday} more times today, free
+                You can do this {usesRemainingToday} more {usesRemainingToday === 1 ? 'time' : 'times'} today, free
               </p>
             )}
           </>

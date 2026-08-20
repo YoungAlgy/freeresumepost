@@ -35,7 +35,7 @@ export default function HowItWorksPage() {
         </h1>
         <p className="text-lg text-slate-600 leading-relaxed mb-12">
           freeresumepost.co matches healthcare candidates to real, currently-open jobs. We don&apos;t
-          spam you, we don&apos;t sell your data, and we don&apos;t make you re-upload for every application.
+          spam you and we don&apos;t sell your data. Upload once and you&apos;re done.
           Here&apos;s the actual flow.
         </p>
 
@@ -105,7 +105,7 @@ export default function HowItWorksPage() {
         <div className="space-y-6 mb-12">
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Is it really free?</h3>
-            <p className="text-slate-600">Yes. We don&apos;t charge candidates anything. Not for upload, not for matches, not to apply. Hiring employers pay our placement fee when a match converts.</p>
+            <p className="text-slate-600">Yes. We don&apos;t charge candidates anything, not even to apply. Hiring employers pay our placement fee when a match converts.</p>
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Will my resume be sold to recruiters?</h3>
@@ -129,7 +129,7 @@ export default function HowItWorksPage() {
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Is my license info verified?</h3>
-            <p className="text-slate-600">We auto-detect credential tokens (RN, CRNA, PA-C, PharmD, etc.) from your resume text. We don&apos;t do full credential verification. Employers verify independently before hiring.</p>
+            <p className="text-slate-600">We auto-detect credential tokens (RN, CRNA, LPN, PharmD, etc.) from your resume text. We don&apos;t do full credential verification. Employers verify independently before hiring.</p>
           </div>
         </div>
 

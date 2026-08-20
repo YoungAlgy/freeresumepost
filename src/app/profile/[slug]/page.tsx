@@ -72,18 +72,67 @@ async function getPublicCandidate(slug: string): Promise<Candidate | null> {
   return (data as unknown as Candidate) ?? null
 }
 
+// Fields ProfileEditForm (edit-form.tsx) actually reads. Deliberately
+// narrower than `Candidate` above (which also carries last_initial/source/
+// created_at for the public directory view) -- id/slug/first_name/
+// last_name/email/phone/credential/specialty/city/state/years_experience/
+// remote_only/contact_via_email/contact_via_sms/is_public only.
+export type EditableCandidate = {
+  id: string
+  slug: string
+  first_name: string
+  last_name: string
+  email: string
+  phone: string | null
+  credential: string | null
+  specialty: string | null
+  city: string | null
+  state: string | null
+  years_experience: number | null
+  remote_only: boolean
+  contact_via_email: boolean
+  contact_via_sms: boolean
+  is_public: boolean
+}
+
 async function getEditableCandidate(
   candidateId: string,
   nonce: string
-): Promise<{ candidate: Candidate; matches: CandidateMatch[] } | null> {
+): Promise<{ candidate: EditableCandidate; matches: CandidateMatch[] } | null> {
   const { data, error } = await supabase.rpc('consume_candidate_edit_rpc', {
     p_candidate_id: candidateId,
     p_nonce: nonce,
   })
   if (error) return null
-  const r = data as { success: boolean; candidate?: Candidate; matches?: CandidateMatch[] }
+  const r = data as { success: boolean; candidate?: EditableCandidate; matches?: CandidateMatch[] }
   if (!r.success || !r.candidate) return null
-  return { candidate: r.candidate, matches: r.matches ?? [] }
+  // Defense-in-depth: even though consume_candidate_edit_rpc now returns a
+  // narrow jsonb_build_object() (2026-08-20 migration), build an explicit
+  // safe object here too before it crosses into a Client Component
+  // (EditMode -> ProfileEditForm). Next.js serializes every field of a
+  // Server-to-Client prop into the RSC flight payload regardless of what
+  // the client JSX reads, so if the RPC's shape ever widens again (e.g.
+  // reverted back to to_jsonb()) this still stops the extra fields from
+  // reaching the browser.
+  const c = r.candidate
+  const safeCandidate: EditableCandidate = {
+    id: c.id,
+    slug: c.slug,
+    first_name: c.first_name,
+    last_name: c.last_name,
+    email: c.email,
+    phone: c.phone ?? null,
+    credential: c.credential ?? null,
+    specialty: c.specialty ?? null,
+    city: c.city ?? null,
+    state: c.state ?? null,
+    years_experience: c.years_experience ?? null,
+    remote_only: c.remote_only,
+    contact_via_email: c.contact_via_email,
+    contact_via_sms: c.contact_via_sms,
+    is_public: c.is_public,
+  }
+  return { candidate: safeCandidate, matches: r.matches ?? [] }
 }
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
@@ -272,7 +321,7 @@ function EditMode({
   nonce,
   matches,
 }: {
-  candidate: Candidate
+  candidate: EditableCandidate
   nonce: string
   matches: CandidateMatch[]
 }) {
