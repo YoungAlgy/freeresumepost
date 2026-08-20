@@ -302,7 +302,7 @@ export default async function UploadPage() {
               <div className="shrink-0 w-7 h-7 rounded-full bg-[#7FBC00] text-white text-xs font-semibold flex items-center justify-center mt-0.5">1</div>
               <div>
                 <div className="font-medium text-slate-900">We parse your resume locally</div>
-                <div className="text-sm text-slate-600 mt-0.5">PDF or DOCX, ~3 seconds in your browser. Your file never reaches our servers until you click submit.</div>
+                <div className="text-sm text-slate-600 mt-0.5">PDF or DOCX, about 3 seconds in your browser. Your file never reaches our servers until you click submit.</div>
               </div>
             </li>
             <li className="flex gap-4">

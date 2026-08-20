@@ -61,7 +61,7 @@ export default function HowItWorksPage() {
               <div className="font-semibold text-slate-900 mb-1">Pick public or private</div>
               <div className="text-slate-600 leading-relaxed">
                 <strong>Public:</strong> first name, last initial, specialty, state, and years of experience are visible at /profile/[your-slug], discoverable by employers.<br />
-                <strong>Private:</strong> only the matching engine sees you. New matches surface on your private profile page (the edit URL we send when you upload); nobody else can find you.
+                <strong>Private:</strong> only the matching engine sees you. New matches surface on your private profile page (the edit URL we send when you upload). Nobody else can find you.
               </div>
             </div>
           </li>
@@ -78,7 +78,7 @@ export default function HowItWorksPage() {
 
         <h2 className="text-xl font-semibold mb-4">For employers</h2>
         <p className="text-slate-600 leading-relaxed mb-4">
-          Employers post jobs at <a href="https://freejobpost.co/post-job" className="underline text-[#003D5C] hover:text-[#002A40]">freejobpost.co/post-job</a>. The matching engine surfaces matched candidates to them; candidates apply directly through the job listing. No middlemen, no &quot;unlock this resume&quot; fee.
+          Employers post jobs at <a href="https://freejobpost.co/post-job" className="underline text-[#003D5C] hover:text-[#002A40]">freejobpost.co/post-job</a>. The matching engine surfaces matched candidates to them. Candidates apply directly through the job listing. No middlemen, no &quot;unlock this resume&quot; fee.
         </p>
 
         <h2 className="text-xl font-semibold mt-12 mb-4">What you don&apos;t get</h2>

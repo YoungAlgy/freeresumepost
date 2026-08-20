@@ -280,7 +280,7 @@ export default async function CandidateSpecialtyPage(
 
           <div className="border border-slate-200 rounded-2xl bg-slate-50 p-8 mb-12">
             <p className="text-sm font-semibold text-slate-900 mb-2">Drop your {displayName.toLowerCase()} resume</p>
-            <p className="text-sm text-slate-600 mb-4">PDF, DOCX, or text. Up to 5 MB. ~90 seconds end-to-end.</p>
+            <p className="text-sm text-slate-600 mb-4">PDF, DOCX, or text. Up to 5 MB. About 90 seconds start to finish.</p>
             <div className="flex flex-wrap gap-3">
               <Link href="/upload" className="inline-block bg-[#003D5C] text-white font-semibold px-6 py-3 rounded-lg hover:bg-[#002A40]">
                 Upload resume →

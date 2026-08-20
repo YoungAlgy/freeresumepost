@@ -112,6 +112,27 @@ export async function submitCandidate(
     // dead-end (it would fail forever). Guide them to the edit link we emailed
     // at their first upload (resume-uploaded-notify) instead. (#11 — audit S25C3)
     if (error.code === '23505' || /duplicate key|already exists/i.test(error.message)) {
+      // That email might belong to a soft-deleted profile (e.g. the
+      // candidate already emailed us to delete it). If so, the edit-link
+      // recovery path below can never work -- consume_candidate_edit_rpc
+      // and get_my_candidate() both reject deleted_at IS NOT NULL rows --
+      // so tell them what actually happened instead of looping them into
+      // a dead end. Fails open to the original message if the check RPC
+      // errors (e.g. not deployed yet) or the row isn't deleted.
+      try {
+        const { data: isDeleted } = await sb.rpc('check_candidate_email_deleted_rpc', {
+          p_email: normalizedEmail,
+        })
+        if (isDeleted === true) {
+          return {
+            success: false,
+            error:
+              'That profile was deleted. Email info@avahealth.co if you want it restored.',
+          }
+        }
+      } catch {
+        // fall through to the generic message below
+      }
       return {
         success: false,
         error:

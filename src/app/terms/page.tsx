@@ -41,7 +41,7 @@ export default function TermsPage() {
             Once your profile is saved, our matching engine scores you against active jobs on
             freejobpost.co. Your top matches appear on your private profile page, refreshed daily, when an opening fits your
             specialty + state. Your matches appear on your private profile page. You decide whether
-            to apply; your application goes directly to the posting employer.
+            to apply. Your application goes directly to the posting employer.
           </p>
 
           <h2 className="text-xl font-semibold mt-8 mb-2">4. Account-free access</h2>
@@ -53,7 +53,7 @@ export default function TermsPage() {
           <h2 className="text-xl font-semibold mt-8 mb-2">5. Honesty + accuracy</h2>
           <p>
             You agree that the information in your resume is truthful. We don&apos;t verify credentials but
-            employers may; misrepresentation can disqualify you and is your responsibility, not ours.
+            employers may. Misrepresentation can disqualify you and is your responsibility, not ours.
           </p>
 
           <h2 className="text-xl font-semibold mt-8 mb-2">6. Prohibited use</h2>
@@ -77,7 +77,7 @@ export default function TermsPage() {
 
           <h2 className="text-xl font-semibold mt-8 mb-2">9. Changes</h2>
           <p>
-            We may update these terms; the &quot;Last updated&quot; date above will reflect the most recent revision.
+            We may update these terms. The &quot;Last updated&quot; date above will reflect the most recent revision.
           </p>
 
           <h2 className="text-xl font-semibold mt-8 mb-2">10. Contact</h2>
