@@ -19,6 +19,25 @@ interface JobLike {
   salary_max: number | null
 }
 
+// Plausibility floor: skip any salary range that's clearly a placeholder.
+// USAJobs (federal) sometimes lists "$1-$X" or "$0-$X" for jobs whose pay
+// is governed by a GS-grade scale rather than a stated range. Without
+// this guard, the (since-retired) Physician bucket on /upload showed
+// "$1-$550K typical".
+// 10,000 is well below the lowest realistic full-time healthcare salary
+// and high enough to reject the placeholder rows.
+const MIN_PLAUSIBLE_SALARY = 10_000
+
+function percentile(sortedAsc: number[], p: number): number {
+  if (sortedAsc.length === 0) return 0
+  if (sortedAsc.length === 1) return sortedAsc[0]
+  const idx = (sortedAsc.length - 1) * p
+  const lo = Math.floor(idx)
+  const hi = Math.ceil(idx)
+  if (lo === hi) return sortedAsc[lo]
+  return sortedAsc[lo] + (sortedAsc[hi] - sortedAsc[lo]) * (idx - lo)
+}
+
 const ROLE_BUCKET_DEFS: ReadonlyArray<{
   label: string
   patterns: readonly string[]
@@ -108,6 +127,13 @@ export function bucketizeRoles(jobs: JobLike[]): RoleBucket[] {
     salaryFloor: null,
     salaryCeiling: null,
   }))
+  // Collect every plausible min/max per bucket so we can bound the
+  // displayed range with 10th/90th percentiles instead of raw min/max —
+  // see salary-aggregates.ts (aggregateSalariesByGroup), which uses the
+  // same approach so a single outlier posting can't set the "typical"
+  // floor/ceiling for an entire specialty.
+  const mins: number[][] = ROLE_BUCKET_DEFS.map(() => [])
+  const maxes: number[][] = ROLE_BUCKET_DEFS.map(() => [])
   for (const job of jobs) {
     const haystack = ` ${(job.role || '').toLowerCase()} ${(job.title || '').toLowerCase()} `
     const idx = ROLE_BUCKET_DEFS.findIndex((b) =>
@@ -116,26 +142,18 @@ export function bucketizeRoles(jobs: JobLike[]): RoleBucket[] {
     if (idx === -1) continue
     const bucket = buckets[idx]
     bucket.count += 1
-    // Plausibility floor: skip any salary range that's clearly a placeholder.
-    // USAJobs (federal) sometimes lists "$1–$X" or "$0–$X" for jobs whose pay
-    // is governed by a GS-grade scale rather than a stated range. Without
-    // this guard, the (since-retired) Physician bucket on /upload showed
-    // "$1–$550K typical".
-    // 10,000 is well below the lowest realistic full-time healthcare salary
-    // and high enough to reject the placeholder rows.
-    const MIN_PLAUSIBLE_SALARY = 10_000
     if (job.salary_min != null && job.salary_min >= MIN_PLAUSIBLE_SALARY) {
-      bucket.salaryFloor =
-        bucket.salaryFloor == null
-          ? job.salary_min
-          : Math.min(bucket.salaryFloor, job.salary_min)
+      mins[idx].push(job.salary_min)
     }
     if (job.salary_max != null && job.salary_max >= MIN_PLAUSIBLE_SALARY) {
-      bucket.salaryCeiling =
-        bucket.salaryCeiling == null
-          ? job.salary_max
-          : Math.max(bucket.salaryCeiling, job.salary_max)
+      maxes[idx].push(job.salary_max)
     }
   }
+  buckets.forEach((bucket, idx) => {
+    const sortedMins = mins[idx].sort((a, b) => a - b)
+    const sortedMaxes = maxes[idx].sort((a, b) => a - b)
+    bucket.salaryFloor = sortedMins.length > 0 ? Math.round(percentile(sortedMins, 0.1)) : null
+    bucket.salaryCeiling = sortedMaxes.length > 0 ? Math.round(percentile(sortedMaxes, 0.9)) : null
+  })
   return buckets.filter((b) => b.count > 0).sort((a, b) => b.count - a.count)
 }

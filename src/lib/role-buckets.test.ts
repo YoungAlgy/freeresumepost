@@ -57,15 +57,18 @@ describe('bucketizeRoles', () => {
     expect(result[0].count).toBe(3)
   })
 
-  it('aggregates salary range across all jobs in a bucket', () => {
+  it('aggregates salary range across all jobs in a bucket using 10th/90th percentile bounds', () => {
+    // Percentile-bounded (matches salary-aggregates.ts), not raw min/max, so
+    // a single outlier can't dominate the "typical" range — see the
+    // GS-scale-outlier test below for why this matters.
     const jobs = [
       j('RN', 'RN A', 70000, 90000),
       j('RN', 'RN B', 80000, 110000),
       j('RN', 'RN C', 60000, 95000),
     ]
     const [rn] = bucketizeRoles(jobs)
-    expect(rn.salaryFloor).toBe(60000)
-    expect(rn.salaryCeiling).toBe(110000)
+    expect(rn.salaryFloor).toBe(62000)
+    expect(rn.salaryCeiling).toBe(107000)
   })
 
   it('ignores zero/negative salaries when computing range', () => {
@@ -76,23 +79,26 @@ describe('bucketizeRoles', () => {
     ]
     const [rn] = bucketizeRoles(jobs)
     expect(rn.salaryFloor).toBe(80000)
-    expect(rn.salaryCeiling).toBe(100000)
+    expect(rn.salaryCeiling).toBe(99000)
   })
 
-  it('ignores placeholder $1/$X salaries (USAJobs GS-grade entries) when computing range', () => {
+  it('bounds a legitimate high-outlier salary instead of letting it set the ceiling for the whole bucket', () => {
     // USAJobs sometimes encodes "pay set by GS-grade table" as a $1
-    // MinimumRange in PositionRemuneration. The pre-2026-05-16 floor
-    // (`> 0`) accepted that, producing implausible "$1–$550K typical" on the
-    // /upload tiles (first caught on a federal Physician posting, before that
-    // bucket was retired). The 10K plausibility floor rejects it cleanly.
+    // MinimumRange in PositionRemuneration -- the 10K plausibility floor
+    // rejects that placeholder min cleanly. But a real, non-placeholder
+    // high max (550000) used to become the bucket's displayed "typical"
+    // ceiling outright via Math.max, even with two other jobs capping at
+    // 380-400K. Percentile bounding (matching salary-aggregates.ts) still
+    // pulls the ceiling toward the outlier with only 3 data points, but no
+    // longer lets it set the value outright.
     const jobs = [
       j('CRNA', 'CRNA A', 250000, 380000),
-      j('CRNA', 'CRNA B - GS-scale', 1, 550000), // placeholder min
+      j('CRNA', 'CRNA B - GS-scale', 1, 550000), // placeholder min, real max
       j('CRNA', 'CRNA C', 290000, 400000),
     ]
     const [crna] = bucketizeRoles(jobs)
-    expect(crna.salaryFloor).toBe(250000)
-    expect(crna.salaryCeiling).toBe(550000)
+    expect(crna.salaryFloor).toBe(254000)
+    expect(crna.salaryCeiling).toBe(520000)
   })
 
   it('omits empty buckets from output', () => {

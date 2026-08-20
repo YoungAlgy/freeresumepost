@@ -22,6 +22,7 @@ import JobAlertCapture from '@/components/JobAlertCapture'
 // searchers actually have. getResumeGuide supplies per-role titles, an
 // example summary, ATS keywords, credential formatting, and tips.
 import { getResumeGuide } from '@/lib/resume-guides'
+import { lowerRole } from '@/lib/lower-role'
 
 // freeresumepost specialty slug → freejobpost specialty-hub slug, for every
 // candidate specialty that has a real /specialty/[slug] hub on freejobpost.co.
@@ -264,7 +265,7 @@ export default async function CandidateSpecialtyPage(
             <span className="text-slate-900 font-medium">{displayName}</span>
           </nav>
 
-          <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">For {displayName.toLowerCase()}s</p>
+          <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">For {lowerRole(displayName)}s</p>
           <h1 className="text-4xl md:text-5xl font-semibold leading-tight tracking-tight text-slate-900 mb-6">
             {displayName} resume<br />
             <span className="text-[#003D5C]">examples, skills, and a free upload.</span>
@@ -279,7 +280,7 @@ export default async function CandidateSpecialtyPage(
           )}
 
           <div className="border border-slate-200 rounded-2xl bg-slate-50 p-8 mb-12">
-            <p className="text-sm font-semibold text-slate-900 mb-2">Drop your {displayName.toLowerCase()} resume</p>
+            <p className="text-sm font-semibold text-slate-900 mb-2">Drop your {lowerRole(displayName)} resume</p>
             <p className="text-sm text-slate-600 mb-4">PDF, DOCX, or text. Up to 5 MB. About 90 seconds start to finish.</p>
             <div className="flex flex-wrap gap-3">
               <Link href="/upload" className="inline-block bg-[#003D5C] text-white font-semibold px-6 py-3 rounded-lg hover:bg-[#002A40]">
@@ -322,7 +323,7 @@ export default async function CandidateSpecialtyPage(
             <section className="mb-12">
               <h2 className="text-xl font-semibold mb-3">{displayName} resume example</h2>
               <p className="text-slate-600 leading-relaxed mb-4 text-sm">
-                A strong {displayName.toLowerCase()} summary reads like this. Swap in your own numbers and settings:
+                A strong {lowerRole(displayName)} summary reads like this. Swap in your own numbers and settings:
               </p>
               <blockquote className="border border-slate-200 rounded-2xl bg-slate-50 p-6 text-slate-800 leading-relaxed mb-10 text-[15px]">
                 {guide.summaryExample}
@@ -330,7 +331,7 @@ export default async function CandidateSpecialtyPage(
 
               <h2 className="text-xl font-semibold mb-3">Skills recruiters search for</h2>
               <p className="text-slate-600 leading-relaxed mb-4 text-sm">
-                These are the terms recruiters and ATS filters look for on a {displayName.toLowerCase()} resume. Use the ones that are true for you:
+                These are the terms recruiters and ATS filters look for on a {lowerRole(displayName)} resume. Use the ones that are true for you:
               </p>
               <div className="flex flex-wrap gap-2 mb-10">
                 {guide.skillsKeywords.map((k) => (
@@ -341,7 +342,7 @@ export default async function CandidateSpecialtyPage(
               <h2 className="text-xl font-semibold mb-3">How to list your credentials</h2>
               <p className="text-slate-700 leading-relaxed mb-10">{guide.credentialLine}</p>
 
-              <h2 className="text-xl font-semibold mb-3">Resume tips for {displayName.toLowerCase()}s</h2>
+              <h2 className="text-xl font-semibold mb-3">Resume tips for {lowerRole(displayName)}s</h2>
               <ul className="space-y-3 mb-2">
                 {guide.tips.map((t) => (
                   <li key={t} className="flex gap-3 text-slate-700 leading-relaxed">
@@ -362,7 +363,7 @@ export default async function CandidateSpecialtyPage(
                 {displayName} salaries by state
               </h2>
               <p className="text-slate-600 leading-relaxed mb-4 text-sm">
-                Based on {salaryOverall.count} active {displayName.toLowerCase()} role{salaryOverall.count === 1 ? '' : 's'} on freejobpost.co with published salary ranges. Typical pay: {fmtUsdCompact(salaryOverall.low)}-{fmtUsdCompact(salaryOverall.high)} (median {fmtUsdCompact(salaryOverall.avg)} per year).
+                Based on {salaryOverall.count} active {lowerRole(displayName)} role{salaryOverall.count === 1 ? '' : 's'} on freejobpost.co with published salary ranges. Typical pay: {fmtUsdCompact(salaryOverall.low)}-{fmtUsdCompact(salaryOverall.high)} (median {fmtUsdCompact(salaryOverall.avg)} per year).
               </p>
               {salaryByState.length > 0 && (
                 <div className="overflow-x-auto rounded-2xl border border-slate-200">
@@ -433,7 +434,7 @@ export default async function CandidateSpecialtyPage(
           <h2 className="text-xl font-semibold mb-4">FAQ</h2>
           <div className="space-y-6 mb-12">
             <div>
-              <h3 className="font-semibold text-slate-900 mb-1">How do I upload my {hub.name.toLowerCase()} resume?</h3>
+              <h3 className="font-semibold text-slate-900 mb-1">How do I upload my {lowerRole(hub.name)} resume?</h3>
               <p className="text-slate-600 text-sm leading-relaxed">Click &quot;Upload resume&quot; above. PDF, DOCX, or plain text up to 5 MB. Parser pre-fills the fields, you correct anything wrong before saving.</p>
             </div>
             <div>
@@ -467,7 +468,7 @@ export default async function CandidateSpecialtyPage(
             <p className="text-2xl font-semibold mb-3 text-slate-900">Ready when you are</p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link href="/upload" className="inline-block bg-[#003D5C] text-white font-semibold px-6 py-3 rounded-lg hover:bg-[#002A40]">
-                Upload your {hub.name.toLowerCase()} resume →
+                Upload your {lowerRole(hub.name)} resume →
               </Link>
               <a
                 href={jobHubUrl}
