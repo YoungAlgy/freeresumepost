@@ -419,7 +419,7 @@ export default async function CandidateSpecialtyPage(
               <div className="shrink-0 w-7 h-7 rounded-full bg-[#7FBC00] text-white text-sm font-semibold flex items-center justify-center">2</div>
               <div>
                 <div className="font-semibold text-slate-900 mb-1">Pick public or private</div>
-                <div className="text-slate-600 leading-relaxed text-sm">Public profiles get an indexed page (first name + last initial only). Private profiles only appear in the matching engine. Invisible elsewhere.</div>
+                <div className="text-slate-600 leading-relaxed text-sm">Public profiles show your first name, last initial, specialty, and state at your own page (not indexed in Google search). Private profiles only appear in the matching engine. Invisible elsewhere.</div>
               </div>
             </li>
             <li className="flex gap-4">

@@ -125,7 +125,7 @@ export default function HowItWorksPage() {
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Do I need to make my profile public?</h3>
-            <p className="text-slate-600">No. Most candidates keep profiles private. Public profiles get an indexed page on our site, which can help passive job-seeking.</p>
+            <p className="text-slate-600">No. Most candidates keep profiles private. Public profiles show your first name, last initial, specialty, and state at your own page, so employers matching your specialty can find you. We don&apos;t index public profiles in Google search.</p>
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">Is my license info verified?</h3>

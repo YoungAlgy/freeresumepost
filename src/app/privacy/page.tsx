@@ -71,8 +71,7 @@ export default function PrivacyPage() {
 
           <h2 className="text-xl font-semibold mt-8 mb-2">Data retention + deletion</h2>
           <ul className="list-disc pl-5 space-y-1.5">
-            <li>Your profile stays active until you delete it.</li>
-            <li>Inactive profiles (no logins or applications in 18 months) are auto-archived and removed from matching.</li>
+            <li>Your profile stays active until you delete it. We don&apos;t auto-delete or auto-archive profiles on a timer.</li>
             <li>You can request full deletion by emailing <a href="mailto:info@avahealth.co?subject=Delete%20my%20profile" className="underline text-[#003D5C] hover:text-[#002A40]">info@avahealth.co</a> with subject &quot;Delete my profile&quot;. We&apos;ll wipe both the resume file and parsed data within 30 days.</li>
           </ul>
 
