@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { supabaseBrowser } from '@/lib/supabase-browser'
 import { requestEditLink } from '../candidate/login/actions'
+import { resolveResumeUrl } from '@/lib/resume-url'
 
 // Authed candidate account. After the email-code sign-in (OtpLoginForm) the
 // candidate lands here. We read their session, look up their resume profile by
@@ -38,11 +39,17 @@ export default function AccountPage() {
   const [editError, setEditError] = useState<string | null>(null)
   const [loadError, setLoadError] = useState(false)
   const [reloadKey, setReloadKey] = useState(0)
+  // resume_url from get_my_candidate() is a bare private-bucket storage path
+  // for self-uploads, not a fetchable URL — this holds the real signed URL
+  // once resolved, and the "View your current resume" link only renders once
+  // it's set (never the raw candidate.resume_url).
+  const [resumeViewUrl, setResumeViewUrl] = useState<string | null>(null)
 
   useEffect(() => {
     let active = true
     async function load() {
       setLoadError(false)
+      setResumeViewUrl(null)
       const { data: { session } } = await supabaseBrowser.auth.getSession()
       if (!session) {
         router.replace('/candidate/login')
@@ -58,8 +65,18 @@ export default function AccountPage() {
         return
       }
       const row = Array.isArray(data) ? (data[0] ?? null) : (data ?? null)
-      setCandidate((row as Candidate | null) ?? null)
+      const c = (row as Candidate | null) ?? null
+      setCandidate(c)
       setLoading(false)
+
+      if (c?.resume_url) {
+        try {
+          const url = await resolveResumeUrl(session.access_token, c.resume_url)
+          if (active) setResumeViewUrl(url)
+        } catch (e) {
+          console.error('resolveResumeUrl failed:', e instanceof Error ? e.message : 'unknown')
+        }
+      }
     }
     load()
     return () => {
@@ -160,9 +177,9 @@ export default function AccountPage() {
                   </dd>
                 </div>
               </dl>
-              {candidate.resume_url && (
+              {resumeViewUrl && (
                 <a
-                  href={candidate.resume_url}
+                  href={resumeViewUrl}
                   target="_blank"
                   rel="noopener"
                   className="inline-block mt-4 text-sm font-medium text-[#003D5C] hover:text-[#002A40] underline"

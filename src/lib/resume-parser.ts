@@ -91,10 +91,12 @@ export async function extractTextFromFile(file: File): Promise<string> {
   throw new Error('Unsupported file type. Use PDF, DOCX, or TXT.')
 }
 
-// Same extraction, but starting from the candidate's already-stored resume_url
-// (the signed URL to their file in the private `resumes` bucket) instead of a
-// fresh file picked in a form. Used by /account/tailor so a returning
-// candidate doesn't have to re-upload or re-paste their resume.
+// Same extraction, but starting from a URL instead of a fresh file picked in
+// a form. Used by /account/tailor so a returning candidate doesn't have to
+// re-upload or re-paste their resume. Callers must resolve the candidate's
+// raw resume_url to a real fetchable URL first — see lib/resume-url.ts —
+// since resume_url itself is often a bare path in the private `resumes`
+// bucket, not a URL.
 export async function extractTextFromUrl(url: string): Promise<string> {
   const res = await fetch(url)
   if (!res.ok) throw new Error(`Could not fetch resume file (${res.status})`)

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { supabaseBrowser } from '@/lib/supabase-browser'
 import { extractTextFromUrl } from '@/lib/resume-parser'
+import { resolveResumeUrl } from '@/lib/resume-url'
 import { tailorForCandidate, type TailorActionResult } from './actions'
 import type { TailorResult } from '@/lib/gemini-tailor'
 
@@ -59,7 +60,12 @@ export default function TailorPage() {
       }
 
       try {
-        const text = await extractTextFromUrl(row.resume_url)
+        // resume_url from get_my_candidate() is a bare private-bucket storage
+        // path for self-uploads, not a fetchable URL — resolve it to a real
+        // signed URL before handing it to extractTextFromUrl (fetch()).
+        const signedUrl = await resolveResumeUrl(session.access_token, row.resume_url)
+        if (!active) return
+        const text = await extractTextFromUrl(signedUrl)
         if (!active) return
         setResumeText(text)
         setResumeSource('loaded')
