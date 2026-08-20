@@ -1,4 +1,4 @@
-// Resume-writing guide content for the 38 specialty hubs. GENERATED from the
+// Resume-writing guide content for the specialty hubs. GENERATED from the
 // 2026-06 audit content engine (resume_guides_generated.json) - targets the
 // '[role] resume' query family GSC showed at position ~26 with zero content
 // behind it. Each guide is recruiter-grounded: example summary, ATS skill
@@ -20,45 +20,6 @@ export type ResumeGuide = {
 }
 
 export const RESUME_GUIDES: Record<string, ResumeGuide> = {
-  "physician": {
-      "slug": "physician",
-      "roleName": "Physician",
-      "pageTitle": "Physician Resume: Examples and Skills",
-      "metaDescription": "See a real physician resume example with the skills recruiters look for. Get the format right, then upload your resume free and get matched to openings.",
-      "alsoKnownAs": [
-          "Doctor",
-          "MD",
-          "DO",
-          "Medical Doctor",
-          "Physician CV"
-      ],
-      "summaryExample": "Board certified internal medicine physician with eight years of inpatient and outpatient practice. Currently a hospitalist at a 300 bed community hospital, carrying a daily census of 15 to 18 patients and handling admissions, rounding, discharges, and cross cover. Comfortable in Epic and Cerner, with active licenses in two states. Looking for a hospitalist or primary care role with a stable schedule.",
-      "skillsKeywords": [
-          "Board certification",
-          "Inpatient care",
-          "Outpatient care",
-          "Patient census management",
-          "Epic",
-          "Cerner",
-          "Clinical documentation",
-          "ICD-10 and CPT coding",
-          "Quality metrics",
-          "Care coordination",
-          "Resident and student teaching",
-          "Telemedicine",
-          "Multi-state licensure",
-          "Utilization review"
-      ],
-      "credentialLine": "Put MD or DO after your name. List board certification with the specialty and each active state medical license on its own line in a credentials section, and name the state for every license.",
-      "tips": [
-          "Physicians usually need a CV and a resume. Keep a full CV for hospitals and academic roles, and a shorter two page version for everything else.",
-          "Put licensure and board status near the top. Recruiters check it first because credentialing timelines drive start dates.",
-          "Give numbers for your practice. Daily census or panel size tells a recruiter more than any adjective.",
-          "List your EMR systems by name. Epic experience is a search filter for a lot of recruiters.",
-          "Account for every gap since residency. Credentialing will surface them anyway, and a one line explanation saves a phone call.",
-          "Skip duties every physician has. Name your case mix and the procedures you actually do."
-      ]
-  },
   "nurse-practitioner": {
       "slug": "nurse-practitioner",
       "roleName": "Nurse Practitioner",
@@ -97,44 +58,6 @@ export const RESUME_GUIDES: Record<string, ResumeGuide> = {
           "Split your RN years from your NP years. Both count, but a recruiter needs to see your NP experience on its own.",
           "List your EMR by name. Epic in particular gets searched.",
           "If you practice under a collaborative agreement, say so. Scope rules differ by state and recruiters have to check the fit."
-      ]
-  },
-  "physician-assistant": {
-      "slug": "physician-assistant",
-      "roleName": "Physician Assistant",
-      "pageTitle": "Physician Assistant Resume: Examples and Skills",
-      "metaDescription": "See a physician assistant resume example with the skills recruiters want. Get the format right, then upload your PA resume free and get matched to jobs.",
-      "alsoKnownAs": [
-          "PA",
-          "PA-C",
-          "Physician Associate",
-          "Certified Physician Assistant"
-      ],
-      "summaryExample": "Certified physician assistant with six years in orthopedic surgery. I run a clinic schedule of 20 to 25 patients a day and first assist in the OR two days a week. I also cover post op rounding and call for a four surgeon practice. NCCPA certified with active licenses in two states, charting in Epic.",
-      "skillsKeywords": [
-          "PA-C",
-          "NCCPA certification",
-          "First assist",
-          "Suturing and wound closure",
-          "History and physicals",
-          "Pre op and post op care",
-          "Epic",
-          "E/M coding",
-          "Splinting and casting",
-          "Joint injections",
-          "Inpatient rounding",
-          "Call coverage",
-          "DEA registration",
-          "Patient education"
-      ],
-      "credentialLine": "List PA-C after your name, then give your NCCPA certification and each state license its own line with the state named. Add your DEA registration if you have one.",
-      "tips": [
-          "Lead with your specialty and setting. Physician assistant alone is too broad for a recruiter to place you.",
-          "Count what you do. Patients per day in clinic and cases per week in the OR say more than a list of duties.",
-          "Name the procedures you perform on your own. Suturing, splinting, injections, whatever applies to your practice.",
-          "Note your supervising or collaborating physician setup if your state requires one. It answers the credentialing question before it gets asked.",
-          "Keep your NCCPA status near the top. Recruiters verify certification before they read anything else.",
-          "New grads should lead with clinical rotations and the hours in each. That is your experience section until your first job."
       ]
   },
   "registered-nurse": {

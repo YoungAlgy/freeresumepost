@@ -371,7 +371,7 @@ export default async function Home() {
             {CANDIDATE_SPECIALTIES.length} healthcare roles, one upload.
           </h2>
           <p className="text-lg text-slate-600 leading-relaxed max-w-xl mx-auto mb-8">
-            Physicians, NPs, PAs, RNs, CRNAs, therapists (PT/OT/SLP), pharmacists, MAs, RDNs, sonographers, and more. Pick yours and the parser handles the rest.
+            NPs, CRNAs, RNs, LPNs, CNAs, therapists (PT/OT/SLP), pharmacists, MAs, RDNs, sonographers, and more. Pick yours and the parser handles the rest.
           </p>
           <Link
             href="/specialty"
@@ -400,7 +400,7 @@ export default async function Home() {
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">What healthcare roles can I upload as?</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">Physicians (MD/DO), NPs, PAs, RNs, CRNAs, LPNs, therapists (PT/OT/SLP/AuD), pharmacists (PharmD/RPh), MAs, sonographers, lab techs, paramedics, and most allied health roles.</p>
+              <p className="text-slate-600 leading-relaxed text-sm">NPs, CRNAs, RNs, LPNs, CNAs, therapists (PT/OT/SLP/AuD), pharmacists (PharmD/RPh), MAs, sonographers, lab techs, paramedics, and most allied health roles.</p>
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">How fast will I get matched?</h3>

@@ -1,5 +1,5 @@
 // Role-bucket aggregation — groups freeform `public_jobs.role` values into
-// recognizable candidate-facing categories (Physician / NP / PA / RN / CRNA /
+// recognizable candidate-facing categories (NP / RN / CRNA /
 // Therapist / Pharmacist / Allied Health) so we can surface specialty-level
 // counts + salary ranges on candidate pages.
 //
@@ -26,22 +26,10 @@ const ROLE_BUCKET_DEFS: ReadonlyArray<{
   searchKeyword: string
 }> = [
   {
-    label: 'Physician',
-    patterns: ['physician', ' md ', ' md,', '/md', 'md/', 'do/', '/do', ' do '],
-    emoji: '🩺',
-    searchKeyword: 'physician',
-  },
-  {
     label: 'Nurse Practitioner',
     patterns: [' np ', ' np,', 'nurse practitioner', 'np/'],
     emoji: '👩‍⚕️',
     searchKeyword: 'nurse practitioner',
-  },
-  {
-    label: 'Physician Assistant',
-    patterns: [' pa ', 'physician assistant', 'pa-c'],
-    emoji: '🧑‍⚕️',
-    searchKeyword: 'physician assistant',
   },
   {
     label: 'Registered Nurse',
@@ -131,7 +119,8 @@ export function bucketizeRoles(jobs: JobLike[]): RoleBucket[] {
     // Plausibility floor: skip any salary range that's clearly a placeholder.
     // USAJobs (federal) sometimes lists "$1–$X" or "$0–$X" for jobs whose pay
     // is governed by a GS-grade scale rather than a stated range. Without
-    // this guard the Physician bucket on /upload showed "$1–$550K typical".
+    // this guard, the (since-retired) Physician bucket on /upload showed
+    // "$1–$550K typical".
     // 10,000 is well below the lowest realistic full-time healthcare salary
     // and high enough to reject the placeholder rows.
     const MIN_PLAUSIBLE_SALARY = 10_000

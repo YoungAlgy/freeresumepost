@@ -33,15 +33,16 @@ import { getResumeGuide } from '@/lib/resume-guides'
 //
 // SAFETY: every value below was verified 2026-05-30 to resolve HTTP 200 as a
 // freejobpost /specialty/[slug] hub (the 34 slugs in freejobpost's
-// specialty-slugs.ts). Specialties with NO matching freejob hub (physician,
-// psychologist, optometrist, podiatrist, chiropractor, perfusionist, PTA/COTA,
-// PCT, sleep/MRI/cath-lab tech, MLS, sonographer, etc.) are intentionally
-// ABSENT → they keep the /jobs?q=<name> search fallback (always 200).
+// specialty-slugs.ts, since narrowed to 19 -- physician + physician-assistant
+// were removed from both sites' taxonomies together, 2026-08-20). Specialties
+// with NO matching freejob hub (psychologist, optometrist, podiatrist,
+// chiropractor, perfusionist, PTA/COTA, PCT, sleep/MRI/cath-lab tech, MLS,
+// sonographer, etc.) are intentionally ABSENT → they keep the /jobs?q=<name>
+// search fallback (always 200).
 const RESUME_TO_FREEJOB_SPECIALTY: Record<string, string> = {
   // identical slugs
   'registered-nurse': 'registered-nurse',
   'nurse-practitioner': 'nurse-practitioner',
-  'physician-assistant': 'physician-assistant',
   'crna': 'crna',
   'pharmacist': 'pharmacist',
   'lpn': 'lpn',

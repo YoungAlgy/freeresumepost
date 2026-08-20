@@ -9,7 +9,7 @@ import { CANDIDATE_SPECIALTIES } from '@/lib/specialty-slugs'
 import { safeJsonLd } from '@/lib/safe-jsonld'
 export const metadata: Metadata = {
   title: 'Healthcare resume upload by specialty',
-  description: 'Free resume upload for healthcare candidates: physicians, NPs, PAs, RNs, CRNAs, LPNs, therapists, pharmacists, MAs, and more. Get matched, no recruiter spam.',
+  description: 'Free resume upload for nurse and allied-health candidates: NPs, CRNAs, RNs, LPNs, therapists, pharmacists, MAs, and more. Get matched, no recruiter spam.',
   alternates: { canonical: 'https://www.freeresumepost.co/specialty' },
   openGraph: {
     title: 'Healthcare resume upload by specialty | freeresumepost.co',

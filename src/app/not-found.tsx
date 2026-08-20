@@ -48,13 +48,14 @@ export default function NotFound() {
           <div className="flex flex-wrap gap-2">
             {/* Slugs MUST exist in src/lib/specialty-slugs.ts — three of the
                 old entries (family-medicine, psychiatry, cardiology) were
-                freejobpost slugs that 404 here (2026-06 audit, F89). */}
+                freejobpost slugs that 404 here (2026-06 audit, F89). Physician
+                and Physician Assistant removed 2026-08-20 (Ava/MASC brand
+                split — Ava is nurse + allied health only now). */}
             {[
-              { label: 'Physician', href: '/specialty/physician' },
               { label: 'LPN / LVN', href: '/specialty/lpn' },
               { label: 'Registered Nurse', href: '/specialty/registered-nurse' },
               { label: 'Nurse Practitioner', href: '/specialty/nurse-practitioner' },
-              { label: 'Physician Assistant', href: '/specialty/physician-assistant' },
+              { label: 'CRNA', href: '/specialty/crna' },
               { label: 'Physical Therapist', href: '/specialty/physical-therapist' },
               { label: 'How it works', href: '/how-it-works' },
             ].map((link) => (

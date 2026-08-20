@@ -21,15 +21,6 @@ export type CandidateSpecialty = {
 
 export const CANDIDATE_SPECIALTIES: CandidateSpecialty[] = [
   {
-    slug: 'physician',
-    name: 'Physician',
-    title: 'Physician resume upload',
-    metaDescription: 'Free physician resume upload. MD, DO, internal medicine, family practice, hospitalist, and specialty physicians get matched to real US openings.',
-    shortDescription: 'Upload once and get matched to physician openings across the US. No recruiter spam, no resume databases sold.',
-    commonCredentials: ['MD', 'DO'],
-    exampleRoles: ['Internal Medicine', 'Family Medicine', 'Hospitalist', 'Pediatrician', 'OB/GYN', 'Cardiologist', 'Orthopedic Surgeon', 'Anesthesiologist'],
-  },
-  {
     slug: 'nurse-practitioner',
     name: 'Nurse Practitioner',
     title: 'Nurse Practitioner resume upload',
@@ -37,15 +28,6 @@ export const CANDIDATE_SPECIALTIES: CandidateSpecialty[] = [
     shortDescription: 'NP openings across primary care, hospitalist, psych, ER, and specialty practice nationwide.',
     commonCredentials: ['NP', 'FNP', 'FNP-BC', 'AGNP', 'PMHNP', 'ACNP', 'WHNP', 'NNP'],
     exampleRoles: ['Primary Care NP', 'Hospitalist NP', 'Psych NP', 'ER NP', 'Cardiology NP', 'Oncology NP'],
-  },
-  {
-    slug: 'physician-assistant',
-    name: 'Physician Assistant',
-    title: 'Physician Assistant resume upload',
-    metaDescription: 'Free PA resume upload. PA-C and certified PAs matched to surgical, EM, primary care, hospitalist, and specialty openings across the US.',
-    shortDescription: 'PA roles in surgery, EM, primary care, hospitalist medicine, and every major specialty.',
-    commonCredentials: ['PA-C', 'PA'],
-    exampleRoles: ['Surgical PA', 'ER PA', 'Hospitalist PA', 'Orthopedic PA', 'Cardiothoracic PA', 'Dermatology PA'],
   },
   {
     slug: 'registered-nurse',

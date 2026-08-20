@@ -13,12 +13,12 @@ describe('bucketizeRoles', () => {
     expect(bucketizeRoles([j('Janitor', 'Hospital Janitor')])).toEqual([])
   })
 
-  it('buckets a Family Medicine MD posting under Physician', () => {
+  it('buckets a Hospital Pharmacist posting under Pharmacist', () => {
     const result = bucketizeRoles([
-      j('Family Medicine MD', 'Family Medicine Physician — Tampa'),
+      j('Hospital Pharmacist', 'Hospital Pharmacist — Tampa'),
     ])
     expect(result).toHaveLength(1)
-    expect(result[0].label).toBe('Physician')
+    expect(result[0].label).toBe('Pharmacist')
     expect(result[0].count).toBe(1)
   })
 
@@ -35,9 +35,9 @@ describe('bucketizeRoles', () => {
     expect(result.find((b) => b.label === 'Registered Nurse')).toBeUndefined()
   })
 
-  it('buckets PA-C under Physician Assistant', () => {
-    const result = bucketizeRoles([j('PA-C', 'Orthopedic PA-C')])
-    expect(result[0].label).toBe('Physician Assistant')
+  it('buckets "occupational therapy" under Therapist', () => {
+    const result = bucketizeRoles([j('OT', 'Outpatient Occupational Therapy')])
+    expect(result[0].label).toBe('Therapist')
   })
 
   it('returns buckets sorted by count desc', () => {
@@ -45,13 +45,13 @@ describe('bucketizeRoles', () => {
       j('RN', 'RN A'),
       j('RN', 'RN B'),
       j('RN', 'RN C'),
-      j('Physician', 'Physician X'),
+      j('CRNA', 'CRNA X'),
       j('Pharmacist', 'Pharmacist Y'),
     ]
     const result = bucketizeRoles(jobs)
     expect(result.map((b) => b.label)).toEqual([
       'Registered Nurse',
-      'Physician',
+      'CRNA',
       'Pharmacist',
     ])
     expect(result[0].count).toBe(3)
@@ -82,16 +82,17 @@ describe('bucketizeRoles', () => {
   it('ignores placeholder $1/$X salaries (USAJobs GS-grade entries) when computing range', () => {
     // USAJobs sometimes encodes "pay set by GS-grade table" as a $1
     // MinimumRange in PositionRemuneration. The pre-2026-05-16 floor
-    // (`> 0`) accepted that, producing "Physician $1–$550K typical" on the
-    // /upload tiles. The 10K plausibility floor rejects it cleanly.
+    // (`> 0`) accepted that, producing implausible "$1–$550K typical" on the
+    // /upload tiles (first caught on a federal Physician posting, before that
+    // bucket was retired). The 10K plausibility floor rejects it cleanly.
     const jobs = [
-      j('Physician', 'Physician A', 250000, 380000),
-      j('Physician', 'Physician B - GS-scale', 1, 550000), // placeholder min
-      j('Physician', 'Physician C', 290000, 400000),
+      j('CRNA', 'CRNA A', 250000, 380000),
+      j('CRNA', 'CRNA B - GS-scale', 1, 550000), // placeholder min
+      j('CRNA', 'CRNA C', 290000, 400000),
     ]
-    const [phys] = bucketizeRoles(jobs)
-    expect(phys.salaryFloor).toBe(250000)
-    expect(phys.salaryCeiling).toBe(550000)
+    const [crna] = bucketizeRoles(jobs)
+    expect(crna.salaryFloor).toBe(250000)
+    expect(crna.salaryCeiling).toBe(550000)
   })
 
   it('omits empty buckets from output', () => {

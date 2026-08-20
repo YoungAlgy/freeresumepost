@@ -101,7 +101,7 @@ export default function RootLayout({
                 websiteDescription:
                   'Ava Health — upload your resume free, get matched to real healthcare openings.',
                 organizationDescription:
-                  'Healthcare staffing and recruiting firm connecting physicians, nurses, and therapists with US healthcare employers. Operates a free candidate-resume platform that matches healthcare professionals to open roles without selling resume data.',
+                  'Healthcare staffing and recruiting firm connecting nurses and allied health professionals with US healthcare employers. Operates a free candidate-resume platform that matches healthcare professionals to open roles without selling resume data.',
                 searchActionTarget: 'https://freejobpost.co/jobs?q={search_term_string}',
               })
             ),

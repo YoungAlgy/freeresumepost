@@ -113,7 +113,7 @@ export default function HowItWorksPage() {
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">What healthcare roles can I upload as?</h3>
-            <p className="text-slate-600">Physicians (MD/DO), Nurse Practitioners, Physician Assistants, Registered Nurses, CRNAs, LPNs, therapists (PT, OT, SLP, AuD), pharmacists (PharmD/RPh), and most allied health roles.</p>
+            <p className="text-slate-600">Nurse Practitioners, CRNAs, Registered Nurses, LPNs, CNAs, therapists (PT, OT, SLP, AuD), pharmacists (PharmD/RPh), and most allied health roles.</p>
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 mb-1">How fast will I get matched?</h3>
