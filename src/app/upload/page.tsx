@@ -366,7 +366,7 @@ export default async function UploadPage() {
               })}
             </div>
             <p className="text-xs text-slate-500 mt-4">
-              Upload your resume to see roles matched to your specialty + state. Apply directly from your matches dashboard.
+              Upload your resume to see roles matched to your specialty + state. Apply directly from your private profile page.
             </p>
           </div>
         )}

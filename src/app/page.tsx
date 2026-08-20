@@ -308,7 +308,7 @@ export default async function Home() {
               </div>
               {previewJobs.length === 0 ? (
                 <div className="py-6 text-center text-sm text-gray-500">
-                  Live openings load when you upload your resume.
+                  No openings to show right now. Browse all jobs on freejobpost.co.
                 </div>
               ) : (
                 <div className="divide-y divide-gray-100">

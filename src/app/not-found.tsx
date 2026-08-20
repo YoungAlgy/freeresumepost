@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Page Not Found',
   description:
-    'The page you are looking for does not exist. Upload your resume or browse healthcare candidates by specialty.',
+    'The page you are looking for does not exist. Upload your resume or browse healthcare specialties.',
   robots: { index: false, follow: true },
 }
 

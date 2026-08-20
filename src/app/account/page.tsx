@@ -131,7 +131,7 @@ export default function AccountPage() {
               Could not load your profile
             </h1>
             <p className="text-slate-600 mb-8">
-              Something went wrong loading your account. Please retry &mdash; if it keeps happening, sign out and
+              Something went wrong loading your account. Please retry. If it keeps happening, sign out and
               back in.
             </p>
             <button

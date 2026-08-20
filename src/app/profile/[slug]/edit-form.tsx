@@ -90,7 +90,7 @@ export default function ProfileEditForm({
           {candidate.email}
           {f.is_public ? ' · public profile' : ' · private (not indexed)'}
         </p>
-        {f.is_public && (
+        {(saved ? f.is_public : candidate.is_public) && (
           <p className="text-sm text-slate-500 mb-8">
             Public URL:{' '}
             <a href={publicUrl} className="font-mono text-xs text-[#003D5C] hover:underline">
@@ -391,6 +391,7 @@ export default function ProfileEditForm({
           <div className="flex items-center justify-between pt-6 border-t border-slate-200">
             <p className="text-xs text-slate-500">
               Edit links work for 7 days. Get a fresh one anytime at freeresumepost.co/candidate/login.
+              Want your profile removed instead? Email info@avahealth.co.
             </p>
             <button
               type="submit"

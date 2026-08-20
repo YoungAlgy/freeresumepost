@@ -362,7 +362,7 @@ export default function UploadForm() {
           Your role
         </h2>
         <div className="grid md:grid-cols-2 gap-4">
-          <Field label="Credential" hint="MD, RN, PA-C, LCSW, etc.">
+          <Field label="Credential" hint="RN, NP, CRNA, PT, etc.">
             <input
               type="text"
               value={form.credential}
@@ -478,7 +478,7 @@ export default function UploadForm() {
               <p className="text-sm text-slate-600 mt-1">
                 <strong>Off by default.</strong> When on, your first name + last initial + specialty + state appear at
                 <span className="font-mono text-xs"> /profile/[your-slug]</span>{' '}
-                so hospitals and clinics searching for your specialty in your state can find you. <strong>Email + phone always stay private</strong>. Employers see your public profile, not your contact info, and have to go through us to reach you. Turn off any time from your dashboard.
+                so hospitals and clinics searching for your specialty in your state can find you. <strong>Email + phone always stay private</strong>. Employers see your public profile, not your contact info, and have to go through us to reach you. Turn off any time from your private profile page.
               </p>
             </div>
           </label>

@@ -136,7 +136,7 @@ export default function TailorPage() {
         </h1>
         <p className="text-slate-600 mb-8 leading-relaxed">
           Paste a job posting below. We&apos;ll rewrite your bullets to match what it wants, write you a
-          real cover letter, and prep you for the interview &mdash; using the resume already on your account.
+          real cover letter, and prep you for the interview. We use the resume already on your account.
         </p>
 
         {loading ? (
@@ -145,7 +145,7 @@ export default function TailorPage() {
           <div className="rounded-lg border-2 border-dashed border-slate-300 p-5">
             <h2 className="font-semibold text-slate-900 mb-2">Could not load your profile</h2>
             <p className="text-sm text-slate-700 mb-3">
-              Something went wrong loading your account. Please retry &mdash; if it keeps happening, sign out and
+              Something went wrong loading your account. Please retry. If it keeps happening, sign out and
               back in.
             </p>
             <button
@@ -185,7 +185,7 @@ export default function TailorPage() {
               </div>
               {resumeSource === 'manual' && (
                 <p className="text-xs text-slate-500 mb-1.5">
-                  Couldn&apos;t load your resume file automatically — paste the text below instead.
+                  Couldn&apos;t load your resume file automatically. Paste the text below instead.
                 </p>
               )}
               <textarea
@@ -212,7 +212,7 @@ export default function TailorPage() {
             </button>
             {usesRemainingToday !== null && (
               <p className="text-xs text-slate-500 text-center mt-2">
-                {usesRemainingToday} more free tailorings today
+                You can do this {usesRemainingToday} more times today, free
               </p>
             )}
           </>

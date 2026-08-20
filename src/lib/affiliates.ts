@@ -21,7 +21,7 @@ export type Affiliate = {
 const AFFILIATES: Record<string, Affiliate> = {
   jobcopilot: {
     key: 'jobcopilot',
-    label: 'Uploaded your resume? JobCopilot can auto-fill and submit job applications for you.',
+    label: 'Applying to a lot of jobs on your own? JobCopilot fills out the applications you pick.',
     cta: 'Try JobCopilot',
     url:
       process.env.NEXT_PUBLIC_AFF_JOBCOPILOT ??
