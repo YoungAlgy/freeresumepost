@@ -15,9 +15,22 @@ export type ParsedResume = {
   yearsExperience: number | null
 }
 
+// Physician + PA credentials moved to the separate MASC Medical brand in the
+// 2026-08-19/20 Ava/MASC split (see specialty-slugs.ts, role-buckets.ts,
+// resume-guides.ts, and the homepage/how-it-works FAQ's explicit role list,
+// none of which include MD/DO/PA anymore). Never surfaced as a detected
+// credential — a physician or PA resume shouldn't autofill "MD" or "PA-C"
+// into the credential field on a nurse-and-allied-health-only intake site —
+// but still excluded from name-token candidates below (combined into
+// NAME_EXCLUSION_TOKENS) so e.g. "Jane Smith, MD" doesn't misparse "MD" as
+// a surname. Found live: a self-uploaded MD/Internal Medicine candidate was
+// sitting in production, auto-tagged by this list and actively matched
+// against physician job postings by the daily marketplace-match cron.
+const OUT_OF_SCOPE_CREDENTIAL_TOKENS = ['MD', 'DO', 'PA-C', 'PA']
+
 const CREDENTIAL_TOKENS = [
-  // Physician + APP
-  'MD', 'DO', 'PA-C', 'PA', 'NP', 'FNP', 'FNP-BC', 'AGNP', 'AGNP-BC',
+  // Nurse practitioner + advanced practice nursing
+  'NP', 'FNP', 'FNP-BC', 'AGNP', 'AGNP-BC',
   'AGACNP', 'AGACNP-BC', 'PMHNP', 'PMHNP-BC', 'ACNP', 'ACNP-BC',
   'WHNP', 'NNP', 'ARNP', 'CRNA', 'CNM',
   // Nursing + nursing certs
@@ -38,6 +51,13 @@ const CREDENTIAL_TOKENS = [
   // Dental
   'DDS', 'DMD',
 ]
+
+// Name-token exclusion needs the full universe of credential-shaped tokens,
+// including out-of-scope ones (MD/DO/PA-C/PA) — otherwise "Jane Smith, MD"
+// misparses "MD" as the surname, the same bug class fixed 2026-05-01 for
+// "Sarah Mitchell, RN". CREDENTIAL_TOKENS alone (used for the *detected*
+// credential shown to the candidate) deliberately excludes them.
+const NAME_EXCLUSION_TOKENS = new Set([...CREDENTIAL_TOKENS, ...OUT_OF_SCOPE_CREDENTIAL_TOKENS])
 
 const SPECIALTY_HINTS: Array<[RegExp, string]> = [
   // Order matters: more specific hints first, so allied health doesn't get
@@ -144,7 +164,7 @@ export function parseFields(raw: string): ParsedResume {
     const tokens = cleaned.filter(
       (t) =>
         /^[A-Z][a-zA-Z'-]{1,20}$/.test(t) &&
-        !CREDENTIAL_TOKENS.includes(t.toUpperCase())
+        !NAME_EXCLUSION_TOKENS.has(t.toUpperCase())
     )
     if (tokens.length >= 2 && tokens.length <= 5) {
       firstName = tokens[0]

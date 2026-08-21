@@ -60,6 +60,30 @@ describe('parseFields', () => {
     })
   })
 
+  describe('out-of-scope physician/PA credentials', () => {
+    // 2026-08-20: MD/DO/PA-C/PA moved to the separate MASC Medical brand.
+    // Found live: an MD resume had been auto-tagged with credential "MD" and
+    // matched against physician jobs on this nurse-and-allied-health-only site.
+    it('does not surface MD/DO/PA-C/PA as a detected credential', () => {
+      const r = parseFields(
+        ['Jane Smith, MD', 'jane.smith@example.com', 'Internal Medicine Physician'].join('\n')
+      )
+      expect(r.credentials).not.toContain('MD')
+    })
+
+    it('still excludes MD from the surname so it does not misparse as the last name', () => {
+      const r = parseFields(['Jane Smith, MD', 'jane.smith@example.com'].join('\n'))
+      expect(r.firstName).toBe('Jane')
+      expect(r.lastName).toBe('Smith')
+    })
+
+    it('does not surface PA-C as a detected credential', () => {
+      const r = parseFields(['John Doe, PA-C', 'john.doe@example.com'].join('\n'))
+      expect(r.credentials).not.toContain('PA-C')
+      expect(r.lastName).toBe('Doe')
+    })
+  })
+
   it('parses phone with a leading country code and dashes', () => {
     expect(parseFields('Call +1 813-555-0142 anytime').phone).toContain('813')
   })
