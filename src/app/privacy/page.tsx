@@ -66,8 +66,8 @@ export default function PrivacyPage() {
           <h2 className="text-xl font-semibold mt-8 mb-2">When you apply for a job</h2>
           <p>
             Clicking &quot;Apply&quot; on a job listing forwards your application contact info (name, email,
-            phone, resume URL) directly to that specific employer. Each application is opt-in;
-            we don&apos;t auto-apply on your behalf.
+            phone, resume URL) directly to that specific employer. Each application is opt-in.
+            We don&apos;t auto-apply on your behalf.
           </p>
 
           <h2 className="text-xl font-semibold mt-8 mb-2">Data retention + deletion</h2>
