@@ -416,7 +416,7 @@ export default async function Home() {
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Is my license info verified?</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">We auto-detect credential tokens (RN, CRNA, PA-C, PharmD, etc.) from your resume text. We don&apos;t do full credential verification. Employers verify independently before hiring.</p>
+              <p className="text-slate-600 leading-relaxed text-sm">We auto-detect credential tokens (RN, CRNA, NP, PharmD, etc.) from your resume text. We don&apos;t do full credential verification. Employers verify independently before hiring.</p>
             </div>
           </div>
         </div>
