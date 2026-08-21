@@ -44,8 +44,23 @@ AS $$
   );
 $$;
 
--- No explicit GRANT: matches submit_public_candidate_rpc's convention of
--- relying on the default PUBLIC execute grant (this project doesn't
--- REVOKE EXECUTE FROM PUBLIC on candidate-facing RPCs), so anon can call
--- it from the /upload flow the same way it already calls
--- submit_public_candidate_rpc.
+-- Round 9 correction: an earlier draft of this file skipped the GRANT block,
+-- on the stated grounds that submit_public_candidate_rpc "relies on the
+-- default PUBLIC execute grant" and that "this project doesn't REVOKE EXECUTE
+-- FROM PUBLIC on candidate-facing RPCs". Checked against the live DB, that is
+-- backwards. Every RPC in this family carries an explicit ACL with no PUBLIC
+-- entry -- submit_public_candidate_rpc, update_public_candidate_rpc,
+-- consume_candidate_edit_rpc, get_resume_upload_context_rpc and
+-- subscribe_job_alert_rpc are all exactly
+--   postgres=X/postgres | anon=X/postgres | authenticated=X/postgres
+-- i.e. REVOKE ALL FROM PUBLIC followed by explicit grants (see
+-- 20260430220000_revoke_public_on_security_definer_pii_funcs.sql, and
+-- avahealth-crm's 20260820190200_booking_context_rpc.sql, which does the same
+-- REVOKE/GRANT pair for the newest anon-callable SECURITY DEFINER reader).
+--
+-- Left as-was, this migration would have created a SECURITY DEFINER function
+-- over candidate PII that every role on the project can execute, and it would
+-- have landed as a fresh anon_security_definer_function_executable advisor
+-- warning the moment it was applied. Matching the convention explicitly.
+REVOKE ALL ON FUNCTION public.check_candidate_email_deleted_rpc(text) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.check_candidate_email_deleted_rpc(text) TO anon, authenticated;
