@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         // /profile/[slug] queries with ?t= token are edit-mode and must not be
         // indexed; the page also sets robots: noindex when a token is present.
-        disallow: ['/api/', '/profile/*?*'],
+        disallow: ['/profile/*?*'],
       },
     ],
     sitemap: 'https://www.freeresumepost.co/sitemap.xml',

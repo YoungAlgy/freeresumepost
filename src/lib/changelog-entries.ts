@@ -17,7 +17,71 @@ export interface ChangelogEntry {
 }
 
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
+  // ── August 2026 ──────────────────────────────────
+  {
+    date: "2026-08-20",
+    title: "Ava Health splits into two brands",
+    body:
+      "Ava Health now focuses on nurses and allied health. Physician and physician assistant roles moved to a new sister brand. Specialty hubs, resume parsing, and every FAQ or example on this site were updated to match, 33 specialties instead of 38. If you're a physician or PA, this site is no longer the right fit for your resume.",
+    tag: "improved",
+  },
+  {
+    date: "2026-08-20",
+    title: "Fixed a false 'Saved' after a deleted profile",
+    body:
+      "In a rare case, using a still-valid edit link on a profile that had already been deleted showed 'Saved' after you hit save, but nothing actually changed. Fixed. You'll now see a clear error instead of a false confirmation.",
+    tag: "fixed",
+  },
+  {
+    date: "2026-08-20",
+    title: "Fixed a few inaccurate claims in our FAQ and policies",
+    body:
+      "Corrected several places where our copy didn't match how the product actually works: an unbacked stat about which states get the most matches, a claim that public profiles get indexed by Google (they don't), a made-up 18-month auto-archive policy that no code ever ran, and a list of what a public profile shows that was missing two fields it actually displays, credential and city. None of this changed how the product behaves, just made the words match it.",
+    tag: "fixed",
+  },
+  {
+    date: "2026-08-20",
+    title: "Tightened what your edit link sends to the page",
+    body:
+      "Opening your profile through your emailed edit link sent more of your data to the page than it needed to, including your full parsed resume text and a few internal fields that were never meant to leave our servers. Narrowed it down to just the fields the edit page actually shows.",
+    tag: "security",
+  },
+  {
+    date: "2026-08-20",
+    title: "Fixed your resume link and a deleted-profile dead end",
+    body:
+      "The 'View your current resume' link on your account page, and the resume auto-load on the tailor tool, were both 404ing for every candidate who'd uploaded directly through this site. Fixed. Also fixed a dead end where re-uploading after asking us to delete your profile could loop forever instead of telling you what was going on.",
+    tag: "fixed",
+  },
+  {
+    date: "2026-08-13",
+    title: "Friendlier message when sign-in fails",
+    body:
+      "Trying to sign in with an email that's never uploaded a resume used to show you a raw backend error. Now it tells you what happened and links straight to upload.",
+    tag: "fixed",
+  },
+  {
+    date: "2026-08-13",
+    title: "Fixed broken link previews and the site icon",
+    body:
+      "A bug in how we generate Open Graph share images and the site icon was breaking link previews on LinkedIn, iMessage, and Slack, plus the icon in your browser tab, on some pages. Fixed across the board.",
+    tag: "fixed",
+  },
+  {
+    date: "2026-08-12",
+    title: "Specialty pages load more reliably now",
+    body:
+      "Every specialty hub was re-running its full job search on every visit, and under real traffic that started stacking up against the shared database. Now cached so it runs once and reuses the result, instead of piling on with every new visitor.",
+    tag: "reliability",
+  },
   // ── July 2026 ────────────────────────────────────
+  {
+    date: "2026-07-24",
+    title: "Fixed a slow homepage and upload page",
+    body:
+      "Homepage and /upload were timing out for some visitors after a database resize made a slow background calculation too slow to finish in time. Fixed the timeout. The 'Browse by specialty' tiles on the homepage are paused for now while we rebuild that calculation to run faster, everything else on both pages loads normally.",
+    tag: "reliability",
+  },
   {
     date: "2026-07-23",
     title: "Resume tailoring moved in-house",

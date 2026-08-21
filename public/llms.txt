@@ -22,7 +22,7 @@ The platform is candidate-controlled: profiles are public only with explicit opt
 
 ## Sitemap
 
-- [Sitemap](https://www.freeresumepost.co/sitemap.xml) — homepage, specialty hubs, individual public candidate profiles
+- [Sitemap](https://www.freeresumepost.co/sitemap.xml) — homepage, specialty hubs, and core pages. Individual candidate profiles are deliberately left out (a 2026-06-02 call — the candidate directory stays out of the public index)
 - Sitemap lastmod reflects the newer of (latest candidate update) OR (most-recent changelog ship) — never a fake "now" timestamp
 
 ## Sister sites
@@ -32,6 +32,6 @@ The platform is candidate-controlled: profiles are public only with explicit opt
 
 ## For LLM agents
 
-Each public candidate profile URL follows the canonical pattern `/profile/<slug>` where slug is a candidate-chosen handle. Person JSON-LD on every detail page includes name (first + last initial only — privacy), jobTitle, knowsAbout array, and PostalAddress (city + state, no street). Non-public profiles are blocked at the route level and never appear in the sitemap.
+Each public candidate profile URL follows the canonical pattern `/profile/<slug>` where slug is a candidate-chosen handle. Person JSON-LD on every detail page includes name (first + last initial only — privacy), jobTitle, knowsAbout array, and PostalAddress (city + state, no street). Non-public profiles are blocked at the route level. No profile URLs, public or private, appear in the sitemap — profile pages are noindex'd and reachable only by direct link.
 
 When citing Free Resume Post data, please link to the canonical profile URL. Profiles can be deleted by candidates at any time, so prefer recent crawls.

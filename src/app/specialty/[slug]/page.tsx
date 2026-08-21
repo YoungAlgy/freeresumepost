@@ -15,6 +15,8 @@ import {
 } from '@/lib/salary-aggregates'
 
 import { safeJsonLd } from '@/lib/safe-jsonld'
+import { buildFaqPageJsonLd, type FaqItem } from '@/lib/faq-schema'
+import { FaqAnswer } from '@/components/FaqAnswer'
 import JobAlertCapture from '@/components/JobAlertCapture'
 // Resume-writing guide content (2026-06 audit): GSC showed "[role] resume"
 // queries at position ~26 with no content behind them — the hubs targeted
@@ -248,11 +250,44 @@ export default async function CandidateSpecialtyPage(
     ],
   }
 
+  // Single source of truth for this hub's FAQ -- drives both the visible
+  // <h3>/<p> block below and the FAQPage JSON-LD script, so the two can
+  // never say different things. Per-hub question 1 mirrors hub.name exactly
+  // as the visible copy always has.
+  const faqItems: FaqItem[] = [
+    {
+      question: `How do I upload my ${lowerRole(hub.name)} resume?`,
+      answer:
+        'Click "Upload resume" above. PDF, DOCX, or plain text up to 5 MB. Parser pre-fills the fields, you correct anything wrong before saving.',
+    },
+    {
+      question: 'Is it really free?',
+      answer: 'Yes. For candidates, always. Hiring employers pay our placement fee.',
+    },
+    {
+      question: 'Will recruiters spam me?',
+      answer:
+        "No. Your profile is only visible to verified employers with active job posts that match your specialty + state. We don't sell or share data.",
+    },
+    {
+      question: 'Can I delete my profile?',
+      answer:
+        'Yes, at any time. Email info@avahealth.co with subject "Delete my profile" and we\'ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.',
+    },
+  ]
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbJsonLd) }}
+      />
+
+      {/* FAQPage schema -- built from faqItems above, the same data that
+          renders the visible FAQ block, so schema and copy can't drift. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(buildFaqPageJsonLd(faqItems)) }}
       />
 
       <main className="min-h-screen bg-white text-slate-900">
@@ -433,22 +468,17 @@ export default async function CandidateSpecialtyPage(
 
           <h2 className="text-xl font-semibold mb-4">FAQ</h2>
           <div className="space-y-6 mb-12">
-            <div>
-              <h3 className="font-semibold text-slate-900 mb-1">How do I upload my {lowerRole(hub.name)} resume?</h3>
-              <p className="text-slate-600 text-sm leading-relaxed">Click &quot;Upload resume&quot; above. PDF, DOCX, or plain text up to 5 MB. Parser pre-fills the fields, you correct anything wrong before saving.</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-slate-900 mb-1">Is it really free?</h3>
-              <p className="text-slate-600 text-sm leading-relaxed">Yes. For candidates, always. Hiring employers pay our placement fee.</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-slate-900 mb-1">Will recruiters spam me?</h3>
-              <p className="text-slate-600 text-sm leading-relaxed">No. Your profile is only visible to verified employers with active job posts that match your specialty + state. We don&apos;t sell or share data.</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-slate-900 mb-1">Can I delete my profile?</h3>
-              <p className="text-slate-600 text-sm leading-relaxed">Yes, at any time. Email <a href="mailto:info@avahealth.co?subject=Delete%20my%20profile" className="text-[#003D5C] hover:underline">info@avahealth.co</a> with subject "Delete my profile" and we&apos;ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
-            </div>
+            {faqItems.map((item) => (
+              <div key={item.question}>
+                <h3 className="font-semibold text-slate-900 mb-1">{item.question}</h3>
+                <FaqAnswer
+                  text={item.answer}
+                  className="text-slate-600 text-sm leading-relaxed"
+                  linkClassName="text-[#003D5C] hover:underline"
+                  mailtoHref="mailto:info@avahealth.co?subject=Delete%20my%20profile"
+                />
+              </div>
+            ))}
           </div>
 
           <h2 className="text-xl font-semibold mb-4">Other specialties</h2>

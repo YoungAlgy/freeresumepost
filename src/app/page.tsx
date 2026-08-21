@@ -6,6 +6,50 @@ import { supabase, hourIso } from '@/lib/supabase'
 import { formatSalary } from '@/lib/format-salary'
 import { bucketizeRoles, type RoleBucket } from '@/lib/role-buckets'
 import { CANDIDATE_SPECIALTIES } from '@/lib/specialty-slugs'
+import { safeJsonLd } from '@/lib/safe-jsonld'
+import { buildFaqPageJsonLd, type FaqItem } from '@/lib/faq-schema'
+import { FaqAnswer } from '@/components/FaqAnswer'
+
+// Single source of truth for the homepage FAQ -- drives both the visible
+// <h3>/<p> block below and the FAQPage JSON-LD script at the bottom of this
+// page, so the two can never say different things.
+const FAQ_ITEMS: FaqItem[] = [
+  {
+    question: 'Is uploading my resume actually free?',
+    answer:
+      'Yes, for candidates, always. We never charge you for upload, matches, or applying. Hiring employers pay our placement fee when a match converts.',
+  },
+  {
+    question: 'Will my resume be sold to recruiters?',
+    answer:
+      "No. We don't sell, license, or share your data with third parties. Only verified employers with active job posts on freejobpost.co can see profiles that match their roles.",
+  },
+  {
+    question: 'What healthcare roles can I upload as?',
+    answer:
+      'NPs, CRNAs, RNs, LPNs, CNAs, therapists (PT/OT/SLP/AuD), pharmacists (PharmD/RPh), MAs, sonographers, lab techs, paramedics, and most allied health roles.',
+  },
+  {
+    question: 'How fast will I get matched?',
+    answer:
+      'Initial matches typically surface within a day of upload. Your top matches appear on your private profile page (the edit URL we send on submit). Match volume depends on how many open roles match your specialty and state. Never automatic application.',
+  },
+  {
+    question: 'Can I delete my profile?',
+    answer:
+      'Yes, at any time. Email info@avahealth.co with subject "Delete my profile" and we\'ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.',
+  },
+  {
+    question: 'Do I have to make my profile public?',
+    answer:
+      "No. Most candidates keep profiles private. Public profiles show your first name, last initial, credential, specialty, city, state, and years of experience at your own page, so employers matching your specialty can find you. We don't index public profiles in Google search.",
+  },
+  {
+    question: 'Is my license info verified?',
+    answer:
+      "We auto-detect credential tokens (RN, CRNA, NP, PharmD, etc.) from your resume text. We don't do full credential verification. Employers verify independently before hiring.",
+  },
+]
 
 export const metadata: Metadata = {
   // `absolute` bypasses the layout template `%s | Ava Health`. Without it the
@@ -390,34 +434,17 @@ export default async function Home() {
             Common questions.
           </h2>
           <div className="space-y-6">
-            <div>
-              <h3 className="font-semibold text-slate-900 mb-1">Is uploading my resume actually free?</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">Yes, for candidates, always. We never charge you for upload, matches, or applying. Hiring employers pay our placement fee when a match converts.</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-slate-900 mb-1">Will my resume be sold to recruiters?</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">No. We don&apos;t sell, license, or share your data with third parties. Only verified employers with active job posts on freejobpost.co can see profiles that match their roles.</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-slate-900 mb-1">What healthcare roles can I upload as?</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">NPs, CRNAs, RNs, LPNs, CNAs, therapists (PT/OT/SLP/AuD), pharmacists (PharmD/RPh), MAs, sonographers, lab techs, paramedics, and most allied health roles.</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-slate-900 mb-1">How fast will I get matched?</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">Initial matches typically surface within a day of upload. Your top matches appear on your private profile page (the edit URL we send on submit). Match volume depends on how many open roles match your specialty and state. Never automatic application.</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-slate-900 mb-1">Can I delete my profile?</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">Yes, at any time. Email <a href="mailto:info@avahealth.co?subject=Delete%20my%20profile" className="text-[#003D5C] hover:underline">info@avahealth.co</a> with subject "Delete my profile" and we&apos;ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-slate-900 mb-1">Do I have to make my profile public?</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">No. Most candidates keep profiles private. Public profiles show your first name, last initial, credential, specialty, city, state, and years of experience at your own page, so employers matching your specialty can find you. We don&apos;t index public profiles in Google search.</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-slate-900 mb-1">Is my license info verified?</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">We auto-detect credential tokens (RN, CRNA, NP, PharmD, etc.) from your resume text. We don&apos;t do full credential verification. Employers verify independently before hiring.</p>
-            </div>
+            {FAQ_ITEMS.map((item) => (
+              <div key={item.question}>
+                <h3 className="font-semibold text-slate-900 mb-1">{item.question}</h3>
+                <FaqAnswer
+                  text={item.answer}
+                  className="text-slate-600 leading-relaxed text-sm"
+                  linkClassName="text-[#003D5C] hover:underline"
+                  mailtoHref="mailto:info@avahealth.co?subject=Delete%20my%20profile"
+                />
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -440,6 +467,12 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* FAQPage schema -- built from FAQ_ITEMS above, the same data that
+          renders the visible FAQ block, so schema and copy can't drift. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(buildFaqPageJsonLd(FAQ_ITEMS)) }}
+      />
 </main>
   )
 }

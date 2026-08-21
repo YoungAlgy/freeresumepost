@@ -249,7 +249,7 @@ export const RESUME_GUIDES: Record<string, ResumeGuide> = {
   "occupational-therapist": {
       "slug": "occupational-therapist",
       "roleName": "Occupational Therapist",
-      "pageTitle": "Occupational Therapist Resume: Examples and Skills",
+      "pageTitle": "Occupational Therapist Resume: Examples",
       "metaDescription": "A real occupational therapist resume example and the skills recruiters search for. Tips written by healthcare recruiters, plus a free OT resume upload.",
       "alsoKnownAs": [
           "OT",
@@ -286,7 +286,7 @@ export const RESUME_GUIDES: Record<string, ResumeGuide> = {
   "speech-language-pathologist": {
       "slug": "speech-language-pathologist",
       "roleName": "Speech-Language Pathologist",
-      "pageTitle": "Speech-Language Pathologist Resume: Examples and Skills",
+      "pageTitle": "Speech-Language Pathologist Resume: Examples",
       "metaDescription": "A real speech-language pathologist resume example with the skills recruiters search for. Tips from healthcare recruiters and a free SLP resume upload.",
       "alsoKnownAs": [
           "SLP",
@@ -401,7 +401,7 @@ export const RESUME_GUIDES: Record<string, ResumeGuide> = {
   "radiology-tech": {
       "slug": "radiology-tech",
       "roleName": "Radiologic Technologist",
-      "pageTitle": "Radiologic Technologist Resume: Examples and Skills",
+      "pageTitle": "Radiology Tech Resume: Examples and Skills",
       "metaDescription": "A real radiologic technologist resume example, the skills imaging departments search for, and tips from healthcare recruiters. Upload your resume free.",
       "alsoKnownAs": [
           "Rad Tech",
@@ -439,7 +439,7 @@ export const RESUME_GUIDES: Record<string, ResumeGuide> = {
   "respiratory-therapist": {
       "slug": "respiratory-therapist",
       "roleName": "Respiratory Therapist",
-      "pageTitle": "Respiratory Therapist Resume: Examples and Skills",
+      "pageTitle": "Respiratory Therapist Resume: Examples",
       "metaDescription": "A real respiratory therapist resume example, the skills hospitals search for, and writing tips from healthcare recruiters. Upload your resume free.",
       "alsoKnownAs": [
           "RRT",
@@ -477,7 +477,7 @@ export const RESUME_GUIDES: Record<string, ResumeGuide> = {
   "clinical-social-worker": {
       "slug": "clinical-social-worker",
       "roleName": "Licensed Clinical Social Worker",
-      "pageTitle": "Licensed Clinical Social Worker Resume: Examples and Skills",
+      "pageTitle": "LCSW Resume: Examples and Skills",
       "metaDescription": "A real LCSW resume example, the clinical skills employers search for, and resume tips from healthcare recruiters. Upload your social work resume free.",
       "alsoKnownAs": [
           "LCSW",
@@ -555,7 +555,7 @@ export const RESUME_GUIDES: Record<string, ResumeGuide> = {
   "surgical-tech": {
       "slug": "surgical-tech",
       "roleName": "Surgical Technologist",
-      "pageTitle": "Surgical Technologist Resume: Examples and Skills",
+      "pageTitle": "Surgical Tech Resume: Examples and Skills",
       "metaDescription": "A real surgical tech resume example with the skills OR managers want, plus how to list your CST. Upload your resume free and get matched to jobs.",
       "alsoKnownAs": [
           "Surgical Tech",
@@ -632,7 +632,7 @@ export const RESUME_GUIDES: Record<string, ResumeGuide> = {
   "registered-dietitian": {
       "slug": "registered-dietitian",
       "roleName": "Registered Dietitian",
-      "pageTitle": "Registered Dietitian Resume: Examples and Skills",
+      "pageTitle": "Registered Dietitian Resume: Examples",
       "metaDescription": "A real dietitian resume example with the skills clinical nutrition managers want, plus how to list your RDN. Upload your resume free and get matched.",
       "alsoKnownAs": [
           "RD",
@@ -710,7 +710,7 @@ export const RESUME_GUIDES: Record<string, ResumeGuide> = {
   "rnfa-first-assist": {
       "slug": "rnfa-first-assist",
       "roleName": "RNFA / Surgical First Assistant",
-      "pageTitle": "RNFA / Surgical First Assistant Resume: Examples and Skills",
+      "pageTitle": "RNFA Resume: Examples and Skills",
       "metaDescription": "A real RNFA resume example plus the skills OR hiring managers want. Advice from healthcare recruiters. Upload your first assist resume free today.",
       "alsoKnownAs": [
           "RNFA",
@@ -827,7 +827,7 @@ export const RESUME_GUIDES: Record<string, ResumeGuide> = {
   "medical-laboratory-scientist": {
       "slug": "medical-laboratory-scientist",
       "roleName": "Medical Laboratory Scientist",
-      "pageTitle": "Medical Laboratory Scientist Resume: Examples and Skills",
+      "pageTitle": "MLS Resume: Examples and Skills",
       "metaDescription": "See a real medical laboratory scientist resume example, the lab skills employers search for, and how to list ASCP certification. Free resume upload.",
       "alsoKnownAs": [
           "MLS",
@@ -909,7 +909,7 @@ export const RESUME_GUIDES: Record<string, ResumeGuide> = {
   "physical-therapy-assistant": {
       "slug": "physical-therapy-assistant",
       "roleName": "Physical Therapist Assistant",
-      "pageTitle": "Physical Therapist Assistant Resume: Examples and Skills",
+      "pageTitle": "PTA Resume: Examples and Skills",
       "metaDescription": "See a real physical therapist assistant resume example, the PTA skills employers search for, and how to list your license. Free resume upload.",
       "alsoKnownAs": [
           "PTA",
@@ -948,7 +948,7 @@ export const RESUME_GUIDES: Record<string, ResumeGuide> = {
   "occupational-therapy-assistant": {
       "slug": "occupational-therapy-assistant",
       "roleName": "Occupational Therapy Assistant",
-      "pageTitle": "Occupational Therapy Assistant Resume: Examples and Skills",
+      "pageTitle": "COTA Resume: Examples and Skills",
       "metaDescription": "See a real occupational therapy assistant resume example, the COTA skills employers search for, and how to list your license. Free resume upload.",
       "alsoKnownAs": [
           "COTA",
@@ -1025,7 +1025,7 @@ export const RESUME_GUIDES: Record<string, ResumeGuide> = {
   "patient-care-tech": {
       "slug": "patient-care-tech",
       "roleName": "Patient Care Technician",
-      "pageTitle": "Patient Care Technician Resume: Examples and Skills",
+      "pageTitle": "Patient Care Tech Resume: Examples and Skills",
       "metaDescription": "Patient care technician resume example with the skills and certs hospital recruiters look for. Upload your resume free and get matched to PCT jobs.",
       "alsoKnownAs": [
           "PCT",
@@ -1140,7 +1140,7 @@ export const RESUME_GUIDES: Record<string, ResumeGuide> = {
   "mental-health-tech": {
       "slug": "mental-health-tech",
       "roleName": "Mental Health Technician",
-      "pageTitle": "Mental Health Technician Resume: Examples and Skills",
+      "pageTitle": "Mental Health Tech Resume: Examples and Skills",
       "metaDescription": "Mental health technician resume example with the skills psych units look for. Upload your resume free and get matched to behavioral health tech jobs.",
       "alsoKnownAs": [
           "MHT",

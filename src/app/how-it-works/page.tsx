@@ -2,6 +2,50 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { safeJsonLd } from '@/lib/safe-jsonld'
+import { buildFaqPageJsonLd, type FaqItem } from '@/lib/faq-schema'
+import { FaqAnswer } from '@/components/FaqAnswer'
+
+// Single source of truth for this page's FAQ -- drives both the visible
+// <h3>/<p> block below and the FAQPage JSON-LD script near the bottom, so
+// the two can never say different things.
+const FAQ_ITEMS: FaqItem[] = [
+  {
+    question: 'Is it really free?',
+    answer:
+      "Yes. We don't charge candidates anything, not even to apply. Hiring employers pay our placement fee when a match converts.",
+  },
+  {
+    question: 'Will my resume be sold to recruiters?',
+    answer:
+      "No. We don't sell, license, or share your data with third parties. Your matches are shown to you, and you decide where to apply. The only people with access to your full profile are Ava Health Partners recruiters, the placement side that keeps this free.",
+  },
+  {
+    question: 'What healthcare roles can I upload as?',
+    answer:
+      'Nurse Practitioners, CRNAs, Registered Nurses, LPNs, CNAs, therapists (PT, OT, SLP, AuD), pharmacists (PharmD/RPh), and most allied health roles.',
+  },
+  {
+    question: 'How fast will I get matched?',
+    answer:
+      'Initial matches typically surface within a day of upload. Match volume depends on how many open roles match your specialty and state.',
+  },
+  {
+    question: 'Can I delete my profile later?',
+    answer:
+      'Yes. At any time. Email info@avahealth.co with the subject "Delete my profile" and we\'ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.',
+  },
+  {
+    question: 'Do I need to make my profile public?',
+    answer:
+      "No. Most candidates keep profiles private. Public profiles show your first name, last initial, credential, specialty, city, state, and years of experience at your own page, which you can share or link from anywhere. We don't index public profiles in Google search.",
+  },
+  {
+    question: 'Is my license info verified?',
+    answer:
+      "We auto-detect credential tokens (RN, CRNA, LPN, PharmD, etc.) from your resume text. We don't do full credential verification. Employers verify independently before hiring.",
+  },
+]
+
 export const metadata: Metadata = {
   title: 'How it works',
   description: 'How freeresumepost.co works: upload your resume free, get matched to real healthcare openings, no recruiter spam, no resume databases sold.',
@@ -103,34 +147,16 @@ export default function HowItWorksPage() {
 
         <h2 className="text-xl font-semibold mt-12 mb-4">FAQ</h2>
         <div className="space-y-6 mb-12">
-          <div>
-            <h3 className="font-semibold text-slate-900 mb-1">Is it really free?</h3>
-            <p className="text-slate-600">Yes. We don&apos;t charge candidates anything, not even to apply. Hiring employers pay our placement fee when a match converts.</p>
-          </div>
-          <div>
-            <h3 className="font-semibold text-slate-900 mb-1">Will my resume be sold to recruiters?</h3>
-            <p className="text-slate-600">No. We don&apos;t sell, license, or share your data with third parties. Your matches are shown to you, and you decide where to apply. The only people with access to your full profile are Ava Health Partners recruiters, the placement side that keeps this free.</p>
-          </div>
-          <div>
-            <h3 className="font-semibold text-slate-900 mb-1">What healthcare roles can I upload as?</h3>
-            <p className="text-slate-600">Nurse Practitioners, CRNAs, Registered Nurses, LPNs, CNAs, therapists (PT, OT, SLP, AuD), pharmacists (PharmD/RPh), and most allied health roles.</p>
-          </div>
-          <div>
-            <h3 className="font-semibold text-slate-900 mb-1">How fast will I get matched?</h3>
-            <p className="text-slate-600">Initial matches typically surface within a day of upload. Match volume depends on how many open roles match your specialty and state.</p>
-          </div>
-          <div>
-            <h3 className="font-semibold text-slate-900 mb-1">Can I delete my profile later?</h3>
-            <p className="text-slate-600">Yes. At any time. Email <a href="mailto:info@avahealth.co" className="underline text-[#003D5C] hover:text-[#002A40]">info@avahealth.co</a> with the subject "Delete my profile" and we&apos;ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.</p>
-          </div>
-          <div>
-            <h3 className="font-semibold text-slate-900 mb-1">Do I need to make my profile public?</h3>
-            <p className="text-slate-600">No. Most candidates keep profiles private. Public profiles show your first name, last initial, credential, specialty, city, state, and years of experience at your own page, which you can share or link from anywhere. We don&apos;t index public profiles in Google search.</p>
-          </div>
-          <div>
-            <h3 className="font-semibold text-slate-900 mb-1">Is my license info verified?</h3>
-            <p className="text-slate-600">We auto-detect credential tokens (RN, CRNA, LPN, PharmD, etc.) from your resume text. We don&apos;t do full credential verification. Employers verify independently before hiring.</p>
-          </div>
+          {FAQ_ITEMS.map((item) => (
+            <div key={item.question}>
+              <h3 className="font-semibold text-slate-900 mb-1">{item.question}</h3>
+              <FaqAnswer
+                text={item.answer}
+                className="text-slate-600"
+                linkClassName="underline text-[#003D5C] hover:text-[#002A40]"
+              />
+            </div>
+          ))}
         </div>
 
         <div className="border border-slate-200 rounded-2xl bg-slate-50 p-8 text-center">
@@ -154,6 +180,13 @@ export default function HowItWorksPage() {
             ],
           }),
         }}
+      />
+
+      {/* FAQPage schema -- built from FAQ_ITEMS above, the same data that
+          renders the visible FAQ block, so schema and copy can't drift. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(buildFaqPageJsonLd(FAQ_ITEMS)) }}
       />
 
 </main>
