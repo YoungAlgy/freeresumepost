@@ -99,7 +99,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </nav>
             <div className="text-xs md:text-right">
               <p>&copy; {new Date().getFullYear()} FreeResumePost.</p>
-              <p>Operated by Ava Health Partners LLC.</p>
+              <p>For nursing and allied health professionals.</p>
             </div>
           </div>
         </footer>

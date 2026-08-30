@@ -93,7 +93,8 @@ The old edit page also remains callable during the short overlap. `consume_candi
 - [ ] Known-marker rows, proven rows awaiting backfill, unmarked `self_upload` rows, active rows with edit tokens, rows with resume paths, and matching Auth users have all been counted. No ambiguous row is backfilled by guess.
 - [ ] Every table grant, function grant, and RLS policy available to a generic `authenticated` user in the shared project has been reviewed. Stop if a newly created Auth user can read or change Ava CRM or another product's data.
 - [ ] Shared Auth signup settings, the FreeResumePost OTP template, and the transactional sender identity have been checked. The message must present FreeResumePost as its own product.
-- [ ] A FreeResumePost-owned support or reply address has been confirmed before replacing the current `avahealth.co` recovery sender. Public DNS currently does not prove a receiving mailbox exists on `freeresumepost.co`.
+- [ ] `FREERESUMEPOST_SUPPORT_EMAIL` is set in the Worker environment to a verified, monitored, exact `@freeresumepost.co` mailbox. Missing or invalid values render no email link and block release. There is no Ava fallback or client-side copy.
+- [ ] A FreeResumePost-owned recovery sender and reply address have been confirmed before replacing the current `avahealth.co` recovery sender. Public DNS currently does not prove a receiving mailbox exists on `freeresumepost.co`.
 - [ ] Current definitions for the touched RPCs and the current matching cron state have been captured read-only for incident comparison.
 - [ ] The `resumes` bucket is private and still has its 5 MB limit and MIME allowlist.
 - [ ] `SUPABASE_SERVICE_ROLE_KEY` and `TURNSTILE_SECRET_KEY` exist as secrets in the preview and production Worker environments. Neither is stored in a `NEXT_PUBLIC` variable, source file, build log, or client artifact.
@@ -202,4 +203,5 @@ Before the lockdown migration, a frontend failure can leave the backward-compati
 - The shared global unique-email constraint still needs a product-safe ownership design.
 - A failed post-profile upload can leave a profile without a file.
 - Historical uploads without the durable FreeResumePost source marker remain hidden.
-- The FreeResumePost support and recovery sender still uses `avahealth.co` until a verified, monitored `freeresumepost.co` sending and reply path is confirmed.
+- The public support contact now fails closed behind the server-rendered `FREERESUMEPOST_SUPPORT_EMAIL` binding. No verified, monitored value is recorded yet, so this remains a release blocker.
+- The recovery sender still uses `avahealth.co` until a verified, monitored `freeresumepost.co` sending and reply path is confirmed.

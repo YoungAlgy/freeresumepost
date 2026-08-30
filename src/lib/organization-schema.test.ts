@@ -9,9 +9,10 @@ describe('ORG_PROFILE', () => {
     expect(ORG_PROFILE.logo).toBe('https://www.freeresumepost.co/icon-512')
   })
 
-  it('keeps the product brand separate while naming the legal operator', () => {
+  it('keeps the public product graph independent from other brands', () => {
     expect('sameAs' in ORG_PROFILE).toBe(false)
-    expect(ORG_PROFILE.parentOrganization.name).toBe('Ava Health Partners LLC')
+    expect('parentOrganization' in ORG_PROFILE).toBe(false)
+    expect(JSON.stringify(ORG_PROFILE)).not.toContain('Ava Health')
     expect(JSON.stringify(ORG_PROFILE)).not.toContain('avahealth.co')
     expect(JSON.stringify(ORG_PROFILE)).not.toContain('freejobpost.co')
   })

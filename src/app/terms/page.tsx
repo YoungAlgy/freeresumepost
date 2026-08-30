@@ -1,9 +1,14 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { SupportEmailLink } from '@/components/SupportEmailLink'
+
+// Resolve the monitored product mailbox from the Worker environment at request
+// time. It is never bundled into client JavaScript and has no cross-brand fallback.
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Terms of Use',
-  description: 'FreeResumePost terms of use. Operated by Ava Health Partners LLC.',
+  description: 'Terms for using the FreeResumePost resume-posting and profile-management service.',
   alternates: { canonical: 'https://www.freeresumepost.co/terms' },
   robots: { index: true, follow: true },
 }
@@ -40,21 +45,21 @@ export default function TermsPage() {
               your email, phone number, full last name, and resume file.
             </li>
             <li>
-              You can request deletion by emailing{' '}
-              <a
-                href="mailto:info@avahealth.co?subject=Delete%20my%20profile"
+              You can request deletion through{' '}
+              <SupportEmailLink
+                subject="Delete my profile"
                 className="text-indigo-700 underline hover:text-indigo-900"
-              >
-                info@avahealth.co
-              </a>{' '}
-              with the subject &quot;Delete my profile.&quot;
+                fallback={<>the operator mailing address in the Contact section</>}
+              />
+              . Include the email address on your profile and &quot;Delete my profile&quot; in the subject
+              line or letter.
             </li>
           </ul>
 
           <h2 className="mt-8 mb-2 text-xl font-semibold">3. Profile service</h2>
           <p>
             FreeResumePost stores the resume information you approve and gives you a private way
-            to update it. The site does not currently list jobs or submit applications. Uploading
+            to update it. The site does not list jobs or submit applications. Uploading
             a resume does not send it to an employer.
           </p>
           <p>
@@ -110,13 +115,19 @@ export default function TermsPage() {
 
           <h2 className="mt-8 mb-2 text-xl font-semibold">11. Contact</h2>
           <p>
-            Questions?{' '}
-            <a
-              href="mailto:info@avahealth.co"
+            <SupportEmailLink
+              subject="FreeResumePost support"
               className="text-indigo-700 underline hover:text-indigo-900"
-            >
-              info@avahealth.co
-            </a>
+              fallback={
+                <>No product email is published until a monitored FreeResumePost address is active.</>
+              }
+            />
+            <br />
+            <strong>Ava Health Partners LLC</strong>
+            <br />
+            4532 W Kennedy Blvd, Suite 125
+            <br />
+            Tampa, FL 33609
           </p>
 
           <p className="mt-10 text-sm text-slate-600">

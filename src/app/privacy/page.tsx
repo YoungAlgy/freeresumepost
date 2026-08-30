@@ -1,9 +1,14 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { SupportEmailLink } from '@/components/SupportEmailLink'
+
+// Resolve the monitored product mailbox from the Worker environment at request
+// time. It is never bundled into client JavaScript and has no cross-brand fallback.
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'FreeResumePost privacy policy. Operated by Ava Health Partners LLC.',
+  description: 'How FreeResumePost handles resume files, profile data, privacy, and deletion requests.',
   alternates: { canonical: 'https://www.freeresumepost.co/privacy' },
   robots: { index: true, follow: true },
 }
@@ -75,7 +80,7 @@ export default function PrivacyPage() {
 
           <h2 className="mt-8 mb-2 text-xl font-semibold">No job applications</h2>
           <p>
-            FreeResumePost does not currently post jobs or submit job applications. Uploading a
+            FreeResumePost does not post jobs or submit job applications. Uploading a
             resume does not send your information to an employer.
           </p>
 
@@ -91,29 +96,28 @@ export default function PrivacyPage() {
           <ul className="list-disc space-y-1.5 pl-5">
             <li>Your profile stays active until you ask us to delete it.</li>
             <li>
-              To request deletion, email{' '}
-              <a
-                href="mailto:info@avahealth.co?subject=Delete%20my%20profile"
+              To request deletion, use{' '}
+              <SupportEmailLink
+                subject="Delete my profile"
                 className="text-indigo-700 underline hover:text-indigo-900"
-              >
-                info@avahealth.co
-              </a>{' '}
-              with the subject &quot;Delete my profile.&quot; We will delete the resume file and saved
-              profile data within 30 days.
+                fallback={<>the operator mailing address below</>}
+              />
+              . Include the email address on your profile and &quot;Delete my profile&quot; in the subject
+              line or letter. We will delete the resume file and saved profile data within 30 days.
             </li>
           </ul>
 
           <h2 className="mt-8 mb-2 text-xl font-semibold">Your privacy rights</h2>
           <p>
             Depending on where you live, you may have the right to access, correct, or delete your
-            personal data. Email{' '}
-            <a
-              href="mailto:info@avahealth.co?subject=Privacy%20request"
+            personal data. Use{' '}
+            <SupportEmailLink
+              subject="Privacy request"
               className="text-indigo-700 underline hover:text-indigo-900"
-            >
-              info@avahealth.co
-            </a>{' '}
-            with the subject &quot;Privacy request.&quot; We will respond within 30 days.
+              fallback={<>the operator mailing address below</>}
+            />
+            . Include &quot;Privacy request&quot; in the subject line or letter. We will respond within 30
+            days.
           </p>
 
           <h2 className="mt-8 mb-2 text-xl font-semibold">Cookies</h2>
@@ -158,12 +162,13 @@ export default function PrivacyPage() {
             <br />
             Tampa, FL 33609
             <br />
-            <a
-              href="mailto:info@avahealth.co"
+            <SupportEmailLink
+              subject="FreeResumePost support"
               className="text-indigo-700 underline hover:text-indigo-900"
-            >
-              info@avahealth.co
-            </a>
+              fallback={
+                <>No product email is published until a monitored FreeResumePost address is active.</>
+              }
+            />
           </p>
 
           <p className="mt-10 text-sm text-slate-600">

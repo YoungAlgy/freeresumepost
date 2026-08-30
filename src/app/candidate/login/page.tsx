@@ -3,7 +3,7 @@ import Link from 'next/link'
 import OtpLoginForm from './OtpLoginForm'
 
 export const metadata: Metadata = {
-  title: 'Candidate sign-in',
+  title: 'Open your profile',
   description: 'Sign in to manage your freeresumepost.co profile. We send a 6-digit code to your email.',
   alternates: { canonical: 'https://www.freeresumepost.co/candidate/login' },
   // Don't index — auth-adjacent + user-specific destination

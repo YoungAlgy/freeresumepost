@@ -9,10 +9,6 @@ export const ORG_PROFILE = {
   logo: `${SITE_URL}/icon-512`,
   description:
     'A resume-posting and profile-management service for nurses and allied health professionals.',
-  parentOrganization: {
-    '@type': 'Organization' as const,
-    name: 'Ava Health Partners LLC',
-  },
   areaServed: { '@type': 'Country', name: 'United States' },
   industry: 'Resume services',
 } as const

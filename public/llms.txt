@@ -20,7 +20,7 @@ Users add a PDF or DOCX resume. The file is read in the browser first so the use
 - A user can turn on a limited public link and turn it off again.
 - A public link hides the user's email, phone number, full last name, and resume file.
 - Public profile pages only render active profiles created through the FreeResumePost upload flow with public visibility turned on.
-- FreeResumePost does not currently list jobs or submit job applications.
+- FreeResumePost does not list jobs or submit job applications.
 - FreeResumePost does not sell resume or contact data.
 
 ## Indexing
@@ -28,7 +28,3 @@ Users add a PDF or DOCX resume. The file is read in the browser first so the use
 - [Sitemap](https://www.freeresumepost.co/sitemap.xml): Home, upload, how it works, privacy, and terms
 - Public profile URLs follow `/profile/<slug>` and are excluded from the sitemap.
 - Public profile pages use `noindex` and are intended for direct sharing.
-
-## Operator
-
-FreeResumePost is operated by Ava Health Partners LLC. Operator details and the current contact address are listed in the [Privacy Policy](https://www.freeresumepost.co/privacy).
