@@ -3,19 +3,18 @@
 :root {
   --background: #ffffff;
   --foreground: #0a0a0a;
-  --accent: #7FBC00;
+  --accent: #0D9488;
   --accent-fg: #ffffff;
   --muted: #f5f5f5;
   --border: #e5e5e5;
-  /* Ava Health brand palette — this IS the brand now (unification reskin
-     2026-06-19). freeresumepost is being unified under Ava Health: navy +
-     green + cyan, Inter. --accent repointed from the old freeresume blue
-     (#2563eb) to Ava green; use --brand (navy) for headings / hero / nav. */
-  --brand: #003D5C;
-  --brand-hover: #002A40;
-  --brand-accent: #7FBC00;
-  --brand-accent-hover: #6DA300;
-  --brand-cyan: #00B5D4;
+  /* FreeResumePost uses an indigo + teal system that is independent from the
+     Ava app. Keep these variables as the shared source for older routes while
+     their hard-coded colors are replaced in later passes. */
+  --brand: #4338CA;
+  --brand-hover: #3730A3;
+  --brand-accent: #0D9488;
+  --brand-accent-hover: #0F766E;
+  --brand-cyan: #14B8A6;
   color-scheme: light only;
 }
 

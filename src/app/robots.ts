@@ -6,9 +6,9 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        // /profile/[slug] queries with ?t= token are edit-mode and must not be
-        // indexed; the page also sets robots: noindex when a token is present.
-        disallow: ['/profile/*?*'],
+        // Query-bearing profile URLs can contain edit tokens. Account routes
+        // are private application surfaces and are not crawl targets.
+        disallow: ['/profile/*?*', '/account/', '/candidate/'],
       },
     ],
     sitemap: 'https://www.freeresumepost.co/sitemap.xml',

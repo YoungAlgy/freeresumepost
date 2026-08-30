@@ -3,42 +3,29 @@ import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare'
 
 const nextConfig: NextConfig = {
   trailingSlash: false,
-  // Don't advertise the framework (X-Powered-By: Next.js) — freejobpost
-  // already suppresses it; keep the pair in lockstep. 2026-06 audit.
+  // Do not advertise the framework in production responses.
   poweredByHeader: false,
+  experimental: {
+    // The file itself is capped at 5 MB in both client and server validation.
+    // Leave room here for multipart field and boundary overhead.
+    serverActions: { bodySizeLimit: '6mb' },
+  },
   async redirects() {
     return [
       {
-        // Modern icons live at /icon (src/app/icon.tsx) and /apple-icon
-        // (src/app/apple-icon.tsx) — Next.js auto-generates them. But many
-        // crawlers and older browsers still hit /favicon.ico directly. There
-        // is no static favicon.ico, so redirect to the canonical generated
-        // icon instead of returning a 404. Mirrors freejobpost's redirect so
-        // the sister sites stay in lockstep.
+        // Next.js generates the modern icon routes, while some browsers still
+        // request /favicon.ico directly.
         source: '/favicon.ico',
         destination: '/icon',
         permanent: true,
       },
-      // ─── Ava Health family cross-links: vanity paths route to the sibling
-      // tool so the family reads as one product. All target non-existent
-      // freeresume paths → zero risk to real pages. ───
-      { source: '/jobs', destination: 'https://freejobpost.co', permanent: true },
-      { source: '/job', destination: 'https://freejobpost.co', permanent: true },
-      { source: '/post-job', destination: 'https://freejobpost.co', permanent: true },
-      { source: '/providers', destination: 'https://providers.avahealth.co', permanent: true },
-      { source: '/find-providers', destination: 'https://providers.avahealth.co', permanent: true },
-      { source: '/recruiters', destination: 'https://app.avahealth.co', permanent: true },
-      { source: '/for-recruiters', destination: 'https://app.avahealth.co', permanent: true },
-      { source: '/platform', destination: 'https://app.avahealth.co', permanent: true },
-      { source: '/outreach', destination: 'https://app.avahealth.co/outreach', permanent: true },
-      { source: '/beacon', destination: 'https://app.avahealth.co/outreach', permanent: true },
     ]
   },
   async headers() {
     return [
       {
-        // Hardening — applied to every route. HSTS is set by Vercel.
-        // Skips _next/static & _next/image (assets) and api/* (handled per-route).
+        // Hardening applied to application routes. Static assets and API
+        // routes keep their own framework-generated headers.
         source: '/((?!_next/static|_next/image|api).*)',
         headers: [
           { key: 'X-Content-Type-Options', value: 'nosniff' },
@@ -52,9 +39,9 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               // challenges.cloudflare.com hosts the Turnstile bot-challenge widget script
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https:",
-              "font-src 'self' data: https://fonts.gstatic.com",
+              "font-src 'self' data:",
               // challenges.cloudflare.com is also used for the siteverify XHR + the iframe
               "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://challenges.cloudflare.com",
               "frame-src https://challenges.cloudflare.com",
@@ -69,7 +56,27 @@ const nextConfig: NextConfig = {
       // (every /profile/* page). The explicit noindex header below stays.
       {
         source: '/candidate/:path*',
-        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+          { key: 'Cache-Control', value: 'private, no-store' },
+        ],
+      },
+      {
+        source: '/account/:path*',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+          { key: 'Cache-Control', value: 'private, no-store' },
+        ],
+      },
+      {
+        // Edit tokens live in the profile query string. A no-referrer policy
+        // keeps them out of navigation logs and third-party requests.
+        source: '/profile/:path*',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, follow' },
+          { key: 'Cache-Control', value: 'private, no-store' },
+          { key: 'Referrer-Policy', value: 'no-referrer' },
+        ],
       },
     ]
   },

@@ -6,7 +6,7 @@ import { ImageResponse } from 'next/og'
 // "TypeError: Cannot read properties of undefined (reading 'default')" on
 // every request (confirmed live, both of this app's OG routes). The default
 // (Node-compat) runtime renders fine.
-export const alt = 'Upload Your Resume, Get Matched | Ava Health'
+export const alt = 'Post your healthcare resume | FreeResumePost'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 // 2026-08-13 audit: 100% static content (no params, no DB query) with no
@@ -29,8 +29,8 @@ export default async function OG() {
           fontFamily: '"Inter", "Helvetica Neue", "Segoe UI", system-ui, sans-serif',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: 26, fontWeight: 700, color: '#003D5C' }}>
-          Ava Health
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: 26, fontWeight: 700, color: '#4338CA' }}>
+          FreeResumePost
         </div>
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -39,7 +39,7 @@ export default async function OG() {
               fontSize: 13,
               fontWeight: 700,
               letterSpacing: 2.5,
-              color: '#003D5C',
+              color: '#4338CA',
               textTransform: 'uppercase',
               marginBottom: 22,
               display: 'flex',
@@ -47,7 +47,7 @@ export default async function OG() {
               gap: 8,
             }}
           >
-            Free forever · No account
+            Nursing and allied health
           </div>
           <div
             style={{
@@ -59,7 +59,7 @@ export default async function OG() {
               marginBottom: 12,
             }}
           >
-            Upload once.
+            Post your resume.
           </div>
           <div
             style={{
@@ -67,10 +67,10 @@ export default async function OG() {
               fontWeight: 600,
               lineHeight: 1,
               letterSpacing: -2.5,
-              color: '#7FBC00',
+              color: '#0D9488',
             }}
           >
-            Get matched.
+            Keep it current.
           </div>
 
           <div
@@ -82,7 +82,7 @@ export default async function OG() {
               maxWidth: 900,
             }}
           >
-            Real healthcare openings. No recruiter spam.
+            Private by default. Public sharing is optional.
           </div>
         </div>
 
@@ -97,7 +97,7 @@ export default async function OG() {
             paddingTop: 22,
           }}
         >
-          <span>Healthcare candidate network · Your data is yours</span>
+          <span>Upload, review, and save your profile</span>
           <span style={{ color: '#0f172a', fontWeight: 700 }}>freeresumepost.co</span>
         </div>
       </div>

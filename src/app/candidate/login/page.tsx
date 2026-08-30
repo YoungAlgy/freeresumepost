@@ -14,7 +14,7 @@ export default function CandidateLoginPage() {
   return (
     <main className="min-h-screen bg-white text-slate-900">
       <div className="max-w-lg mx-auto px-6 py-16">
-        <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">Manage your profile</p>
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-indigo-700">Manage your profile</p>
         <h1 className="text-3xl md:text-4xl font-semibold leading-tight tracking-tight text-slate-900 mb-4">
           Sign in with a code
         </h1>
@@ -30,15 +30,14 @@ export default function CandidateLoginPage() {
           <p className="text-sm text-slate-700 mb-3">
             No profile yet? Upload your resume in 30 seconds. No account or password to create.
           </p>
-          <Link href="/upload" className="inline-block bg-[#003D5C] text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-[#002A40]">
-            Upload your resume →
+          <Link href="/upload" className="inline-block rounded-lg bg-indigo-700 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-800">
+            Upload your resume
           </Link>
         </div>
 
         <p className="text-xs text-slate-500">
-          Why a code and no password? Healthcare candidates switch devices and emails often. A one-time
-          code keeps your profile reachable from anywhere, with nothing to remember and nothing to leak.
-          Your existing edit links still work too.
+          The code confirms that you control the email on the profile. Existing secure edit links
+          still work until they expire.
         </p>
       </div>
     </main>

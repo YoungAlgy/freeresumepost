@@ -46,6 +46,13 @@ export async function tailorForCandidate(
   if (jd.length < 30 || rt.length < 30) {
     return { ok: false, error: 'Add both the job posting and your resume text.', code: 'bad_input' }
   }
+  if (jd.length > 20_000 || rt.length > 20_000) {
+    return {
+      ok: false,
+      error: 'Keep the job posting and resume text under 20,000 characters each.',
+      code: 'bad_input',
+    }
+  }
 
   // Scoped client: every call below runs as this specific authenticated
   // candidate (same RLS/security-definer gating as the browser client).
@@ -59,9 +66,11 @@ export async function tailorForCandidate(
     return { ok: false, error: 'Your session expired. Please sign in again.', code: 'unauthenticated' }
   }
 
-  const { data: candidateData, error: candidateErr } = await sb.rpc('get_my_candidate')
+  const { data: candidateData, error: candidateErr } = await sb.rpc(
+    'get_my_freeresumepost_candidate',
+  )
   if (candidateErr) {
-    console.error('get_my_candidate error:', candidateErr.message)
+    console.error('get_my_freeresumepost_candidate error:', candidateErr.message)
     return { ok: false, error: 'Could not load your profile. Please try again.', code: 'no_candidate' }
   }
   const candidate = (Array.isArray(candidateData) ? candidateData[0] : candidateData) as { id: string } | null

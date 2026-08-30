@@ -1,36 +1,57 @@
 'use server'
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+import { FREE_RESUME_POST_UPLOAD_SOURCE } from '@/lib/profile-provenance'
+import { createServiceRoleClient } from '@/lib/supabase-service'
 
-export type ResendResult = { ok: true } | { ok: false; error: string }
+export type RequestCandidateOtpResult =
+  | { accepted: true }
+  | { accepted: false; error: string }
 
-// Requests a fresh edit link for the given email via the resume-edit-link
-// edge fn. The fn is enumeration-safe (always succeeds for well-formed
-// emails, send-or-not decided server-side), so this action's success state
-// only ever means "request accepted", never "that email has a profile".
-export async function requestEditLink(email: string): Promise<ResendResult> {
-  const trimmed = (email || '').trim()
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed) || trimmed.length > 254) {
-    return { ok: false, error: 'Enter a valid email address.' }
+// A valid request always gets the same response. The server sends an OTP and
+// permits Auth user creation only after it confirms an active, source-scoped
+// FreeResumePost profile. This prevents unrelated shared-database emails from
+// creating Auth users and keeps profile existence out of the response.
+export async function requestCandidateOtp(
+  email: string,
+): Promise<RequestCandidateOtpResult> {
+  const cleanEmail = (email || '').trim().toLowerCase()
+  if (
+    cleanEmail.length > 254 ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)
+  ) {
+    return { accepted: false, error: 'Enter a valid email address.' }
   }
+
   try {
-    const res = await fetch(`${SUPABASE_URL}/functions/v1/resume-edit-link`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-      },
-      body: JSON.stringify({ email: trimmed }),
-    })
-    if (!res.ok) {
-      console.error('resume-edit-link failed:', res.status)
-      return { ok: false, error: 'Something went wrong. Please try again in a minute.' }
+    const sb = createServiceRoleClient()
+    const { data: profile, error: profileError } = await sb
+      .from('public_candidates')
+      .select('id')
+      .eq('email', cleanEmail)
+      .eq('source', FREE_RESUME_POST_UPLOAD_SOURCE)
+      .eq('status', 'active')
+      .is('deleted_at', null)
+      .limit(1)
+      .maybeSingle()
+
+    if (profileError) {
+      console.error('candidate OTP profile precheck error:', profileError.message)
+      return { accepted: true }
     }
-    return { ok: true }
-  } catch (e) {
-    console.error('resume-edit-link fetch error:', e instanceof Error ? e.message : 'unknown')
-    return { ok: false, error: 'Something went wrong. Please try again in a minute.' }
+
+    if (profile) {
+      const { error } = await sb.auth.signInWithOtp({
+        email: cleanEmail,
+        options: { shouldCreateUser: true },
+      })
+      if (error) console.error('candidate OTP send error:', error.message)
+    }
+  } catch (error) {
+    console.error(
+      'candidate OTP server error:',
+      error instanceof Error ? error.message : 'unknown',
+    )
   }
+
+  return { accepted: true }
 }

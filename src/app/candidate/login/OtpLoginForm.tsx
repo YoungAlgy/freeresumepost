@@ -2,18 +2,12 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { supabaseBrowser } from '@/lib/supabase-browser'
+import { requestCandidateOtp } from './actions'
 
-// Supabase Auth error messages are written for developers, not candidates
-// ("Signups not allowed for this instance" is what you get when an email has
-// no existing account and this project has new-signup creation disabled at
-// the auth level) — translate the ones we actually see into copy a candidate
-// can act on instead of showing the raw backend string.
+// Translate verification errors into copy a candidate can act on instead of
+// showing raw Supabase Auth messages.
 function friendlyAuthError(raw: string): string {
-  if (/signups not allowed/i.test(raw)) {
-    return "We don't have a resume on file for that email yet. Upload your resume first, then come back and sign in with a code."
-  }
   if (/rate limit|too many requests/i.test(raw)) {
     return 'Too many attempts. Wait a minute and try again.'
   }
@@ -36,24 +30,31 @@ export default function OtpLoginForm() {
   const [step, setStep] = useState<'email' | 'code'>('email')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [noAccount, setNoAccount] = useState(false)
 
   const cleanEmail = email.trim().toLowerCase()
+
+  async function requestCode(): Promise<boolean> {
+    try {
+      const result = await requestCandidateOtp(cleanEmail)
+      if (!result.accepted) {
+        setError(result.error)
+        return false
+      }
+      return true
+    } catch {
+      setError('Something went wrong sending your code. Please try again in a moment.')
+      return false
+    } finally {
+      setLoading(false)
+    }
+  }
 
   async function sendCode(e: React.FormEvent) {
     e.preventDefault()
     if (loading || !cleanEmail) return
     setLoading(true)
     setError('')
-    setNoAccount(false)
-    const { error } = await supabaseBrowser.auth.signInWithOtp({ email: cleanEmail })
-    setLoading(false)
-    if (error) {
-      setError(friendlyAuthError(error.message))
-      setNoAccount(/signups not allowed/i.test(error.message))
-      return
-    }
-    setStep('code')
+    if (await requestCode()) setStep('code')
   }
 
   async function verify(e: React.FormEvent) {
@@ -79,8 +80,8 @@ export default function OtpLoginForm() {
       <form onSubmit={verify} className="rounded-lg border border-slate-200 bg-slate-50 p-5 mb-6">
         <h2 className="font-semibold text-slate-900 mb-1">Enter your code</h2>
         <p className="text-sm text-slate-700 mb-4">
-          We sent a 6-digit code to <strong>{cleanEmail}</strong>. It expires shortly. Check spam if
-          you don&apos;t see it.
+          If <strong>{cleanEmail}</strong> belongs to an active FreeResumePost profile, we sent a
+          6-digit code. It expires shortly. Check spam if you don&apos;t see it.
         </p>
         <input
           inputMode="numeric"
@@ -91,12 +92,12 @@ export default function OtpLoginForm() {
           onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
           placeholder="123456"
           aria-label="6-digit sign-in code"
-          className="w-full text-center tracking-[0.4em] text-lg font-semibold rounded-lg border border-slate-300 bg-white px-3 py-2.5 mb-3 focus:outline-none focus:ring-2 focus:ring-[#7FBC00]"
+          className="mb-3 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-center text-lg font-semibold tracking-[0.4em] focus:outline-none focus:ring-2 focus:ring-indigo-600"
         />
         <button
           type="submit"
           disabled={loading || code.length !== 6}
-          className="w-full bg-[#003D5C] text-white text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-[#002A40] disabled:opacity-60"
+          className="w-full rounded-lg bg-indigo-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-800 disabled:opacity-60"
         >
           {loading ? 'Verifying…' : 'Verify & sign in'}
         </button>
@@ -104,15 +105,13 @@ export default function OtpLoginForm() {
         <div className="flex items-center justify-center gap-3 mt-4 text-sm">
           <button
             type="button"
-            className="text-slate-600 hover:text-[#003D5C]"
+            disabled={loading}
+            className="text-slate-600 hover:text-indigo-700 disabled:opacity-60"
             onClick={async () => {
+              if (loading) return
+              setLoading(true)
               setError('')
-              const { error } = await supabaseBrowser.auth.signInWithOtp({ email: cleanEmail })
-              if (error) {
-                setError(friendlyAuthError(error.message))
-                return
-              }
-              setCode('')
+              if (await requestCode()) setCode('')
             }}
           >
             Resend code
@@ -120,7 +119,7 @@ export default function OtpLoginForm() {
           <span className="text-slate-300">|</span>
           <button
             type="button"
-            className="text-slate-600 hover:text-[#003D5C]"
+            className="text-slate-600 hover:text-indigo-700"
             onClick={() => {
               setStep('email')
               setCode('')
@@ -140,7 +139,7 @@ export default function OtpLoginForm() {
       <p className="text-sm text-slate-700 mb-3">
         Enter the email you uploaded with. We&apos;ll send you a 6-digit code. No password.
       </p>
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row">
         <input
           type="email"
           required
@@ -148,30 +147,17 @@ export default function OtpLoginForm() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
           aria-label="Email address"
-          className="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#7FBC00]"
+          className="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600"
         />
         <button
           type="submit"
           disabled={loading}
-          className="bg-[#003D5C] text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-[#002A40] disabled:opacity-60 whitespace-nowrap"
+          className="whitespace-nowrap rounded-lg bg-indigo-700 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-800 disabled:opacity-60"
         >
           {loading ? 'Sending…' : 'Send code'}
         </button>
       </div>
-      {error && (
-        <p className="text-sm text-red-600 mt-2">
-          {error}
-          {noAccount && (
-            <>
-              {' '}
-              <Link href="/upload" className="underline hover:text-red-700">
-                Upload your resume
-              </Link>
-              .
-            </>
-          )}
-        </p>
-      )}
+      {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
     </form>
   )
 }

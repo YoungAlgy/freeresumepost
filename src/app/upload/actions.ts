@@ -1,142 +1,109 @@
 'use server'
 
-import { createClient } from '@supabase/supabase-js'
 import { headers } from 'next/headers'
 import { verifyTurnstileToken } from '@/lib/turnstile'
-import { track } from '@/lib/track'
+import {
+  normalizeResumeProfile,
+  type ResumeProfileInput,
+} from '@/lib/profile-input'
+import { FREE_RESUME_POST_UPLOAD_SOURCE } from '@/lib/profile-provenance'
+import {
+  attachUploadedResumeOrCleanUp,
+  validateResumeUpload,
+} from '@/lib/resume-upload'
+import { createServiceRoleClient } from '@/lib/supabase-service'
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-
-export type SubmitCandidateInput = {
-  email: string
-  first_name: string
-  last_name: string
-  phone: string
-  credential: string
-  specialty: string
-  city: string
-  state: string
-  years_experience: number | null
-  remote_only: boolean
-  contact_via_email: boolean
-  contact_via_sms: boolean
-  is_public: boolean
-  // Parsed-profile payload — stored as-is in public_candidates.parsed_profile
-  raw_text: string
-  // Storage path of the uploaded resume FILE in the private `resumes` bucket
-  // (e.g. "3f2a...-uuid.pdf"). Set client-side after the file uploads. Optional
-  // and fail-open: a storage hiccup submits text-only with this null.
-  resume_path?: string | null
-  // Cross-app attribution (e.g. the freejobpost resume-match bridge). Read
-  // from the /upload URL's utm params client-side; stored in parsed_profile
-  // for durable, queryable conversion measurement. Optional — direct uploads
-  // omit it.
-  utm_source?: string | null
-  utm_campaign?: string | null
-}
+export type SubmitCandidateInput = ResumeProfileInput
 
 export type SubmitCandidateResult =
-  | { success: true; candidate_slug: string; edit_url: string }
+  | {
+      success: true
+      candidate_id: string
+      candidate_slug: string
+      nonce: string
+      edit_url: string
+    }
   | { success: false; error: string }
 
 export async function submitCandidate(
   input: SubmitCandidateInput,
-  turnstileToken?: string
+  turnstileToken?: string,
 ): Promise<SubmitCandidateResult> {
-  // Cloudflare Turnstile bot check — fail-open when not configured (see
-  // src/lib/turnstile.ts), strict otherwise.
+  // The service-role client is created only after the bot check succeeds. The
+  // database keeps its legacy anon grant for the rolling window, then a second
+  // migration removes that grant after this Worker is stable in production.
   const hdrs = await headers()
-  const remoteIp = hdrs.get('x-forwarded-for')?.split(',')[0].trim() || hdrs.get('x-real-ip') || null
+  const remoteIp =
+    hdrs.get('x-forwarded-for')?.split(',')[0].trim() || hdrs.get('x-real-ip') || null
   const turnstile = await verifyTurnstileToken(turnstileToken, remoteIp)
   if (!turnstile.ok) {
     return { success: false, error: turnstile.reason }
   }
-
-  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } })
-
-  const normalizedEmail = (input.email ?? '').trim().toLowerCase()
-  const normalizedState = (input.state ?? '').trim().toUpperCase()
-
-  // Defense-in-depth validation (mirrors freejobpost submitApplication). The
-  // SECURITY DEFINER RPC is the authority, but rejecting a malformed email or
-  // missing name here avoids persisting a junk row AND firing the Resend
-  // edit-link notify at an undeliverable address. 2026-05-28 cross-app drift fix.
-  if (!input.first_name?.trim() || !input.last_name?.trim()) {
-    return { success: false, error: 'First and last name are required.' }
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
-    return { success: false, error: 'Please enter a valid email address.' }
+  if (!turnstile.configured || turnstile.action !== 'upload-resume') {
+    console.error('resume profile Turnstile was missing or returned the wrong action')
+    return {
+      success: false,
+      error: 'Bot verification is temporarily unavailable. Please try again in a moment.',
+    }
   }
 
-  // Cap parsed_profile payload so we don't balloon the jsonb column
-  const rawText = (input.raw_text ?? '').slice(0, 50_000)
+  const normalized = normalizeResumeProfile(input)
+  if (!normalized.ok) return { success: false, error: normalized.error }
+  const profile = normalized.value
 
-  // Sanity-check the resume file path before persisting it. It must be a bare
-  // storage path inside the `resumes` bucket (uuid + pdf/doc/docx), never a full
-  // URL — the CRM mints a signed URL from this path, so a stray http(s) value
-  // would defeat the private-bucket design. Anything else → null (text-only).
-  const resumePath =
-    input.resume_path && /^[a-f0-9-]+\.(pdf|docx?)$/i.test(input.resume_path)
-      ? input.resume_path
-      : null
+  let sb
+  try {
+    sb = createServiceRoleClient()
+  } catch (error) {
+    console.error(
+      'resume profile server configuration error:',
+      error instanceof Error ? error.message : 'unknown',
+    )
+    return { success: false, error: 'Unable to submit. Please try again.' }
+  }
 
   const { data, error } = await sb.rpc('submit_public_candidate_rpc', {
-    p_email: normalizedEmail,
-    p_first_name: input.first_name,
-    p_last_name: input.last_name,
-    p_phone: input.phone || null,
-    p_credential: input.credential || null,
-    p_specialty: input.specialty || null,
-    p_city: input.city || null,
-    p_state: normalizedState || null,
-    p_years_experience: input.years_experience,
-    p_remote_only: input.remote_only,
-    p_contact_via_email: input.contact_via_email,
-    p_contact_via_sms: input.contact_via_sms,
-    p_is_public: input.is_public,
-    p_resume_url: resumePath, // bare storage path in the private `resumes` bucket (null if no/invalid file)
+    p_email: profile.email,
+    p_first_name: profile.first_name,
+    p_last_name: profile.last_name,
+    p_phone: profile.phone || null,
+    p_credential: profile.credential || null,
+    p_specialty: profile.specialty || null,
+    p_city: profile.city || null,
+    p_state: profile.state || null,
+    p_years_experience: profile.years_experience,
+    p_remote_only: false,
+    p_contact_via_email: false,
+    p_contact_via_sms: false,
+    p_is_public: profile.is_public,
+    // Create the profile first. A second server action validates, stores, and
+    // attaches the reviewed file with this profile's nonce.
+    p_resume_url: null,
     p_parsed_profile: {
-      raw_text: rawText,
       extracted_at: new Date().toISOString(),
-      source: 'freeresumepost.upload.v1',
-      utm_source: input.utm_source || null,
-      utm_campaign: input.utm_campaign || null,
+      source: FREE_RESUME_POST_UPLOAD_SOURCE,
     },
   })
 
   if (error) {
-    // A returning candidate re-uploading with the same email hits the
-    // UNIQUE(email) constraint (public_candidates_email_key, SQLSTATE 23505) —
-    // the RPC INSERTs without an upsert, so the generic "try again" is a
-    // dead-end (it would fail forever). Guide them to the edit link we emailed
-    // at their first upload (resume-uploaded-notify) instead. (#11 — audit S25C3)
     if (error.code === '23505' || /duplicate key|already exists/i.test(error.message)) {
-      // That email might belong to a soft-deleted profile (e.g. the
-      // candidate already emailed us to delete it). If so, the edit-link
-      // recovery path below can never work -- consume_candidate_edit_rpc
-      // and get_my_candidate() both reject deleted_at IS NOT NULL rows --
-      // so tell them what actually happened instead of looping them into
-      // a dead end. Fails open to the original message if the check RPC
-      // errors (e.g. not deployed yet) or the row isn't deleted.
       try {
         const { data: isDeleted } = await sb.rpc('check_candidate_email_deleted_rpc', {
-          p_email: normalizedEmail,
+          p_email: profile.email,
         })
         if (isDeleted === true) {
           return {
             success: false,
-            error:
-              'That profile was deleted. Email info@avahealth.co if you want it restored.',
+            error: 'That profile was deleted and cannot be restored from this form.',
           }
         }
       } catch {
-        // fall through to the generic message below
+        // Keep the returning-candidate message below if the optional check fails.
       }
       return {
         success: false,
         error:
-          "You've already uploaded a resume with this email. Check your inbox for the edit link we sent you, or get a fresh one at freeresumepost.co/candidate/login.",
+          'That email is already connected to a saved profile. Sign in to open it, or contact support if you cannot get in.',
       }
     }
     console.error('submit_public_candidate_rpc error:', error.message)
@@ -155,47 +122,159 @@ export async function submitCandidate(
     return { success: false, error: result.error || 'Submission rejected.' }
   }
 
-  // Fire the upload notification to info@avahealth.co. Don't block the
-  // confirmation flow on email-send failure — the candidate still gets
-  // their edit URL even if Resend hiccups. Mirrors the apply-notify pattern.
-  try {
-    const notifyRes = await fetch(`${SUPABASE_URL}/functions/v1/resume-uploaded-notify`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-      },
-      body: JSON.stringify({
-        candidate_id: result.candidate_id,
-        nonce: result.nonce,
-      }),
-    })
-    if (!notifyRes.ok) {
-      const txt = await notifyRes.text()
-      console.error('resume-uploaded-notify failed:', notifyRes.status, txt.slice(0, 200))
-    }
-  } catch (e) {
-    console.error('resume-uploaded-notify fetch error:', e instanceof Error ? e.message : 'unknown')
-  }
-
-  // Conversion event (board→CRM): a candidate uploaded a resume into the CRM.
-  // Low-cardinality, PII-free — no email/name/raw resume text.
-  try {
-    await track('resume_uploaded', {
-      state: normalizedState || 'unknown',
-      credential: input.credential || 'unspecified',
-      is_public: input.is_public,
-      remote_only: input.remote_only,
-    })
-  } catch {
-    /* analytics is best-effort */
+  if (!result.candidate_id || !result.candidate_slug || !result.nonce) {
+    console.error('submit_public_candidate_rpc returned an incomplete success payload')
+    return { success: false, error: 'The profile could not be confirmed. Please try again.' }
   }
 
   const editUrl = `/profile/${result.candidate_slug}?t=${result.nonce}&id=${result.candidate_id}`
   return {
     success: true,
-    candidate_slug: result.candidate_slug!,
+    candidate_id: result.candidate_id,
+    candidate_slug: result.candidate_slug,
+    nonce: result.nonce,
     edit_url: editUrl,
+  }
+}
+
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+const NONCE_RE = /^[0-9a-f]{64}$/i
+const RESUME_STORAGE_PATH_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.(pdf|docx)$/
+
+export type UploadAndAttachResumeResult =
+  | { success: true }
+  | { success: false; error: string }
+
+export async function uploadAndAttachResume(
+  formData: FormData,
+): Promise<UploadAndAttachResumeResult> {
+  const candidateIdValue = formData.get('candidate_id')
+  const nonceValue = formData.get('nonce')
+  const fileValue = formData.get('file')
+  const candidateId = typeof candidateIdValue === 'string' ? candidateIdValue : ''
+  const nonce = typeof nonceValue === 'string' ? nonceValue : ''
+
+  if (
+    !UUID_RE.test(candidateId) ||
+    !NONCE_RE.test(nonce) ||
+    !(fileValue instanceof File)
+  ) {
+    return { success: false, error: 'The resume file could not be saved.' }
+  }
+
+  let sb
+  try {
+    sb = createServiceRoleClient()
+  } catch (error) {
+    console.error(
+      'resume upload server configuration error:',
+      error instanceof Error ? error.message : 'unknown',
+    )
+    return { success: false, error: 'The resume file could not be saved.' }
+  }
+
+  // Authorize the candidate and seven-day nonce before parsing or storing the
+  // file. Server Actions are public POST endpoints, so the edit page alone is
+  // not an authorization boundary.
+  const { data: authorization, error: authorizationError } = await sb.rpc(
+    'consume_candidate_edit_rpc',
+    {
+      p_candidate_id: candidateId,
+      p_nonce: nonce,
+    },
+  )
+  if (
+    authorizationError ||
+    !(authorization as { success?: boolean } | null)?.success
+  ) {
+    if (authorizationError) {
+      console.error('resume upload authorization error:', authorizationError.message)
+    }
+    return { success: false, error: 'This edit link is invalid or expired.' }
+  }
+
+  const validated = await validateResumeUpload(fileValue)
+  if (!validated.ok) return { success: false, error: validated.error }
+
+  const resumePath = `${crypto.randomUUID()}.${validated.value.extension}`
+  const { error: uploadError } = await sb.storage.from('resumes').upload(
+    resumePath,
+    validated.value.bytes,
+    {
+      contentType: validated.value.contentType,
+      upsert: false,
+    },
+  )
+  if (uploadError) {
+    console.error('resume storage upload error:', uploadError.message)
+    return { success: false, error: 'The resume file could not be saved.' }
+  }
+
+  let previousResumePath: string | null = null
+  let attachmentError: string | null = null
+
+  try {
+    const attached = await attachUploadedResumeOrCleanUp({
+      attach: async () => {
+        const { data, error } = await sb.rpc('attach_freeresumepost_resume_rpc', {
+          p_candidate_id: candidateId,
+          p_nonce: nonce,
+          p_resume_path: resumePath,
+        })
+        if (error) {
+          console.error('attach_freeresumepost_resume_rpc error:', error.message)
+          return false
+        }
+        const result = data as {
+          success?: boolean
+          error?: string
+          previous_resume_path?: string | null
+        } | null
+        if (result?.success !== true) {
+          attachmentError = result?.error || null
+          return false
+        }
+        previousResumePath = result.previous_resume_path ?? null
+        return true
+      },
+      remove: async () => {
+        const { error } = await sb.storage.from('resumes').remove([resumePath])
+        if (error) {
+          console.error('resume cleanup after failed attach error:', error.message)
+        }
+      },
+    })
+
+    if (!attached) {
+      return {
+        success: false,
+        error: attachmentError || 'The profile saved, but the resume file did not.',
+      }
+    }
+
+    if (
+      previousResumePath &&
+      previousResumePath !== resumePath &&
+      RESUME_STORAGE_PATH_RE.test(previousResumePath)
+    ) {
+      const { error: previousRemoveError } = await sb.storage
+        .from('resumes')
+        .remove([previousResumePath])
+      if (previousRemoveError) {
+        console.error(
+          'resume cleanup after replacement error:',
+          previousRemoveError.message,
+        )
+      }
+    }
+    return { success: true }
+  } catch (error) {
+    console.error(
+      'resume attach or cleanup threw:',
+      error instanceof Error ? error.message : 'unknown',
+    )
+    return { success: false, error: 'The profile saved, but the resume file did not.' }
   }
 }

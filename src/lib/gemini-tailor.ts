@@ -75,6 +75,7 @@ Produce tailored resume bullets, a cover letter, interview prep, and a keyword g
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      signal: AbortSignal.timeout(45_000),
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {

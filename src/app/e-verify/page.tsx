@@ -63,10 +63,10 @@ export default function EVerifyPage() {
           <h2 className="text-xl font-semibold mt-8 mb-2">What this means for candidates</h2>
           <p>
             Uploading your resume to freeresumepost.co does not create an employment relationship
-            with Ava Health Partners LLC. Employers who view your profile or match with you run
-            their own hiring processes and their own Form I-9 / E-Verify checks if applicable.
-            Ava Health&apos;s E-Verify participation applies to individuals Ava Health Partners
-            LLC itself directly hires.
+            with Ava Health Partners LLC. FreeResumePost is a resume-posting tool. It does not run
+            hiring, Form I-9, or employment-eligibility checks for people who use the site. Ava
+            Health Partners LLC&apos;s E-Verify participation applies only to people it directly
+            hires.
           </p>
 
           <h2 className="text-xl font-semibold mt-8 mb-2">Anti-discrimination commitment</h2>

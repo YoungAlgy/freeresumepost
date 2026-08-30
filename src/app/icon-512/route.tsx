@@ -8,10 +8,7 @@ import { ImageResponse } from 'next/og'
 export const contentType = 'image/png'
 export const revalidate = 604800
 
-// 512x512 PWA / maskable app icon = the Ava Health mark (navy medical cross +
-// lime leaf) centered on white, inside the maskable safe zone so Android's
-// circular/squircle mask doesn't clip it. Matches the tab favicon (app/icon.svg)
-// and the apple-icon so every icon slot shows the same mark.
+// FreeResumePost document-and-check mark centered in the maskable safe zone.
 export function GET() {
   return new ImageResponse(
     (
@@ -25,11 +22,11 @@ export function GET() {
           background: '#FFFFFF',
         }}
       >
-        <svg width="320" height="320" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-          <rect x="21" y="6" width="10" height="36" rx="2.5" fill="#003D5C" />
-          <rect x="7" y="20" width="38" height="10" rx="2.5" fill="#003D5C" />
-          <path d="M 34 22 C 50 22, 58 32, 58 45 C 58 56, 46 60, 34 57 C 27 51, 27 33, 34 22 Z" fill="#7FBC00" />
-          <path d="M 36 27 Q 44 40, 47 55" stroke="#5C9900" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.55" />
+        <svg width="320" height="320" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 7h23l11 11v37a3 3 0 0 1-3 3H16a3 3 0 0 1-3-3V10a3 3 0 0 1 3-3Z" stroke="#4338CA" strokeWidth="5" strokeLinejoin="round" />
+          <path d="M39 8v11h10" stroke="#4338CA" strokeWidth="5" strokeLinejoin="round" />
+          <path d="M22 30h18M22 39h12" stroke="#4338CA" strokeWidth="4" strokeLinecap="round" />
+          <path d="m34 49 4 4 9-10" stroke="#0D9488" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
     ),

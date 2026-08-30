@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@supabase/supabase-js'
+import { US_STATES } from '@/lib/us-states'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -16,11 +17,12 @@ export type UpdateCandidateInput = {
   city: string
   state: string
   years_experience: number | null
-  remote_only: boolean
-  contact_via_email: boolean
-  contact_via_sms: boolean
   is_public: boolean
 }
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+const NONCE_RE = /^[0-9a-f]{64}$/i
+const STATE_CODES = new Set<string>(US_STATES)
 
 export async function updateCandidate(
   input: UpdateCandidateInput
@@ -31,26 +33,50 @@ export async function updateCandidate(
   // Email isn't part of this input — the edit form renders it disabled and
   // update_public_candidate_rpc never takes a p_email — so there's no email
   // format check to mirror here.
-  if (!input.first_name?.trim() || !input.last_name?.trim()) {
+  const firstName = input.first_name?.trim()
+  const lastName = input.last_name?.trim()
+  const phone = input.phone?.trim() || ''
+  const credential = input.credential?.trim() || ''
+  const specialty = input.specialty?.trim() || ''
+  const city = input.city?.trim() || ''
+  const state = input.state?.trim().toUpperCase() || ''
+  const years = input.years_experience
+
+  if (!UUID_RE.test(input.candidate_id) || !NONCE_RE.test(input.nonce)) {
+    return { success: false, error: 'This edit link is invalid or expired.' }
+  }
+  if (!firstName || !lastName) {
     return { success: false, error: 'First and last name are required.' }
+  }
+  if (firstName.length > 100 || lastName.length > 100) {
+    return { success: false, error: 'First and last name must be 100 characters or less.' }
+  }
+  if (phone.length > 30 || credential.length > 20 || specialty.length > 100 || city.length > 100) {
+    return { success: false, error: 'One or more profile fields are too long.' }
+  }
+  if (state && !STATE_CODES.has(state)) {
+    return { success: false, error: 'Choose a valid U.S. state.' }
+  }
+  if (years !== null && (!Number.isInteger(years) || years < 0 || years > 60)) {
+    return { success: false, error: 'Years of experience must be between 0 and 60.' }
   }
 
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } })
   const { data, error } = await sb.rpc('update_public_candidate_rpc', {
     p_candidate_id: input.candidate_id,
     p_nonce: input.nonce,
-    p_first_name: input.first_name,
-    p_last_name: input.last_name,
-    p_phone: input.phone || null,
-    p_credential: input.credential || null,
-    p_specialty: input.specialty || null,
-    p_city: input.city || null,
-    p_state: input.state || null,
-    p_years_experience: input.years_experience,
-    p_remote_only: input.remote_only,
-    p_contact_via_email: input.contact_via_email,
-    p_contact_via_sms: input.contact_via_sms,
-    p_is_public: input.is_public,
+    p_first_name: firstName,
+    p_last_name: lastName,
+    p_phone: phone || null,
+    p_credential: credential || null,
+    p_specialty: specialty || null,
+    p_city: city || null,
+    p_state: state || null,
+    p_years_experience: years,
+    p_remote_only: false,
+    p_contact_via_email: false,
+    p_contact_via_sms: false,
+    p_is_public: input.is_public === true,
   })
   if (error) {
     console.error('update_public_candidate_rpc error:', error.message)

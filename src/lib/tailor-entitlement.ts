@@ -1,18 +1,15 @@
 /**
  * Free-use daily limit for /account/tailor — a cost/abuse guard (each use is
  * a real Gemini call), not a monetization mechanism. Keyed to the signed-in
- * candidate's id rather than anonymous, so it survives across devices/cookie
- * clears the same way their account does, and can't be reset by just
- * clearing cookies for a *different* candidate id.
+ * candidate's id rather than anonymous. The signed cookie cannot be edited
+ * to lower the count, but clearing cookies or changing browsers resets it.
  *
  * KNOWN LIMITATION (2026-08-06 audit): this is a read-cookie → call Gemini →
  * write-cookie flow with no server-side atomic counter, so two concurrent
  * requests from the same candidate (double-click, two tabs) can both read
  * usesToday=N before either writes N+1, letting both through even at the
  * limit — a TOCTOU race. Acceptable for now since this only affects a
- * capped-cost free feature (worst case: a couple of extra Gemini calls, not
- * a security issue), but a real fix needs a shared atomic store (D1/KV) this
- * app doesn't currently have wired up — flagged, not fixed, this pass.
+ * capped-cost free feature. A real fix needs a shared atomic counter.
  */
 import { createHmac } from "crypto";
 

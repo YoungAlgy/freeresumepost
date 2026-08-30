@@ -1,104 +1,38 @@
-'use client'
-
-// Shared site header for freeresumepost.co — Ava Health logomark + primary nav.
-// Mounted once in layout.tsx (right after AvaFamilyNav) so every page renders
-// the SAME header at the same height, mirroring providers.avahealth.co and
-// freejobpost.co. Replaces the per-page inline <nav> blocks that used to drift.
-// Keep in lockstep with the other family apps: sticky top-0, h-16, Logo(32) +
-// "Ava Health" bold navy, CTA on the right.
-
 import Link from 'next/link'
-import { useState } from 'react'
 import { Logo } from './Logo'
 
-// Mirrors freejobpost.co's header (How it works / cross-link / Browse jobs) so
-// the two read as one product. The cross-app links are absolute URLs; next/link
-// renders them as normal <a> tags doing a full cross-domain navigation.
-const NAV = [
-  { label: 'How it works', href: '/how-it-works' },
-  { label: 'For employers', href: 'https://freejobpost.co/for-employers' },
-  { label: 'Browse jobs', href: 'https://freejobpost.co/jobs' },
-]
-
 export function SiteHeader() {
-  const [mobileOpen, setMobileOpen] = useState(false)
-
   return (
-    <header className="sticky top-0 z-40 border-b border-gray-200 bg-white/95 backdrop-blur">
-      <div className="max-w-6xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
-        <Link
-          href="/"
-          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-          onClick={() => setMobileOpen(false)}
-        >
+    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
+      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
+        <Link href="/" className="flex min-w-0 items-center gap-2" aria-label="FreeResumePost home">
           <Logo size={32} className="shrink-0" />
-          <span className="text-lg font-bold tracking-tight text-[#003D5C]">Ava Health</span>
+          <span className="truncate text-base font-bold tracking-tight text-slate-950 sm:text-lg">
+            FreeResumePost
+          </span>
         </Link>
 
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-gray-600">
-          {NAV.map((item) => (
-            <Link key={item.href} href={item.href} className="hover:text-[#003D5C] transition-colors">
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-2">
+        <nav aria-label="Main navigation" className="flex items-center gap-3 sm:gap-5">
+          <Link
+            href="/how-it-works"
+            className="hidden text-sm font-medium text-slate-600 hover:text-indigo-700 md:inline"
+          >
+            How it works
+          </Link>
+          <Link
+            href="/candidate/login"
+            className="text-sm font-medium text-slate-600 hover:text-indigo-700"
+          >
+            Sign in
+          </Link>
           <Link
             href="/upload"
-            className="inline-flex items-center px-4 py-2 rounded-lg bg-[#7FBC00] hover:bg-[#6da300] text-white text-sm font-semibold transition-colors"
+            className="inline-flex min-h-10 items-center justify-center rounded-lg bg-indigo-700 px-3.5 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2"
           >
-            Upload resume
+            Upload
           </Link>
-
-          {/* Mobile hamburger — only below md, where the desktop nav is hidden */}
-          <button
-            type="button"
-            onClick={() => setMobileOpen((v) => !v)}
-            className="md:hidden inline-flex items-center justify-center p-2 -mr-1 rounded-lg text-[#003D5C] hover:bg-gray-100 transition-colors"
-            aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
-            aria-expanded={mobileOpen}
-            aria-controls="mobile-nav"
-          >
-            {mobileOpen ? (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            ) : (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </svg>
-            )}
-          </button>
-        </div>
+        </nav>
       </div>
-
-      {/* Mobile nav panel */}
-      {mobileOpen && (
-        <nav id="mobile-nav" className="md:hidden border-t border-gray-200 bg-white px-4 py-2">
-          {NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setMobileOpen(false)}
-              className="block py-3 text-base font-medium text-gray-700 hover:text-[#003D5C] border-b border-gray-100 last:border-0 transition-colors"
-            >
-              {item.label}
-            </Link>
-          ))}
-          <Link
-            href="/upload"
-            onClick={() => setMobileOpen(false)}
-            className="block py-3 text-base font-semibold text-[#7FBC00]"
-          >
-            Upload resume
-          </Link>
-        </nav>
-      )}
     </header>
   )
 }

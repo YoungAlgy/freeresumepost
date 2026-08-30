@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'Ava Health privacy policy. Your resume is yours. We never sell candidate data. Operated by Ava Health Partners LLC.',
+  description: 'FreeResumePost privacy policy. Operated by Ava Health Partners LLC.',
   alternates: { canonical: 'https://www.freeresumepost.co/privacy' },
   robots: { index: true, follow: true },
 }
@@ -11,115 +11,166 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <main className="min-h-screen bg-white text-slate-900">
-      <article className="max-w-3xl mx-auto px-6 py-12">
-        <h1 className="text-4xl md:text-5xl font-semibold tracking-tight mb-2">Privacy Policy</h1>
-        <p className="text-sm text-slate-600 mb-10">Last updated August 6, 2026</p>
+      <article className="mx-auto max-w-3xl px-6 py-12">
+        <h1 className="mb-2 text-4xl font-semibold tracking-tight md:text-5xl">Privacy Policy</h1>
+        <p className="mb-10 text-sm text-slate-600">Last updated August 28, 2026</p>
 
-        <div className="space-y-6 text-slate-800 leading-relaxed">
+        <div className="space-y-6 leading-relaxed text-slate-800">
           <p>
-            Ava Health Partners LLC operates <strong>freeresumepost.co</strong>. This policy explains
-            what data we collect, why, and what we do (and don&apos;t) do with it.
+            Ava Health Partners LLC operates <strong>FreeResumePost</strong>. This policy explains
+            how freeresumepost.co handles your information.
           </p>
 
-          <h2 className="text-xl font-semibold mt-8 mb-2">The short version</h2>
-          <ul className="list-disc pl-5 space-y-1.5">
-            <li>Your resume is parsed locally in your browser before any data reaches our servers.</li>
-            <li>You review every extracted field before saving.</li>
-            <li>We never sell your contact information or resume content.</li>
-            <li>We email you your edit link and account notices. No marketing spam.</li>
+          <h2 className="mt-8 mb-2 text-xl font-semibold">The short version</h2>
+          <ul className="list-disc space-y-1.5 pl-5">
+            <li>Your resume is read in your browser before anything uploads.</li>
+            <li>You review the extracted fields before you save.</li>
+            <li>The resume file and approved profile data upload after you tap Save.</li>
+            <li>Your profile is private by default. A limited public link is optional.</li>
+            <li>We do not sell your resume, profile data, or contact information.</li>
           </ul>
 
-          <h2 className="text-xl font-semibold mt-8 mb-2">What we collect</h2>
-          <ul className="list-disc pl-5 space-y-1.5">
-            <li>Profile fields you save: name, email, phone, credential, specialty, city, state, years of experience.</li>
-            <li>The raw text of your resume, as you approved it after we parsed it.</li>
-            <li>The resume file itself (PDF, DOCX, or TXT), kept in a private file store so recruiters can open the real document. If saving the file ever fails, your profile still saves on the text alone.</li>
-            <li>Standard server logs (IP address, user agent) for traffic analytics + abuse prevention.</li>
-            <li>Match-engine scores against active jobs on freejobpost.co.</li>
+          <h2 className="mt-8 mb-2 text-xl font-semibold">What we collect</h2>
+          <ul className="list-disc space-y-1.5 pl-5">
+            <li>
+              Profile fields you save, including your name, email, phone, credential, specialty,
+              city, state, experience, and public-link setting.
+            </li>
+            <li>
+              The PDF or DOCX resume file, stored in a private file bucket. If the file upload
+              fails, your approved profile may still save without the file.
+            </li>
+            <li>Basic request logs used for security, abuse prevention, and service reliability.</li>
           </ul>
 
-          <h2 className="text-xl font-semibold mt-8 mb-2">What we don&apos;t collect</h2>
-          <ul className="list-disc pl-5 space-y-1.5">
-            <li>Social Security number, date of birth, financial info. Never asked.</li>
-            <li>Behavioral tracking data from third-party advertisers.</li>
+          <h2 className="mt-8 mb-2 text-xl font-semibold">What we do not collect</h2>
+          <ul className="list-disc space-y-1.5 pl-5">
+            <li>The full resume text read during the normal upload and review step.</li>
+            <li>Social Security numbers, dates of birth, or financial information.</li>
+            <li>Behavioral profiles from third-party advertisers.</li>
           </ul>
 
-          <h2 className="text-xl font-semibold mt-8 mb-2">How we use your data</h2>
-          <ul className="list-disc pl-5 space-y-1.5">
-            <li><strong>Matching:</strong> we score your profile against active jobs and show your top matches on your private profile page, refreshed daily.</li>
-            <li><strong>Profile management:</strong> we email you a secure edit link so you can update your profile.</li>
-            <li><strong>Aggregated analytics:</strong> we look at usage trends (popular specialties, geographic distribution). Never individually identifiable.</li>
+          <h2 className="mt-8 mb-2 text-xl font-semibold">How we use your data</h2>
+          <ul className="list-disc space-y-1.5 pl-5">
+            <li>Save and display the profile settings you choose.</li>
+            <li>Confirm your identity when you reopen or edit your profile.</li>
+            <li>Run, protect, troubleshoot, and improve FreeResumePost.</li>
+          </ul>
+          <p>
+            Authorized staff and service providers may access saved data when needed to run,
+            secure, and support the service.
+          </p>
+
+          <h2 className="mt-8 mb-2 text-xl font-semibold">Public and private profiles</h2>
+          <p>
+            Profiles are private by default. A private profile has no public profile page. You can
+            turn on a limited public link and turn it off again from your profile.
+          </p>
+          <p>
+            A public link can show your first name, last initial, credential, specialty, city,
+            state, and years of experience. It does not show your email, phone number, full last
+            name, or resume file. Public profile pages are marked so search engines should not
+            index them, but anyone with the link can view the limited fields.
+          </p>
+
+          <h2 className="mt-8 mb-2 text-xl font-semibold">No job applications</h2>
+          <p>
+            FreeResumePost does not currently post jobs or submit job applications. Uploading a
+            resume does not send your information to an employer.
+          </p>
+
+          <h2 className="mt-8 mb-2 text-xl font-semibold">Optional resume tailoring</h2>
+          <p>
+            If you choose to run the resume tailoring tool, the resume text and job posting you
+            provide are sent to Google Gemini to generate the result. FreeResumePost does not add
+            that text or the generated result to your saved profile through this tool. Do not use
+            the tool for patient information or other sensitive data.
+          </p>
+
+          <h2 className="mt-8 mb-2 text-xl font-semibold">Data retention and deletion</h2>
+          <ul className="list-disc space-y-1.5 pl-5">
+            <li>Your profile stays active until you ask us to delete it.</li>
+            <li>
+              To request deletion, email{' '}
+              <a
+                href="mailto:info@avahealth.co?subject=Delete%20my%20profile"
+                className="text-indigo-700 underline hover:text-indigo-900"
+              >
+                info@avahealth.co
+              </a>{' '}
+              with the subject &quot;Delete my profile.&quot; We will delete the resume file and saved
+              profile data within 30 days.
+            </li>
           </ul>
 
-          <h2 className="text-xl font-semibold mt-8 mb-2">Public vs private profiles</h2>
+          <h2 className="mt-8 mb-2 text-xl font-semibold">Your privacy rights</h2>
           <p>
-            When you save your profile, you choose whether it&apos;s <strong>public</strong> (a limited
-            profile page viewable by anyone with the link, not indexed by search engines) or{' '}
-            <strong>private</strong> (only the matching engine and Ava Health Partners recruiters
-            see you).
-          </p>
-          <p>
-            Public profiles show: first name, last initial, credential, specialty, city, state,
-            years of experience. Public profiles never expose: email, phone, or full last name.
-          </p>
-
-          <h2 className="text-xl font-semibold mt-8 mb-2">When you apply for a job</h2>
-          <p>
-            Clicking &quot;Apply&quot; on a job listing forwards your application contact info (name, email,
-            phone, resume URL) directly to that specific employer. Each application is opt-in.
-            We don&apos;t auto-apply on your behalf.
+            Depending on where you live, you may have the right to access, correct, or delete your
+            personal data. Email{' '}
+            <a
+              href="mailto:info@avahealth.co?subject=Privacy%20request"
+              className="text-indigo-700 underline hover:text-indigo-900"
+            >
+              info@avahealth.co
+            </a>{' '}
+            with the subject &quot;Privacy request.&quot; We will respond within 30 days.
           </p>
 
-          <h2 className="text-xl font-semibold mt-8 mb-2">Data retention + deletion</h2>
-          <ul className="list-disc pl-5 space-y-1.5">
-            <li>Your profile stays active until you delete it. We don&apos;t auto-delete or auto-archive profiles on a timer.</li>
-            <li>You can request full deletion by emailing <a href="mailto:info@avahealth.co?subject=Delete%20my%20profile" className="underline text-[#003D5C] hover:text-[#002A40]">info@avahealth.co</a> with subject &quot;Delete my profile&quot;. We&apos;ll wipe both the resume file and parsed data within 30 days.</li>
-          </ul>
-
-          <h2 className="text-xl font-semibold mt-8 mb-2">Your rights (CCPA / GDPR)</h2>
+          <h2 className="mt-8 mb-2 text-xl font-semibold">Cookies</h2>
           <p>
-            California + EU residents: you have the right to access, correct, or delete your data.
-            Email <a href="mailto:info@avahealth.co" className="underline text-[#003D5C] hover:text-[#002A40]">info@avahealth.co</a> with the subject &quot;Privacy request&quot;. We&apos;ll respond within 30 days.
+            We use cookies needed for email-verified access and the daily limit on the resume
+            tailoring tool. We do not use advertising cookies or cross-site trackers.
           </p>
 
-          <h2 className="text-xl font-semibold mt-8 mb-2">Cookies</h2>
-          <p>
-            We use cookies only for: keeping you signed in after you verify your email code, and a
-            small daily-use counter on the resume-tailoring tool so we can cap free usage. No
-            advertising cookies, no analytics cookies, no cross-site trackers.
-          </p>
-
-          <h2 className="text-xl font-semibold mt-8 mb-2">Bot protection (Cloudflare Turnstile)</h2>
+          <h2 className="mt-8 mb-2 text-xl font-semibold">Bot protection</h2>
           <p>
             We use{' '}
-            <a href="https://www.cloudflare.com/products/turnstile/" className="underline text-[#003D5C] hover:text-[#002A40]" rel="noopener noreferrer">
+            <a
+              href="https://www.cloudflare.com/products/turnstile/"
+              className="text-indigo-700 underline hover:text-indigo-900"
+              rel="noopener noreferrer"
+            >
               Cloudflare Turnstile
             </a>{' '}
-            on resume uploads and form submissions to detect bots and prevent spam. Turnstile may
-            use browser signals (cookies, local storage, browser characteristics) to assess whether
-            a submission is human. No data collected by Turnstile is used for advertising. See{' '}
-            <a href="https://www.cloudflare.com/privacypolicy/" className="underline text-[#003D5C] hover:text-[#002A40]" rel="noopener noreferrer">
+            on resume uploads and some forms to detect bots and prevent spam. Turnstile may use
+            browser signals to assess whether a submission is human. See{' '}
+            <a
+              href="https://www.cloudflare.com/privacypolicy/"
+              className="text-indigo-700 underline hover:text-indigo-900"
+              rel="noopener noreferrer"
+            >
               Cloudflare&apos;s Privacy Policy
             </a>{' '}
             for details.
           </p>
 
-          <h2 className="text-xl font-semibold mt-8 mb-2">Security</h2>
+          <h2 className="mt-8 mb-2 text-xl font-semibold">Security</h2>
           <p>
-            We use industry-standard encryption in transit (TLS 1.2+) and at rest. Our database is hosted
-            on Supabase (SOC 2 Type II) with row-level security on candidate-facing tables.
+            We use encryption in transit and at rest. No online service can promise absolute
+            security.
           </p>
 
-          <h2 className="text-xl font-semibold mt-8 mb-2">Operator</h2>
+          <h2 className="mt-8 mb-2 text-xl font-semibold">Operator</h2>
           <p>
-            <strong>Ava Health Partners LLC</strong><br />
-            4532 W Kennedy Blvd, Suite 125<br />
-            Tampa, FL 33609<br />
-            <a href="mailto:info@avahealth.co" className="underline text-[#003D5C] hover:text-[#002A40]">info@avahealth.co</a>
+            <strong>Ava Health Partners LLC</strong>
+            <br />
+            4532 W Kennedy Blvd, Suite 125
+            <br />
+            Tampa, FL 33609
+            <br />
+            <a
+              href="mailto:info@avahealth.co"
+              className="text-indigo-700 underline hover:text-indigo-900"
+            >
+              info@avahealth.co
+            </a>
           </p>
 
           <p className="mt-10 text-sm text-slate-600">
-            See also: <Link href="/terms" className="underline text-[#003D5C] hover:text-[#002A40]">Terms of Use</Link>
+            See also:{' '}
+            <Link href="/terms" className="text-indigo-700 underline hover:text-indigo-900">
+              Terms of Use
+            </Link>
           </p>
         </div>
       </article>

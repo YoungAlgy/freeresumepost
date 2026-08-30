@@ -1,194 +1,92 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
-import { safeJsonLd } from '@/lib/safe-jsonld'
-import { buildFaqPageJsonLd, type FaqItem } from '@/lib/faq-schema'
-import { FaqAnswer } from '@/components/FaqAnswer'
-
-// Single source of truth for this page's FAQ -- drives both the visible
-// <h3>/<p> block below and the FAQPage JSON-LD script near the bottom, so
-// the two can never say different things.
-const FAQ_ITEMS: FaqItem[] = [
-  {
-    question: 'Is it really free?',
-    answer:
-      "Yes. We don't charge candidates anything, not even to apply. Hiring employers pay our placement fee when a match converts.",
-  },
-  {
-    question: 'Will my resume be sold to recruiters?',
-    answer:
-      "No. We don't sell, license, or share your data with third parties. Your matches are shown to you, and you decide where to apply. The only people with access to your full profile are Ava Health Partners recruiters, the placement side that keeps this free.",
-  },
-  {
-    question: 'What healthcare roles can I upload as?',
-    answer:
-      'Nurse Practitioners, CRNAs, Registered Nurses, LPNs, CNAs, therapists (PT, OT, SLP, AuD), pharmacists (PharmD/RPh), and most allied health roles.',
-  },
-  {
-    question: 'How fast will I get matched?',
-    answer:
-      'Initial matches typically surface within a day of upload. Match volume depends on how many open roles match your specialty and state.',
-  },
-  {
-    question: 'Can I delete my profile later?',
-    answer:
-      'Yes. At any time. Email info@avahealth.co with the subject "Delete my profile" and we\'ll wipe both the resume file and parsed data within 30 days, including from any active employer match queues.',
-  },
-  {
-    question: 'Do I need to make my profile public?',
-    answer:
-      "No. Most candidates keep profiles private. Public profiles show your first name, last initial, credential, specialty, city, state, and years of experience at your own page, which you can share or link from anywhere. We don't index public profiles in Google search.",
-  },
-  {
-    question: 'Is my license info verified?',
-    answer:
-      "We auto-detect credential tokens (RN, CRNA, LPN, PharmD, etc.) from your resume text. We don't do full credential verification. Employers verify independently before hiring.",
-  },
-]
-
 export const metadata: Metadata = {
   title: 'How it works',
-  description: 'How freeresumepost.co works: upload your resume free, get matched to real healthcare openings, no recruiter spam, no resume databases sold.',
+  description:
+    'See how FreeResumePost turns a nursing or allied health resume into a private profile you can review and update.',
   alternates: { canonical: 'https://www.freeresumepost.co/how-it-works' },
   robots: { index: true, follow: true },
   openGraph: {
-    title: 'How freeresumepost.co works',
+    title: 'How FreeResumePost Works',
     description:
-      'Upload free, get matched to real healthcare openings. No recruiter spam, no resume databases sold.',
+      'Upload your healthcare resume, review the details, and choose your profile privacy.',
     url: 'https://www.freeresumepost.co/how-it-works',
     type: 'website',
     images: ['/opengraph-image'],
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'How freeresumepost.co works',
-    description:
-      'Upload free, get matched to real healthcare openings. No recruiter spam, no resume databases sold.',
-    images: ['/opengraph-image'],
-  },
 }
+
+const FLOW = [
+  {
+    title: 'Choose a resume',
+    body: 'Add a PDF or DOCX file up to 5 MB. We read it inside your browser.',
+  },
+  {
+    title: 'Check every field',
+    body: 'Review your name, credentials, specialty, location, and experience before anything is saved.',
+  },
+  {
+    title: 'Choose your visibility',
+    body: 'Profiles start private. A limited public link is available if you want one.',
+  },
+  {
+    title: 'Save and keep your link',
+    body: 'Your file uploads when you tap Save. The private profile link lets you return and make changes.',
+  },
+]
 
 export default function HowItWorksPage() {
   return (
-    <main className="min-h-screen bg-white text-slate-900">
-      <article className="max-w-3xl mx-auto px-6 py-12 md:py-20">
-        <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">How it works</p>
-        <h1 className="text-4xl md:text-5xl font-semibold leading-tight tracking-tight text-slate-900 mb-6">
-          Upload once.<br />
-          <span className="text-[#003D5C]">Get matched.</span>
+    <main className="min-h-screen bg-white text-slate-950">
+      <article className="mx-auto max-w-3xl px-5 py-12 sm:px-6 sm:py-20">
+        <p className="text-xs font-bold uppercase tracking-[0.16em] text-indigo-700">
+          How it works
+        </p>
+        <h1 className="mt-2 text-4xl font-bold leading-tight tracking-[-0.03em] sm:text-5xl">
+          One resume. One profile you control.
         </h1>
-        <p className="text-lg text-slate-600 leading-relaxed mb-12">
-          freeresumepost.co matches healthcare candidates to real, currently-open jobs. We don&apos;t
-          spam you and we don&apos;t sell your data. Upload once and you&apos;re done.
-          Here&apos;s the actual flow.
+        <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
+          FreeResumePost gives nurses and allied health professionals a quick way to post and
+          maintain their resume details.
         </p>
 
-        <h2 className="text-xl font-semibold mb-4">For candidates</h2>
-        <ol className="space-y-5 mb-12">
-          <li className="flex gap-4">
-            <div className="shrink-0 w-8 h-8 rounded-full bg-[#7FBC00] text-white text-sm font-semibold flex items-center justify-center">1</div>
-            <div>
-              <div className="font-semibold text-slate-900 mb-1">Drop your resume</div>
-              <div className="text-slate-600 leading-relaxed">PDF, DOCX, or plain text. Up to 5 MB. Parsed locally in your browser. Your file never reaches our servers until you click submit.</div>
-            </div>
-          </li>
-          <li className="flex gap-4">
-            <div className="shrink-0 w-8 h-8 rounded-full bg-[#7FBC00] text-white text-sm font-semibold flex items-center justify-center">2</div>
-            <div>
-              <div className="font-semibold text-slate-900 mb-1">Review every field</div>
-              <div className="text-slate-600 leading-relaxed">Our parser fills in name, email, phone, credentials, specialty, state, and years of experience. You correct anything wrong before saving.</div>
-            </div>
-          </li>
-          <li className="flex gap-4">
-            <div className="shrink-0 w-8 h-8 rounded-full bg-[#7FBC00] text-white text-sm font-semibold flex items-center justify-center">3</div>
-            <div>
-              <div className="font-semibold text-slate-900 mb-1">Pick public or private</div>
-              <div className="text-slate-600 leading-relaxed">
-                <strong>Public:</strong> first name, last initial, credential, specialty, city, state, and years of experience are visible at /profile/[your-slug] to anyone with the link.<br />
-                <strong>Private:</strong> only the matching engine and our recruiters see you. New matches surface on your private profile page (the edit URL we send when you upload). Nobody else can find you.
+        <ol className="mt-10 space-y-4">
+          {FLOW.map((step, index) => (
+            <li key={step.title} className="flex gap-4 rounded-2xl border border-slate-200 p-5">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal-600 text-sm font-bold text-white">
+                {index + 1}
+              </span>
+              <div>
+                <h2 className="font-semibold text-slate-950">{step.title}</h2>
+                <p className="mt-1 text-sm leading-6 text-slate-600">{step.body}</p>
               </div>
-            </div>
-          </li>
-          <li className="flex gap-4">
-            <div className="shrink-0 w-8 h-8 rounded-full bg-[#7FBC00] text-white text-sm font-semibold flex items-center justify-center">4</div>
-            <div>
-              <div className="font-semibold text-slate-900 mb-1">Get matched</div>
-              <div className="text-slate-600 leading-relaxed">
-                Our matching engine scores you against every active job on freejobpost.co (specialty trigram, state, city, credential, experience, salary, certifications). Your top matches appear on your private profile page, refreshed daily. You decide whether to apply. Never automatic.
-              </div>
-            </div>
-          </li>
+            </li>
+          ))}
         </ol>
 
-        <h2 className="text-xl font-semibold mb-4">For employers</h2>
-        <p className="text-slate-600 leading-relaxed mb-4">
-          Employers post jobs at <a href="https://freejobpost.co/post-job" className="underline text-[#003D5C] hover:text-[#002A40]">freejobpost.co/post-job</a>. Candidates whose profile fits see the role on their private matches page and apply directly through the listing. No middlemen, no &quot;unlock this resume&quot; fee.
-        </p>
+        <section className="mt-12 border-t border-slate-200 pt-10">
+          <h2 className="text-2xl font-bold tracking-tight">What a public profile shows</h2>
+          <p className="mt-3 leading-7 text-slate-600">
+            Your first name, last initial, credential, specialty, city, state, and years of
+            experience can appear at a shareable link. Your full last name, email, phone number,
+            and resume file stay hidden. Public sharing is off by default.
+          </p>
+        </section>
 
-        <h2 className="text-xl font-semibold mt-12 mb-4">What you don&apos;t get</h2>
-        <ul className="space-y-2 mb-12 text-slate-700">
-          <li>· Recruiter cold calls about jobs that don&apos;t match what you do</li>
-          <li>· &quot;Quick question&quot; emails from agencies who scraped your contact info</li>
-          <li>· Auto-applications submitted on your behalf</li>
-          <li>· A resume database we sell to other recruiters</li>
-        </ul>
-
-        <h2 className="text-xl font-semibold mt-12 mb-4">Why is this free?</h2>
-        <p className="text-slate-600 leading-relaxed mb-4">
-          freeresumepost.co is operated by Ava Health Partners LLC, a healthcare staffing firm.
-          When a match leads to a real placement, the hiring employer pays our fee. The
-          candidate-facing platform stays free because the placement-fee model upstream covers the
-          infrastructure.
-        </p>
-        <p className="text-slate-600 leading-relaxed mb-12">
-          You can use freeresumepost.co indefinitely without ever being charged anything. Read our{' '}
-          <Link href="/privacy" className="underline text-[#003D5C] hover:text-[#002A40]">privacy policy</Link> for the specifics on what we collect and don&apos;t.
-        </p>
-
-        <h2 className="text-xl font-semibold mt-12 mb-4">FAQ</h2>
-        <div className="space-y-6 mb-12">
-          {FAQ_ITEMS.map((item) => (
-            <div key={item.question}>
-              <h3 className="font-semibold text-slate-900 mb-1">{item.question}</h3>
-              <FaqAnswer
-                text={item.answer}
-                className="text-slate-600"
-                linkClassName="underline text-[#003D5C] hover:text-[#002A40]"
-              />
-            </div>
-          ))}
-        </div>
-
-        <div className="border border-slate-200 rounded-2xl bg-slate-50 p-8 text-center">
-          <p className="text-2xl font-semibold mb-3 text-slate-900">Ready when you are</p>
-          <Link href="/upload" className="inline-block bg-[#003D5C] text-white font-semibold px-6 py-3 rounded-lg hover:bg-[#002A40]">
-            Upload Your Resume →
+        <section className="mt-10 rounded-2xl bg-indigo-50 p-6 sm:p-8">
+          <h2 className="text-2xl font-bold tracking-tight">Ready to start?</h2>
+          <p className="mt-2 leading-7 text-slate-600">
+            You will review the extracted details before your profile saves.
+          </p>
+          <Link
+            href="/upload"
+            className="mt-5 inline-flex min-h-12 items-center justify-center rounded-xl bg-indigo-700 px-6 py-3 font-semibold text-white transition-colors hover:bg-indigo-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2"
+          >
+            Upload my resume
           </Link>
-        </div>
+        </section>
       </article>
-
-      {/* BreadcrumbList */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: safeJsonLd({
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.freeresumepost.co' },
-              { '@type': 'ListItem', position: 2, name: 'How it works', item: 'https://www.freeresumepost.co/how-it-works' },
-            ],
-          }),
-        }}
-      />
-
-      {/* FAQPage schema -- built from FAQ_ITEMS above, the same data that
-          renders the visible FAQ block, so schema and copy can't drift. */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeJsonLd(buildFaqPageJsonLd(FAQ_ITEMS)) }}
-      />
-
-</main>
+    </main>
   )
 }

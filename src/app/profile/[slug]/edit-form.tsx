@@ -2,9 +2,8 @@
 
 import { useState, useTransition } from 'react'
 import { updateCandidate } from './actions'
-import type { CandidateMatch } from './page'
-import { formatSalary } from '@/lib/format-salary'
-import TailorCTA from '@/components/TailorCTA'
+import { uploadAndAttachResume } from '@/app/upload/actions'
+import { inspectResumeFile } from '@/lib/resume-file'
 import { US_STATES as STATES } from '@/lib/us-states'
 
 type Candidate = {
@@ -19,28 +18,19 @@ type Candidate = {
   city: string | null
   state: string | null
   years_experience: number | null
-  remote_only: boolean
-  contact_via_email: boolean
-  contact_via_sms: boolean
   is_public: boolean
+  has_resume: boolean
 }
 
-
-function jobLocation(m: CandidateMatch): string {
-  if (m.job_remote_hybrid === 'remote') {
-    return 'Remote' + (m.job_state ? ` · ${m.job_state}` : '')
-  }
-  return [m.job_city, m.job_state].filter(Boolean).join(', ')
-}
 
 export default function ProfileEditForm({
   candidate,
   nonce,
-  matches,
+  initialResumeMissing,
 }: {
   candidate: Candidate
   nonce: string
-  matches: CandidateMatch[]
+  initialResumeMissing: boolean
 }) {
   const [f, setF] = useState({
     first_name: candidate.first_name ?? '',
@@ -51,14 +41,18 @@ export default function ProfileEditForm({
     city: candidate.city ?? '',
     state: candidate.state ?? '',
     years_experience: candidate.years_experience ?? null,
-    remote_only: candidate.remote_only ?? false,
-    contact_via_email: candidate.contact_via_email ?? true,
-    contact_via_sms: candidate.contact_via_sms ?? false,
     is_public: candidate.is_public ?? false,
   })
   const [saved, setSaved] = useState(false)
   const [err, setErr] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
+  const [resumePending, setResumePending] = useState(false)
+  const [hasResume, setHasResume] = useState(candidate.has_resume)
+  const [resumeMessage, setResumeMessage] = useState<string | null>(
+    initialResumeMissing
+      ? 'Your profile saved, but the resume file did not. Choose the file again below.'
+      : null,
+  )
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -75,12 +69,45 @@ export default function ProfileEditForm({
     })
   }
 
+  async function replaceResume(file: File) {
+    if (resumePending) return
+    setErr(null)
+    setResumeMessage(null)
+
+    const inspected = inspectResumeFile(file)
+    if (!inspected.ok) {
+      setErr(inspected.error)
+      return
+    }
+
+    setResumePending(true)
+    try {
+      const upload = new FormData()
+      upload.set('candidate_id', candidate.id)
+      upload.set('nonce', nonce)
+      upload.set('file', file)
+      const attached = await uploadAndAttachResume(upload)
+      if (!attached.success) throw new Error(attached.error)
+
+      setHasResume(true)
+      setResumeMessage('Resume file saved.')
+    } catch (error) {
+      console.error(
+        'resume replacement failed:',
+        error instanceof Error ? error.message : 'unknown',
+      )
+      setErr('The resume file did not save. Choose it again and retry.')
+    } finally {
+      setResumePending(false)
+    }
+  }
+
   const publicUrl = `https://www.freeresumepost.co/profile/${candidate.slug}`
 
   return (
     <main className="min-h-screen bg-white text-slate-900">
       <div className="max-w-3xl mx-auto px-6 py-10 md:py-16">
-        <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-indigo-700">
           Your profile
         </p>
         <h1 className="text-3xl md:text-4xl font-semibold leading-tight tracking-tight mb-2">
@@ -93,111 +120,13 @@ export default function ProfileEditForm({
         {(saved ? f.is_public : candidate.is_public) && (
           <p className="text-sm text-slate-500 mb-8">
             Public URL:{' '}
-            <a href={publicUrl} className="font-mono text-xs text-[#003D5C] hover:underline">
+            <a href={publicUrl} className="font-mono text-xs text-indigo-700 hover:underline">
               {publicUrl}
             </a>
           </p>
         )}
 
-        <TailorCTA specialtyLabel={candidate.specialty} />
-
-        {/* Matches section — top of the page so candidates see jobs first,
-           profile editing second. Matches refresh on the marketplace cron. */}
-        <section className="mb-12 rounded-2xl border border-slate-200 bg-slate-50/40 p-5 md:p-6">
-          <div className="flex items-baseline justify-between mb-4 gap-3">
-            <div>
-              <h2 className="text-xs font-bold tracking-wider text-slate-500 uppercase">
-                Your top matches
-              </h2>
-              <p className="text-sm text-slate-600 mt-1">
-                Live healthcare openings scored against your profile, refreshed daily.
-              </p>
-            </div>
-            {matches.length > 0 && (
-              <span className="shrink-0 text-xs font-semibold text-slate-500">
-                Showing {matches.length} of your top matches
-              </span>
-            )}
-          </div>
-
-          {matches.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-center">
-              <p className="text-sm font-medium text-slate-900 mb-1">
-                No matches yet.
-              </p>
-              <p className="text-sm text-slate-600 mb-4">
-                The matching engine runs daily. Your matches appear within a day of uploading.
-                You can also browse the full board directly while you wait.
-              </p>
-              <a
-                href="https://freejobpost.co/jobs"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-sm font-semibold text-[#003D5C] hover:text-[#002A40]"
-              >
-                Browse all healthcare jobs →
-              </a>
-            </div>
-          ) : (
-            <ul className="divide-y divide-slate-200 rounded-xl border border-slate-200 bg-white">
-              {matches.map((m) => {
-                const sal = formatSalary(m.salary_min, m.salary_max)
-                const loc = jobLocation(m)
-                const utm = '?utm_source=freeresumepost&utm_medium=match&utm_campaign=candidate_dashboard'
-                return (
-                  <li key={m.job_id} className="p-4">
-                    <a
-                      href={`https://freejobpost.co/jobs/${m.job_slug}${utm}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group block"
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-baseline gap-2 mb-0.5">
-                            <span
-                              className={`shrink-0 text-[10px] font-bold tracking-wider px-1.5 py-0.5 rounded ${
-                                m.score >= 70
-                                  ? 'bg-green-50 text-green-700 border border-green-200'
-                                  : m.score >= 50
-                                    ? 'bg-[#003D5C]/10 text-[#003D5C] border border-[#003D5C]/20'
-                                    : 'bg-slate-50 text-slate-600 border border-slate-200'
-                              }`}
-                            >
-                              {m.score}% MATCH
-                            </span>
-                          </div>
-                          <p className="font-semibold text-slate-900 leading-snug group-hover:text-[#003D5C] line-clamp-2">
-                            {m.job_title}
-                          </p>
-                          <p className="text-sm text-slate-600 mt-0.5 truncate">
-                            {loc || '—'}
-                            {m.job_specialty && m.job_specialty !== m.job_title && (
-                              <span className="text-slate-500"> · {m.job_specialty}</span>
-                            )}
-                          </p>
-                        </div>
-                        {sal && (
-                          <div className="shrink-0 text-sm font-semibold text-slate-900 tabular-nums">
-                            {sal}
-                          </div>
-                        )}
-                      </div>
-                    </a>
-                  </li>
-                )
-              })}
-            </ul>
-          )}
-
-          <p className="text-xs text-slate-500 mt-4">
-            This link works for 7 days. Need to come back later? Get a fresh link
-            anytime at freeresumepost.co/candidate/login. New matches show up here
-            as fresh jobs are posted.
-          </p>
-        </section>
-
-        <form onSubmit={onSubmit} className="space-y-8">
+        <form onSubmit={onSubmit} className="mt-8 space-y-8">
           <section>
             <h2 className="text-xs font-bold tracking-wider text-slate-500 uppercase mb-4">
               About you
@@ -236,7 +165,7 @@ export default function ProfileEditForm({
                   maxLength={30}
                 />
               </Field>
-              <Field label="Email" hint="Can't change this here. Email support">
+              <Field label="Email" hint="Locked on this screen">
                 <input
                   type="email"
                   value={candidate.email}
@@ -245,6 +174,47 @@ export default function ProfileEditForm({
                 />
               </Field>
             </div>
+          </section>
+
+          <section>
+            <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-slate-500">
+              Resume file
+            </h2>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 sm:flex sm:items-center sm:justify-between sm:gap-4">
+              <div>
+                <p className="font-medium text-slate-900">
+                  {hasResume ? 'Resume file on profile' : 'No resume file saved'}
+                </p>
+                <p className="mt-1 text-sm text-slate-500">PDF or DOCX, up to 5 MB.</p>
+              </div>
+              <label className="mt-4 inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-100 focus-within:ring-2 focus-within:ring-indigo-600 sm:mt-0 sm:w-auto">
+                <input
+                  type="file"
+                  accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                  className="sr-only"
+                  disabled={resumePending}
+                  onChange={(event) => {
+                    const file = event.target.files?.[0]
+                    if (file) void replaceResume(file)
+                    event.target.value = ''
+                  }}
+                />
+                {resumePending ? 'Saving file…' : hasResume ? 'Replace file' : 'Choose file'}
+              </label>
+            </div>
+            {resumeMessage && (
+              <p
+                role="status"
+                aria-live="polite"
+                className={`mt-3 rounded-lg border p-3 text-sm ${
+                  hasResume
+                    ? 'border-teal-200 bg-teal-50 text-teal-800'
+                    : 'border-amber-200 bg-amber-50 text-amber-900'
+                }`}
+              >
+                {resumeMessage}
+              </p>
+            )}
           </section>
 
           <section>
@@ -285,7 +255,7 @@ export default function ProfileEditForm({
                   onChange={(e) => setF({ ...f, state: e.target.value })}
                   className={fieldStyle}
                 >
-                  <option value="">—</option>
+                  <option value="">Select state</option>
                   {STATES.map((s) => (
                     <option key={s} value={s}>
                       {s}
@@ -308,52 +278,15 @@ export default function ProfileEditForm({
                   className={fieldStyle}
                 />
               </Field>
-              <div className="flex items-center md:items-end">
-                <label className="flex items-center gap-2 text-sm pb-2">
-                  <input
-                    type="checkbox"
-                    checked={f.remote_only}
-                    onChange={(e) => setF({ ...f, remote_only: e.target.checked })}
-                    className="w-4 h-4 rounded"
-                  />
-                  Remote-only
-                </label>
-              </div>
             </div>
           </section>
 
           <section>
             <h2 className="text-xs font-bold tracking-wider text-slate-500 uppercase mb-4">
-              Contact preferences
+              Profile visibility
             </h2>
-            <div className="space-y-3">
-              <label className="flex items-start gap-3 p-3 rounded-xl border border-slate-200 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={f.contact_via_email}
-                  onChange={(e) => setF({ ...f, contact_via_email: e.target.checked })}
-                  className="mt-0.5 w-4 h-4"
-                />
-                <div>
-                  <p className="font-medium text-slate-900">Email</p>
-                  <p className="text-sm text-slate-500">Employer messages land in your inbox.</p>
-                </div>
-              </label>
-              <label className="flex items-start gap-3 p-3 rounded-xl border border-slate-200 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={f.contact_via_sms}
-                  onChange={(e) => setF({ ...f, contact_via_sms: e.target.checked })}
-                  className="mt-0.5 w-4 h-4"
-                />
-                <div>
-                  <p className="font-medium text-slate-900">SMS</p>
-                  <p className="text-sm text-slate-500">
-                    Interview confirmations + application updates only. No marketing, no cold outreach.
-                  </p>
-                </div>
-              </label>
-              <label className="flex items-start gap-3 p-3 rounded-xl border border-slate-200 cursor-pointer">
+            <div>
+              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-3">
                 <input
                   type="checkbox"
                   checked={f.is_public}
@@ -363,8 +296,9 @@ export default function ProfileEditForm({
                 <div>
                   <p className="font-medium text-slate-900">Public profile</p>
                   <p className="text-sm text-slate-500">
-                    Shows your first name, last initial, credential, specialty, city + state, and
-                    years of experience at your public URL. Email + phone stay private.
+                    Shows your first name, last initial, credential, specialty, city, state, and
+                    years of experience at your public URL. Your email, phone, full last name, and
+                    resume file stay private. We tell search engines not to index the page.
                   </p>
                 </div>
               </label>
@@ -389,15 +323,15 @@ export default function ProfileEditForm({
             </div>
           )}
 
-          <div className="flex items-center justify-between pt-6 border-t border-slate-200">
+          <div className="flex flex-col gap-4 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xs text-slate-500">
-              Edit links work for 7 days. Get a fresh one anytime at freeresumepost.co/candidate/login.
-              Want your profile removed instead? Email info@avahealth.co.
+              Edit links work for 7 days. Sign in anytime to open your profile and get a fresh link.
+              See the <a href="/privacy" className="underline hover:text-slate-900">privacy policy</a> for deletion requests.
             </p>
             <button
               type="submit"
               disabled={pending}
-              className="inline-flex items-center rounded-xl bg-[#003D5C] text-white px-6 py-3 font-semibold shadow-sm hover:bg-[#002A40] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="inline-flex w-full items-center justify-center rounded-xl bg-indigo-700 px-6 py-3 font-semibold text-white shadow-sm transition-colors hover:bg-indigo-800 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             >
               {pending ? 'Saving…' : 'Save changes'}
             </button>
@@ -409,7 +343,7 @@ export default function ProfileEditForm({
 }
 
 const fieldStyle =
-  'w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7FBC00] focus:border-transparent'
+  'w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent'
 
 function Field({
   label,

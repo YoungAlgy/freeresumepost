@@ -2,12 +2,10 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { buildOrganizationGraph } from '@/lib/organization-schema'
-import { E_VERIFY } from '@/lib/e-verify-config'
-import { AvaFamilyNav } from '@/components/ava-family/AvaFamilyNav'
 import { SiteHeader } from '@/components/SiteHeader'
-
+import { buildOrganizationGraph } from '@/lib/organization-schema'
 import { safeJsonLd } from '@/lib/safe-jsonld'
+
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
@@ -18,28 +16,26 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Ava Health',
-    default: 'Upload Your Healthcare Resume Free, Get Matched to Real Jobs | Ava Health',
+    template: '%s | FreeResumePost',
+    default: 'Post Your Healthcare Resume Free | FreeResumePost',
   },
   description:
-    'Upload your healthcare resume free on Ava Health and get matched to real openings. No recruiter pitches, no resume databases sold to spammers. Built by a real staffing team.',
+    'A simple resume-posting tool for nurses and allied health professionals. Private by default.',
   metadataBase: new URL('https://www.freeresumepost.co'),
-  // NO root-level `canonical` — with metadataBase set it would be inherited
-  // by every page without its own alternates, claiming the homepage as
-  // canonical for all of them (2026-06 audit). Pages declare their own.
   openGraph: {
-    siteName: 'Ava Health',
+    siteName: 'FreeResumePost',
     type: 'website',
     locale: 'en_US',
     url: 'https://www.freeresumepost.co',
-    title: 'Ava Health: Upload your resume, get matched',
-    description: 'Upload your resume free. We match you to real healthcare openings. No recruiter spam.',
+    title: 'Post Your Healthcare Resume Free | FreeResumePost',
+    description:
+      'A simple resume-posting tool for nurses and allied health professionals. Private by default.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Ava Health: Upload your resume, get matched',
-    description: 'Upload your resume free. We match you to real openings.',
-    site: '@avahealth',
+    title: 'Post Your Healthcare Resume Free | FreeResumePost',
+    description:
+      'A simple resume-posting tool for nurses and allied health professionals. Private by default.',
   },
   robots: {
     index: true,
@@ -52,15 +48,7 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  // Search-engine verification — same youngalgy@gmail.com token used across
-  // every Ava-owned property. Adding meta-tag verification on top of any
-  // DNS TXT verification gives Google + Bing a redundant ownership signal
-  // (belt-and-suspenders so verification doesn't silently lapse if DNS rotates).
   verification: {
-    // 2026-05-29: added youngalgy@gmail.com's actual GSC verification token (2nd)
-    // via the homepage HTML-tag method — the HTML-FILE method wouldn't verify even
-    // though the file serves 200 to Googlebot. Array renders both metas. This is
-    // the unlock for indexing: freeresumepost.co has ZERO pages in Google's index.
     google: [
       'SFRvinmueg87J1kMFBhvpABzmM1c13pLPCTRYjrRlVI',
       'osvOXjbhKGQXgOtQTzcqAz_G84Jsleaiaxwg-iM3X4Q',
@@ -70,118 +58,50 @@ export const metadata: Metadata = {
   category: 'business',
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
-        <link
-          rel="preconnect"
-          href="https://tsruqbodyrmxqzhvxret.supabase.co"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="dns-prefetch"
-          href="https://tsruqbodyrmxqzhvxret.supabase.co"
-        />
-        {/* Organization + WebSite schema. Google uses these to surface the
-            sitelinks searchbox and understand brand hierarchy. The sameAs
-            graph cross-links freejobpost + providers + main avahealth.co.
-            Schema source: src/lib/organization-schema.ts (mirrored to freejobpost). */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: safeJsonLd(
-              buildOrganizationGraph({
-                websiteUrl: 'https://www.freeresumepost.co',
-                websiteName: 'Ava Health',
-                websiteDescription:
-                  'Ava Health. Upload your resume free, get matched to real healthcare openings.',
-                organizationDescription:
-                  'Healthcare staffing and recruiting firm connecting nurses and allied health professionals with US healthcare employers. Operates a free candidate-resume platform that matches healthcare professionals to open roles without selling resume data.',
-                searchActionTarget: 'https://freejobpost.co/jobs?q={search_term_string}',
-              })
-            ),
+            __html: safeJsonLd(buildOrganizationGraph()),
           }}
         />
       </head>
       <body className={inter.className}>
-        {/* Skip-nav: keyboard users can jump past the nav directly to the main content */}
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[#003D5C] focus:text-white focus:text-sm focus:font-bold focus:rounded"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-indigo-700 focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white"
         >
           Skip to main content
         </a>
-        <AvaFamilyNav currentSite="freeresume" />
         <SiteHeader />
-        <div id="main-content">
-          {children}
-        </div>
-        <footer className="max-w-6xl mx-auto px-4 py-8 mt-12 border-t border-gray-200">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500">
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              <Link href="/upload" className="hover:text-gray-900">
+        <div id="main-content">{children}</div>
+        <footer className="border-t border-slate-200 bg-white">
+          <div className="mx-auto flex max-w-5xl flex-col gap-5 px-5 py-8 text-sm text-slate-500 sm:px-6 md:flex-row md:items-center md:justify-between">
+            <nav aria-label="Footer" className="flex flex-wrap gap-x-5 gap-y-3">
+              <Link href="/upload" className="hover:text-indigo-700">
                 Upload resume
               </Link>
-              <span className="text-gray-300">|</span>
-              <Link href="/specialty" className="hover:text-gray-900">
-                By specialty
-              </Link>
-              <span className="text-gray-300">|</span>
-              <Link href="/how-it-works" className="hover:text-gray-900">
+              <Link href="/how-it-works" className="hover:text-indigo-700">
                 How it works
               </Link>
-              <span className="text-gray-300">|</span>
-              <Link href="/candidate/login" className="hover:text-gray-900">
-                Candidate login
+              <Link href="/candidate/login" className="hover:text-indigo-700">
+                Open profile
               </Link>
-              <span className="text-gray-300">|</span>
-              <a href="https://freejobpost.co/for-employers" className="hover:text-gray-900">
-                Employers
-              </a>
-              <span className="text-gray-300">|</span>
-              <Link href="/changelog" className="hover:text-gray-900">
-                Changelog
-              </Link>
-              <span className="text-gray-300">|</span>
-              <Link href="/terms" className="hover:text-gray-900">
+              <Link href="/terms" className="hover:text-indigo-700">
                 Terms
               </Link>
-              <span className="text-gray-300">|</span>
-              <Link href="/privacy" className="hover:text-gray-900">
+              <Link href="/privacy" className="hover:text-indigo-700">
                 Privacy
               </Link>
+            </nav>
+            <div className="text-xs md:text-right">
+              <p>&copy; {new Date().getFullYear()} FreeResumePost.</p>
+              <p>Operated by Ava Health Partners LLC.</p>
             </div>
-            <p className="text-xs text-gray-500 text-center md:text-right max-w-md">
-              &copy; {new Date().getFullYear()} Operated by{' '}
-              <span className="font-medium text-gray-600">Ava Health Partners LLC</span>
-              . Your resume is yours. We never sell your data.
-              <br />
-              4532 W Kennedy Blvd, Suite 125, Tampa, FL 33609 · (904) 343-9449 · info@avahealth.co
-            </p>
           </div>
-          {/* EEO statement — broad federal-compliance language. Mirrors what
-              employers see on freejobpost.co + providers.avahealth.co so the
-              Ava Health network presents a consistent equal-opportunity
-              commitment regardless of which surface a visitor lands on. */}
-          <p className="text-[11px] text-gray-400 text-center leading-relaxed mt-6 max-w-3xl mx-auto px-4">
-            Ava Health Partners LLC is an Equal Opportunity Employer. We do not discriminate in employment or recruitment on the basis of race, color, religion, sex (including pregnancy, sexual orientation, or gender identity), national origin, age, disability, genetic information, veteran status, or any other characteristic protected by applicable federal, state, or local law.
-          </p>
-          {/* E-Verify participation chip — short footer link to /e-verify
-              which holds the full federal-compliance statement + posters.
-              Gated behind src/lib/e-verify-config.ts. */}
-          {E_VERIFY.enrolled && E_VERIFY.companyId && (
-            <p className="text-[11px] text-gray-400 text-center leading-relaxed mt-3">
-              <Link href="/e-verify" className="underline hover:text-gray-900">
-                E-Verify Participant
-              </Link>{' '}
-              &middot; Company ID {E_VERIFY.companyId}
-            </p>
-          )}
         </footer>
       </body>
     </html>

@@ -1,13 +1,13 @@
-// Resolves a candidate's resume_url (from get_my_candidate()) to a URL that's
+// Resolves a candidate's source-scoped resume_url to a URL that's
 // actually fetchable in the browser.
 //
 // resume_url is a BARE storage path for every self-upload via /upload (e.g.
 // "d2616a4a-....pdf") — the `resumes` bucket is private and storage RLS only
 // grants SELECT to internal CRM users, not the candidate themselves, so a
 // bare path 404s/403s if rendered or fetched directly. This calls the
-// get-resume-url Supabase Edge Function (service-role signed URL, scoped to
-// the caller's own resume via the same get_my_candidate() RPC) to turn it
-// into a short-lived signed URL. A resume_url that's already an absolute
+// get-resume-url Supabase Edge Function to turn it into a short-lived signed
+// URL. Callers first source-check the profile through the FreeResumePost RPC.
+// A resume_url that's already an absolute
 // URL (e.g. an external link from another intake path) is returned as-is.
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!

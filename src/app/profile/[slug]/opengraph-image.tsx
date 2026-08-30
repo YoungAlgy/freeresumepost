@@ -8,23 +8,24 @@
 
 import { ImageResponse } from 'next/og'
 import { supabase } from '@/lib/supabase'
+import {
+  FREE_RESUME_POST_UPLOAD_SOURCE,
+  isPublishableFreeResumePostProfile,
+} from '@/lib/profile-provenance'
 
 // No explicit edge runtime (2026-08-13 fix) -- see src/app/opengraph-image.tsx
 // for why: it broke next/og's font loading under this OpenNext/Cloudflare
 // deploy (confirmed live 500 on every request). Matches freejobpost's
 // per-job OG route, which has never declared one.
-export const alt = 'Healthcare candidate on Ava Health'
+export const alt = 'Healthcare resume profile on FreeResumePost'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
-// 2026-05-28 cost audit: cache the generated card for 7 days. Profile OG
-// content is static per candidate (name/credential/specialty/location
-// baked in once), so repeat unfurls + crawler og:image fetches serve from
-// cache instead of re-querying public_candidates + re-rendering the PNG.
-// Mirrors the freejobpost per-job OG fix. Self-heals on edit/unpublish.
-export const revalidate = 604800
+// Profile owners can edit or unpublish at any time. Keep social cards cached
+// for one hour so repeat unfurls stay cheap without showing week-old details.
+export const revalidate = 3600
 
-const BRAND = '#003D5C'
-const ACCENT = '#7FBC00'
+const BRAND = '#4338CA'
+const ACCENT = '#2DD4BF'
 const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,120}$/
 
 type PublicProfile = {
@@ -35,6 +36,10 @@ type PublicProfile = {
   city: string | null
   state: string | null
   years_experience: number | null
+  source: string | null
+  is_public: boolean
+  status: string | null
+  deleted_at: string | null
 }
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
@@ -52,20 +57,25 @@ export default async function Image({ params }: { params: Promise<{ slug: string
       // table. last_initial (public-safe generated col), NOT last_name — keep
       // the full last name off every anon read path (privacy promise).
       .from('public_candidates_directory')
-      .select('first_name, last_initial, credential, specialty, city, state, years_experience')
+      .select('first_name, last_initial, credential, specialty, city, state, years_experience, source, is_public, status, deleted_at')
       .eq('slug', slug)
+      .eq('source', FREE_RESUME_POST_UPLOAD_SOURCE)
       .eq('is_public', true)
       .eq('status', 'active')
       .is('deleted_at', null)
       .maybeSingle()
 
-    if (data) {
+    if (data && isPublishableFreeResumePostProfile(data)) {
       const c = data as PublicProfile
-      name = `${c.first_name} ${c.last_initial ?? ''}.`.trim() || name
+      const initial = c.last_initial?.trim()
+      name = `${c.first_name}${initial ? ` ${initial}.` : ''}`.trim() || name
       credential = c.credential || ''
       specialty = c.specialty || ''
       location = [c.city, c.state].filter(Boolean).join(', ')
-      years = c.years_experience ? `${c.years_experience}+ yrs experience` : ''
+      years =
+        c.years_experience !== null
+          ? `${c.years_experience}+ yrs experience`
+          : ''
     }
   }
 
@@ -79,7 +89,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           width: '100%',
           display: 'flex',
           flexDirection: 'column',
-          background: `linear-gradient(135deg, ${BRAND} 0%, #002a40 100%)`,
+          background: `linear-gradient(135deg, ${BRAND} 0%, #312E81 100%)`,
           padding: 80,
           color: 'white',
           fontFamily: '"Inter", system-ui, sans-serif',
@@ -87,11 +97,11 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         }}
       >
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, paddingBottom: 20, borderBottom: `4px solid ${ACCENT}`, marginBottom: 56 }}>
-          <span style={{ fontSize: 36, fontWeight: 800, letterSpacing: -1 }}>Ava Health</span>
+          <span style={{ fontSize: 36, fontWeight: 800, letterSpacing: -1 }}>FreeResumePost</span>
         </div>
 
         <div style={{ display: 'flex', alignSelf: 'flex-start', background: ACCENT, color: BRAND, padding: '8px 18px', borderRadius: 999, fontSize: 22, fontWeight: 700, marginBottom: 36, textTransform: 'uppercase', letterSpacing: 1 }}>
-          Open to opportunities
+          Shared healthcare profile
         </div>
 
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, fontSize: 72, fontWeight: 800, lineHeight: 1.05, letterSpacing: -1, maxHeight: 220, overflow: 'hidden' }}>
@@ -115,7 +125,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
 
         <div style={{ position: 'absolute', bottom: 80, left: 80, right: 80, display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 22, opacity: 0.85 }}>
           <span>freeresumepost.co</span>
-          <span>Free healthcare candidate directory</span>
+          <span>Shared healthcare resume profile</span>
         </div>
       </div>
     ),

@@ -1,33 +1,47 @@
-# freeresumepost.co
+# FreeResumePost
 
-**A free, two-sided healthcare hiring marketplace** — the candidate side, paired with its employer-side sibling [freejobpost.co](https://github.com/YoungAlgy/freejobpost). Built and operated solo.
+FreeResumePost is a standalone resume upload and profile tool for nurses and allied health professionals.
 
-🔗 **Live:** [freeresumepost.co](https://freeresumepost.co)
+## Current product
 
-## What it does
-- **Resume upload → parse → structured candidate profile**, with opt-in public profiles.
-- **Cross-matches candidates to the live listings** on the sibling employer app — the two-sided loop.
-- Candidate dashboard: matched jobs + application history.
-- **SEO-first** — indexable opt-in profile pages, sitemaps, structured data.
+- Read PDF and DOCX resumes in the browser.
+- Let the user review and correct extracted profile fields before saving.
+- Store the original file in a private Supabase Storage bucket.
+- Keep profiles private by default, with an optional limited share link.
+- Let a signed-in profile owner reopen the editor, replace the file, and use the optional resume tailoring tool.
 
-## Architecture / stack
-- **Next.js 16** (app router) + **React 19** + **TypeScript**
-- **Tailwind CSS v4**
-- **Supabase** (Postgres + auth + storage), row-level security throughout
-- **Cloudflare Workers** (via OpenNext)
-- Vitest test suite
+FreeResumePost does not list jobs, submit applications, publish candidates into recruiter tools, or run candidate-to-job matching.
 
-## Engineering notes
-- The core challenge is **resume parsing → normalized profile**: turning unstructured uploads into a queryable candidate schema that can be matched against the employer-side job corpus.
-- Privacy-by-default: profiles are private until a candidate explicitly opts into a public, indexable page.
+## Stack
 
-## Dev
+- Next.js 16, React 19, TypeScript, and Tailwind CSS 4
+- Supabase Postgres, Auth, and Storage
+- Cloudflare Workers through OpenNext
+- Vitest
+
+## Local development
+
 ```bash
 npm install
-cp .env.example .env.local   # add your own Supabase anon key
-npm run dev                  # http://localhost:3000
+cp .env.example .env.local
+npm run dev
 ```
 
-## Related
-- [freejobpost.co](https://github.com/YoungAlgy/freejobpost) — the employer side of the marketplace
-- Part of a broader healthcare-data + hiring stack I build and operate solo. More at [youngalgy.com](https://youngalgy.com).
+Use the shared Supabase project keys in `.env.local`. Apply
+`supabase/migrations/20260828010000_freeresumepost_standalone_boundary.sql`
+before deploying the source-scoped frontend. Set `SUPABASE_SERVICE_ROLE_KEY`
+only in the server environment. It powers profile submission, source-scoped
+OTP checks, and private resume storage without putting that key in the browser.
+The first migration stops the old automatic matching cron without deleting
+historical match or application rows.
+
+After the new Worker passes its production watch, apply
+`supabase/migrations/20260829020000_freeresumepost_server_only_lockdown.sql`.
+That second migration removes legacy anonymous submit and storage access. Keep
+the two migrations in separate rollout stages.
+
+Production releases must follow
+`docs/releases/2026-08-29-standalone-release.md`. That runbook contains the
+staged migration allowlist, rolling frontend compatibility contract, rollout
+order, and rollback triggers. Do not push every local migration file as a
+batch.

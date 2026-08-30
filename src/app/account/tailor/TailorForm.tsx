@@ -20,7 +20,6 @@ type ResumeSource = 'loading' | 'loaded' | 'manual' | 'none'
 export default function TailorPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
-  const [candidate, setCandidate] = useState<Candidate | null>(null)
   const [resumeSource, setResumeSource] = useState<ResumeSource>('loading')
   const [resumeText, setResumeText] = useState('')
   const [jobDescription, setJobDescription] = useState('')
@@ -42,17 +41,17 @@ export default function TailorPage() {
         router.replace('/candidate/login')
         return
       }
-      const { data, error } = await supabaseBrowser.rpc('get_my_candidate')
+      const { data, error } = await supabaseBrowser.rpc(
+        'get_my_freeresumepost_candidate',
+      )
       if (!active) return
       if (error) {
-        console.error('get_my_candidate failed:', error.message)
+        console.error('get_my_freeresumepost_candidate failed:', error.message)
         setLoadError(true)
         setLoading(false)
         return
       }
       const row = (Array.isArray(data) ? data[0] : data) as Candidate | null
-      setCandidate(row ?? null)
-
       if (!row?.resume_url) {
         setResumeSource(row ? 'manual' : 'none')
         setLoading(false)
@@ -60,7 +59,7 @@ export default function TailorPage() {
       }
 
       try {
-        // resume_url from get_my_candidate() is a bare private-bucket storage
+        // resume_url from the source-scoped account RPC is a bare private-bucket storage
         // path for self-uploads, not a fetchable URL — resolve it to a real
         // signed URL before handing it to extractTextFromUrl (fetch()).
         const signedUrl = await resolveResumeUrl(session.access_token, row.resume_url)
@@ -130,7 +129,7 @@ export default function TailorPage() {
   return (
     <main className="min-h-screen bg-white text-slate-900">
       <div className="max-w-2xl mx-auto px-6 py-16">
-        <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-2">Your account</p>
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-indigo-700">Your account</p>
         <h1 className="text-3xl md:text-4xl font-semibold leading-tight tracking-tight text-slate-900 mb-3">
           Tailor your resume to a job
         </h1>
@@ -150,7 +149,7 @@ export default function TailorPage() {
             </p>
             <button
               onClick={retryLoad}
-              className="inline-block bg-[#7FBC00] text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-[#6da300]"
+              className="inline-block rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-700"
             >
               Retry
             </button>
@@ -159,7 +158,7 @@ export default function TailorPage() {
           <div className="rounded-lg border-2 border-dashed border-slate-300 p-5">
             <h2 className="font-semibold text-slate-900 mb-2">No resume on file yet</h2>
             <p className="text-sm text-slate-700 mb-3">Upload one in about 30 seconds, then come back here.</p>
-            <Link href="/upload" className="inline-block bg-[#7FBC00] text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-[#6da300]">
+            <Link href="/upload" className="inline-block rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-700">
               Upload your resume →
             </Link>
           </div>
@@ -172,7 +171,7 @@ export default function TailorPage() {
                 onChange={(e) => setJobDescription(e.target.value)}
                 placeholder="Paste the full job posting here..."
                 rows={8}
-                className="w-full rounded-lg border border-slate-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#003D5C]/30 focus:border-[#003D5C]"
+                className="w-full rounded-lg border border-slate-300 p-3 text-sm focus:border-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-200"
               />
             </div>
 
@@ -180,7 +179,7 @@ export default function TailorPage() {
               <div className="flex items-center justify-between mb-1.5">
                 <label className="block text-sm font-medium text-slate-700">Your resume</label>
                 {resumeSource === 'loaded' && (
-                  <span className="text-xs text-[#7FBC00] font-medium">✓ Using the resume on your account</span>
+                  <span className="text-xs font-medium text-teal-700">✓ Using the resume on your account</span>
                 )}
               </div>
               {resumeSource === 'manual' && (
@@ -193,7 +192,7 @@ export default function TailorPage() {
                 onChange={(e) => setResumeText(e.target.value)}
                 placeholder="Paste your resume text here..."
                 rows={8}
-                className="w-full rounded-lg border border-slate-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#003D5C]/30 focus:border-[#003D5C]"
+                className="w-full rounded-lg border border-slate-300 p-3 text-sm focus:border-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-200"
               />
             </div>
 
@@ -203,10 +202,15 @@ export default function TailorPage() {
               </div>
             )}
 
+            <p className="mb-3 text-xs leading-5 text-slate-500">
+              When you run this tool, the resume text and job posting are sent to Google Gemini
+              to create the result. Do not paste patient information or other sensitive data.
+            </p>
+
             <button
               onClick={handleSubmit}
               disabled={!canSubmit}
-              className="w-full bg-[#003D5C] text-white text-sm font-semibold px-4 py-3 rounded-lg hover:bg-[#002A40] disabled:opacity-50"
+              className="w-full rounded-lg bg-indigo-700 px-4 py-3 text-sm font-semibold text-white hover:bg-indigo-800 disabled:opacity-50"
             >
               {submitting ? 'Tailoring…' : 'Tailor my application'}
             </button>
@@ -223,7 +227,7 @@ export default function TailorPage() {
             <section>
               <div className="flex items-center justify-between mb-2">
                 <h2 className="font-semibold text-slate-900">Tailored resume bullets</h2>
-                <button onClick={() => copy('bullets', result.tailoredBullets.map((b) => `• ${b}`).join('\n'))} className="text-xs text-[#003D5C] hover:underline">
+                <button onClick={() => copy('bullets', result.tailoredBullets.map((b) => `• ${b}`).join('\n'))} className="text-xs text-indigo-700 hover:underline">
                   {copiedKey === 'bullets' ? 'Copied' : 'Copy'}
                 </button>
               </div>
@@ -237,7 +241,7 @@ export default function TailorPage() {
             <section>
               <div className="flex items-center justify-between mb-2">
                 <h2 className="font-semibold text-slate-900">Cover letter</h2>
-                <button onClick={() => copy('cover', result.coverLetter)} className="text-xs text-[#003D5C] hover:underline">
+                <button onClick={() => copy('cover', result.coverLetter)} className="text-xs text-indigo-700 hover:underline">
                   {copiedKey === 'cover' ? 'Copied' : 'Copy'}
                 </button>
               </div>
@@ -251,7 +255,7 @@ export default function TailorPage() {
                 <h2 className="font-semibold text-slate-900 mb-2">Keywords this job wants that your resume is missing</h2>
                 <div className="flex flex-wrap gap-2">
                   {result.keywordsToAdd.map((k, i) => (
-                    <span key={i} className="text-xs font-medium bg-[#7FBC00]/10 text-[#4d7300] px-2.5 py-1 rounded-full">
+                    <span key={i} className="rounded-full bg-teal-50 px-2.5 py-1 text-xs font-medium text-teal-800">
                       {k}
                     </span>
                   ))}

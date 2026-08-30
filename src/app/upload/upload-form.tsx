@@ -8,25 +8,15 @@ import {
   parseFields,
   type ParsedResume,
 } from '@/lib/resume-parser'
-import { submitCandidate, type SubmitCandidateInput } from './actions'
-import { supabaseBrowser } from '@/lib/supabase-browser'
+import {
+  submitCandidate,
+  type SubmitCandidateInput,
+  type SubmitCandidateResult,
+  uploadAndAttachResume,
+} from './actions'
 import TurnstileWidget from '@/components/TurnstileWidget'
 import { US_STATES as STATES } from '@/lib/us-states'
-
-// Map a chosen File to a safe storage extension. We only ever store pdf/doc/docx
-// (the bucket's allowed_mime_types enforce the same — see the resume_file_storage
-// migration). Falls back to a sniff of the file name when the browser-supplied
-// MIME type is blank, then to 'pdf' as a last resort.
-function resumeExt(file: File): 'pdf' | 'doc' | 'docx' {
-  const type = (file.type || '').toLowerCase()
-  if (type === 'application/pdf') return 'pdf'
-  if (type === 'application/msword') return 'doc'
-  if (type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') return 'docx'
-  const name = (file.name || '').toLowerCase()
-  if (name.endsWith('.docx')) return 'docx'
-  if (name.endsWith('.doc')) return 'doc'
-  return 'pdf'
-}
+import { inspectResumeFile } from '@/lib/resume-file'
 
 type Phase = 'drop' | 'parsing' | 'review' | 'submitting' | 'done'
 
@@ -34,7 +24,7 @@ export default function UploadForm() {
   const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
   // The raw chosen File, kept around so we can upload the actual bytes to the
-  // private `resumes` bucket on submit (the parsed text is stored separately).
+  // private `resumes` bucket after the candidate reviews the parsed fields.
   const chosenFileRef = useRef<File | null>(null)
   const [phase, setPhase] = useState<Phase>('drop')
   const [dragOver, setDragOver] = useState(false)
@@ -59,21 +49,16 @@ export default function UploadForm() {
     city: '',
     state: '',
     years_experience: null,
-    remote_only: false,
-    contact_via_email: true,
-    contact_via_sms: false,
     is_public: false,
-    raw_text: '',
   })
 
   async function processFile(file: File) {
     setParseErr(null)
-    // Guard: reject files above 5 MB before they hit the parser.
-    // DOCX parsing is synchronous on the main thread; a 10 MB blob can
-    // block it for several seconds on mobile.
-    const MAX_BYTES = 5 * 1024 * 1024
-    if (file.size > MAX_BYTES) {
-      setParseErr(`That file is ${(file.size / 1024 / 1024).toFixed(1)} MB. Please keep it under 5 MB. Most resumes are under 500 KB.`)
+    chosenFileRef.current = null
+    setFileName('')
+    const inspected = inspectResumeFile(file)
+    if (!inspected.ok) {
+      setParseErr(inspected.error)
       return
     }
     setFileName(file.name)
@@ -104,7 +89,6 @@ export default function UploadForm() {
         state: p.state ?? prev.state,
         city: p.city ?? prev.city,
         years_experience: p.yearsExperience ?? prev.years_experience,
-        raw_text: text,
       }))
       setPhase('review')
     } catch (err) {
@@ -126,7 +110,11 @@ export default function UploadForm() {
   }
 
   function canSubmit(): boolean {
+    const botCheckReady =
+      !process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || turnstileToken !== null
     return (
+      fileName.length > 0 &&
+      botCheckReady &&
       form.email.trim().length > 3 &&
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email) &&
       form.first_name.trim().length > 0 &&
@@ -139,48 +127,43 @@ export default function UploadForm() {
     if (!canSubmit()) return
     setPhase('submitting')
     startTransition(async () => {
-      // Cross-app attribution: read utm params off the /upload URL (set by the
-      // freejobpost resume-match bridge) so the upload is traceable to its source.
-      const _utm = new URLSearchParams(window.location.search)
-
-      // Upload the actual resume file to the private `resumes` bucket so the
-      // recruiter CRM can pull the real document, not just the parsed text.
-      // FAIL-OPEN: a storage hiccup (or a missing client) must NOT block the
-      // candidate's submission — we log, drop the path, and submit text-only.
-      let resumePath: string | null = null
-      const file = chosenFileRef.current
-      if (file) {
-        try {
-          const ext = resumeExt(file)
-          const path = `${crypto.randomUUID()}.${ext}`
-          const { error: upErr } = await supabaseBrowser.storage
-            .from('resumes')
-            .upload(path, file, { contentType: file.type, upsert: false })
-          if (upErr) {
-            console.error('resume file upload failed (continuing text-only):', upErr.message)
-          } else {
-            resumePath = path
-          }
-        } catch (err) {
-          console.error(
-            'resume file upload threw (continuing text-only):',
-            err instanceof Error ? err.message : 'unknown',
-          )
-        }
+      let res: SubmitCandidateResult
+      try {
+        res = await submitCandidate(form, turnstileToken ?? '')
+      } catch (error) {
+        console.error(
+          'resume profile submission threw:',
+          error instanceof Error ? error.message : 'unknown',
+        )
+        setParseErr(
+          'We could not confirm the save. Sign in to check your account before trying again.',
+        )
+        setPhase('review')
+        setTurnstileToken(null)
+        setTurnstileKey((key) => key + 1)
+        return
       }
-
-      const res = await submitCandidate(
-        {
-          ...form,
-          resume_path: resumePath,
-          utm_source: _utm.get('utm_source') || undefined,
-          utm_campaign: _utm.get('utm_campaign') || undefined,
-        },
-        turnstileToken ?? '',
-      )
       if (res.success) {
+        let resumeAttached = false
+        const file = chosenFileRef.current
+        if (file) {
+          try {
+            const upload = new FormData()
+            upload.set('candidate_id', res.candidate_id)
+            upload.set('nonce', res.nonce)
+            upload.set('file', file)
+            const attached = await uploadAndAttachResume(upload)
+            resumeAttached = attached.success
+            if (!attached.success) console.error('resume file save failed:', attached.error)
+          } catch (err) {
+            console.error(
+              'resume file upload threw:',
+              err instanceof Error ? err.message : 'unknown',
+            )
+          }
+        }
         setPhase('done')
-        router.push(res.edit_url)
+        router.push(resumeAttached ? res.edit_url : `${res.edit_url}&resume=missing`)
       } else {
         setParseErr(res.error)
         setPhase('review')
@@ -209,11 +192,11 @@ export default function UploadForm() {
           aria-hidden="true"
           className={`rounded-2xl border-2 border-dashed p-12 md:p-16 text-center transition-all ${
             dragOver
-              ? 'border-[#7FBC00] bg-[#7FBC00]/5'
+              ? 'border-teal-600 bg-teal-50'
               : 'border-slate-300 bg-slate-50/50'
           }`}
         >
-          <div className="mx-auto mb-4 w-14 h-14 rounded-full bg-[#003D5C] text-white flex items-center justify-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-700 text-white">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -235,20 +218,20 @@ export default function UploadForm() {
             Drop your resume here
           </p>
           <p className="text-slate-500 text-sm">
-            PDF, DOCX, or TXT · Up to 5 MB · Parsed locally in your browser
+            PDF or DOCX · Up to 5 MB · Read in your browser
           </p>
         </div>
         {/* Keyboard-accessible file picker. visually centered below the drop zone. */}
         <div className="mt-4 flex justify-center">
-          <label className="cursor-pointer inline-flex items-center gap-2 rounded-lg bg-[#7FBC00] hover:bg-[#6DA300] text-white font-semibold px-6 py-3 text-sm transition-colors focus-within:ring-2 focus-within:ring-[#7FBC00] focus-within:ring-offset-2">
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-indigo-700 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-indigo-800 focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2">
             <input
               ref={fileInputRef}
               id="resume-file-input"
               type="file"
-              accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+              accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               className="sr-only"
               onChange={onFileChange}
-              aria-label="Upload your resume, PDF, DOCX, or TXT"
+              aria-label="Upload your resume, PDF or DOCX"
             />
             Browse files
           </label>
@@ -256,10 +239,12 @@ export default function UploadForm() {
         {parseErr && (
           <p role="alert" className="mt-4 text-sm text-red-600 font-medium">{parseErr}</p>
         )}
-        <div className="mt-6 text-sm text-slate-500 flex flex-wrap gap-x-4 gap-y-1">
-          <span>· We extract: name, email, phone, credentials, specialty, state</span>
-          <span>· We never send your resume file to our servers</span>
-          <span>· You review every field before saving</span>
+        <div className="mt-6 space-y-1 text-sm leading-6 text-slate-500">
+          <p>We look for your name, contact details, credentials, specialty, and location.</p>
+          <p>
+            Your resume is parsed in your browser. The file uploads only after you review your
+            information and tap Save.
+          </p>
         </div>
       </div>
     )
@@ -268,7 +253,7 @@ export default function UploadForm() {
   if (phase === 'parsing') {
     return (
       <div className="rounded-2xl border border-slate-200 p-12 text-center bg-slate-50">
-        <div className="mx-auto mb-4 w-10 h-10 border-4 border-[#7FBC00] border-t-transparent rounded-full animate-spin" />
+        <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-teal-600 border-t-transparent" />
         <p className="font-semibold text-slate-900">Reading {fileName}…</p>
         <p className="text-sm text-slate-500 mt-1">This runs locally. No uploads yet.</p>
       </div>
@@ -278,7 +263,7 @@ export default function UploadForm() {
   if (phase === 'submitting' || phase === 'done') {
     return (
       <div className="rounded-2xl border border-slate-200 p-12 text-center bg-slate-50">
-        <div className="mx-auto mb-4 w-10 h-10 border-4 border-[#7FBC00] border-t-transparent rounded-full animate-spin" />
+        <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-teal-600 border-t-transparent" />
         <p className="font-semibold text-slate-900">Saving your profile…</p>
       </div>
     )
@@ -289,7 +274,7 @@ export default function UploadForm() {
     <form onSubmit={onSubmit} className="space-y-8">
       <div className="rounded-2xl border border-slate-200 p-5 bg-slate-50">
         <div className="flex items-start gap-3 mb-2">
-          <span className="w-8 h-8 rounded-full bg-[#7FBC00] text-white flex items-center justify-center text-sm font-bold shrink-0">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-teal-600 text-sm font-bold text-white">
             ✓
           </span>
           <div>
@@ -331,7 +316,7 @@ export default function UploadForm() {
               maxLength={100}
             />
           </Field>
-          <Field label="Email" required hint="Employers reach you here">
+          <Field label="Email" required hint="Used to reopen your profile">
             <input
               type="email"
               required
@@ -343,7 +328,7 @@ export default function UploadForm() {
               maxLength={254}
             />
           </Field>
-          <Field label="Phone" hint="Optional but helpful">
+          <Field label="Phone" hint="Optional">
             <input
               type="tel"
               autoComplete="tel"
@@ -396,7 +381,7 @@ export default function UploadForm() {
               onChange={(e) => setForm({ ...form, state: e.target.value })}
               className={fieldStyle}
             >
-              <option value="">—</option>
+              <option value="">Select state</option>
               {STATES.map((s) => (
                 <option key={s} value={s}>
                   {s}
@@ -419,52 +404,15 @@ export default function UploadForm() {
               className={fieldStyle}
             />
           </Field>
-          <div className="flex items-center md:items-end">
-            <label className="flex items-center gap-2 text-sm pb-2">
-              <input
-                type="checkbox"
-                checked={form.remote_only}
-                onChange={(e) => setForm({ ...form, remote_only: e.target.checked })}
-                className="w-4 h-4 rounded"
-              />
-              Remote-only roles
-            </label>
-          </div>
         </div>
       </section>
 
       <section>
         <h2 className="text-xs font-bold tracking-wider text-slate-500 uppercase mb-4">
-          How should employers reach you?
+          Profile visibility
         </h2>
         <div className="space-y-3">
-          <label className="flex items-start gap-3 p-3 rounded-xl border border-slate-200 hover:border-slate-300 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={form.contact_via_email}
-              onChange={(e) => setForm({ ...form, contact_via_email: e.target.checked })}
-              className="mt-0.5 w-4 h-4"
-            />
-            <div>
-              <p className="font-medium text-slate-900">Email</p>
-              <p className="text-sm text-slate-500">Recommended. Employers reach you at the email above.</p>
-            </div>
-          </label>
-          <label className="flex items-start gap-3 p-3 rounded-xl border border-slate-200 hover:border-slate-300 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={form.contact_via_sms}
-              onChange={(e) => setForm({ ...form, contact_via_sms: e.target.checked })}
-              className="mt-0.5 w-4 h-4"
-            />
-            <div>
-              <p className="font-medium text-slate-900">SMS</p>
-              <p className="text-sm text-slate-500">
-                Explicit opt-in. Only interview confirmations + application updates. No cold outreach, no marketing.
-              </p>
-            </div>
-          </label>
-          <label className="flex items-start gap-3 p-3 rounded-xl border-2 border-[#003D5C]/20 bg-[#003D5C]/5 hover:border-[#003D5C]/30 cursor-pointer">
+          <label className="flex cursor-pointer items-start gap-3 rounded-xl border-2 border-indigo-200 bg-indigo-50 p-3 hover:border-indigo-300">
             <input
               type="checkbox"
               checked={form.is_public}
@@ -478,7 +426,7 @@ export default function UploadForm() {
               <p className="text-sm text-slate-600 mt-1">
                 <strong>Off by default.</strong> When on, your first name, last initial, credential, specialty, city, state, and years of experience appear at
                 <span className="font-mono text-xs"> /profile/[your-slug]</span>, a page you can
-                share or link from anywhere. It is not indexed by Google. <strong>Email + phone always stay private</strong>. Anyone who finds the page has to go through us to reach you. Turn off any time from your private profile page.
+                share or link from anywhere. It is not indexed by Google. <strong>Email, phone, full last name, and the resume file stay private.</strong> Turn the link off any time from your private profile page.
               </p>
             </div>
           </label>
@@ -499,13 +447,15 @@ export default function UploadForm() {
         </div>
       )}
 
-      <div className="flex items-center justify-between pt-6 border-t border-slate-200">
+      <div className="flex flex-col-reverse gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
         <button
           type="button"
           onClick={() => {
             setPhase('drop')
             setParsed(null)
             setFileName('')
+            chosenFileRef.current = null
+            if (fileInputRef.current) fileInputRef.current.value = ''
           }}
           className="text-sm text-slate-500 hover:text-slate-900 underline"
         >
@@ -514,16 +464,15 @@ export default function UploadForm() {
         <button
           type="submit"
           disabled={!canSubmit()}
-          className="inline-flex items-center rounded-xl bg-[#7FBC00] text-white px-6 py-3 font-semibold shadow-sm hover:bg-[#6DA300] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="inline-flex w-full items-center justify-center rounded-xl bg-indigo-700 px-6 py-3 font-semibold text-white shadow-sm transition-colors hover:bg-indigo-800 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
         >
-          Save profile →
+          Save my profile
         </button>
       </div>
 
       <p className="text-xs text-slate-500">
-        By saving, you agree we can match your profile against active jobs on
-        freejobpost.co. You can edit it anytime from your unique profile URL. Email
-        info@avahealth.co to delete. See{' '}
+        By saving, you create a FreeResumePost profile and upload the file you reviewed. Your
+        profile stays private unless you turn on its public link. See{' '}
         <Link href="/privacy" className="underline hover:text-slate-900">
           privacy
         </Link>
@@ -534,7 +483,7 @@ export default function UploadForm() {
 }
 
 const fieldStyle =
-  'w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7FBC00] focus:border-transparent'
+  'w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent'
 
 function Field({
   label,

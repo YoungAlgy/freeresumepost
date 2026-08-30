@@ -4,15 +4,12 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { supabaseBrowser } from '@/lib/supabase-browser'
-import { requestEditLink } from '../candidate/login/actions'
 import { resolveResumeUrl } from '@/lib/resume-url'
 
 // Authed candidate account. After the email-code sign-in (OtpLoginForm) the
-// candidate lands here. We read their session, look up their resume profile by
-// the VERIFIED email via the security-definer get_my_candidate() RPC (which
-// gates on auth.email()), and give them their profile plus the secure ways to
-// update it. Editing reuses the existing emailed secure edit-link flow, so we
-// never expose an in-page editor without the same protection the email link has.
+// candidate lands here. The source-scoped RPC returns only a direct
+// FreeResumePost upload for the verified email. Shared CRM candidates cannot
+// cross into this account surface.
 //
 // Client component (needs useEffect/useState for the session-gated load), so
 // it can't export `metadata` itself — page.tsx wraps it and carries that,
@@ -38,12 +35,11 @@ export default function AccountView() {
   const [loading, setLoading] = useState(true)
   const [email, setEmail] = useState('')
   const [candidate, setCandidate] = useState<Candidate | null>(null)
-  const [editSent, setEditSent] = useState(false)
   const [editLoading, setEditLoading] = useState(false)
   const [editError, setEditError] = useState<string | null>(null)
   const [loadError, setLoadError] = useState(false)
   const [reloadKey, setReloadKey] = useState(0)
-  // resume_url from get_my_candidate() is a bare private-bucket storage path
+  // resume_url from the scoped owner RPC is a bare private-bucket storage path
   // for self-uploads, not a fetchable URL — this holds the real signed URL
   // once resolved, and the "View your current resume" link only renders once
   // it's set (never the raw candidate.resume_url).
@@ -60,10 +56,10 @@ export default function AccountView() {
         return
       }
       if (active) setEmail(session.user.email ?? '')
-      const { data, error } = await supabaseBrowser.rpc('get_my_candidate')
+      const { data, error } = await supabaseBrowser.rpc('get_my_freeresumepost_candidate')
       if (!active) return
       if (error) {
-        console.error('get_my_candidate failed:', error.message)
+        console.error('get_my_freeresumepost_candidate failed:', error.message)
         setLoadError(true)
         setLoading(false)
         return
@@ -93,17 +89,33 @@ export default function AccountView() {
     setReloadKey((k) => k + 1)
   }
 
-  async function sendEditLink() {
-    if (!email || editLoading) return
+  async function openEditor() {
+    if (editLoading) return
     setEditLoading(true)
     setEditError(null)
-    const res = await requestEditLink(email)
+    const { data, error } = await supabaseBrowser.rpc(
+      'issue_my_freeresumepost_edit_token_rpc',
+    )
     setEditLoading(false)
-    if (res.ok) {
-      setEditSent(true)
-    } else {
-      setEditError(res.error)
+    if (error) {
+      console.error('issue_my_freeresumepost_edit_token_rpc failed:', error.message)
+      setEditError('Could not open the editor. Try again.')
+      return
     }
+    const result = data as {
+      success?: boolean
+      candidate_id?: string
+      candidate_slug?: string
+      nonce?: string
+      error?: string
+    }
+    if (!result?.success || !result.candidate_id || !result.candidate_slug || !result.nonce) {
+      setEditError(result?.error || 'Could not open the editor. Try again.')
+      return
+    }
+    router.push(
+      `/profile/${encodeURIComponent(result.candidate_slug)}?t=${encodeURIComponent(result.nonce)}&id=${encodeURIComponent(result.candidate_id)}`,
+    )
   }
 
   async function signOut() {
@@ -119,9 +131,9 @@ export default function AccountView() {
     <main className="min-h-screen bg-white text-slate-900">
       <div className="max-w-lg mx-auto px-6 py-16">
         <div className="flex items-center justify-between mb-2">
-          <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase">Your account</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-indigo-700">Your account</p>
           {email && (
-            <button onClick={signOut} className="text-sm text-slate-500 hover:text-[#003D5C]">
+            <button onClick={signOut} className="text-sm text-slate-500 hover:text-indigo-700">
               Sign out
             </button>
           )}
@@ -140,7 +152,7 @@ export default function AccountView() {
             </p>
             <button
               onClick={retryLoad}
-              className="inline-block bg-[#7FBC00] text-white text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-[#6da300]"
+              className="inline-block rounded-lg bg-indigo-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-800"
             >
               Retry
             </button>
@@ -177,7 +189,7 @@ export default function AccountView() {
                 <div className="flex justify-between gap-4">
                   <dt className="text-slate-500">Visibility</dt>
                   <dd className="font-medium text-slate-900">
-                    {candidate.is_public ? 'Listed for employers' : 'Hidden'}
+                    {candidate.is_public ? 'Public link on' : 'Private'}
                   </dd>
                 </div>
               </dl>
@@ -186,7 +198,7 @@ export default function AccountView() {
                   href={resumeViewUrl}
                   target="_blank"
                   rel="noopener"
-                  className="inline-block mt-4 text-sm font-medium text-[#003D5C] hover:text-[#002A40] underline"
+                  className="mt-4 inline-block text-sm font-medium text-indigo-700 underline hover:text-indigo-800"
                 >
                   View your current resume &rarr;
                 </a>
@@ -195,40 +207,23 @@ export default function AccountView() {
 
             <Link
               href="/account/tailor"
-              className="block w-full text-center bg-[#003D5C] text-white text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-[#002A40] mb-3"
+              className="mb-3 block w-full rounded-lg border border-slate-300 px-4 py-2.5 text-center text-sm font-semibold text-slate-800 hover:bg-slate-50"
             >
               Tailor my resume to a job posting →
             </Link>
 
-            {editSent ? (
-              <div className="rounded-lg border border-[#7FBC00]/30 bg-[#7FBC00]/10 p-5 mb-3">
-                <p className="text-sm text-slate-800">
-                  Check <strong>{email}</strong> for a secure link to edit your profile. It works for 7 days.
-                </p>
+            {editError && (
+              <div className="mb-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                {editError}
               </div>
-            ) : (
-              <>
-                {editError && (
-                  <div className="rounded-lg border border-red-200 bg-red-50 p-4 mb-3 text-sm text-red-700">
-                    {editError}
-                  </div>
-                )}
-                <button
-                  onClick={sendEditLink}
-                  disabled={editLoading}
-                  className="w-full bg-[#7FBC00] text-white text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-[#6da300] disabled:opacity-60 mb-3"
-                >
-                  {editLoading ? 'Sending…' : 'Email me a link to edit my resume'}
-                </button>
-              </>
             )}
-
-            <Link
-              href="/upload"
-              className="block w-full text-center bg-[#003D5C] text-white text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-[#002A40]"
+            <button
+              onClick={openEditor}
+              disabled={editLoading}
+              className="mb-3 w-full rounded-lg bg-indigo-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-800 disabled:opacity-60"
             >
-              Upload a new resume
-            </Link>
+              {editLoading ? 'Opening…' : 'Edit profile or replace resume'}
+            </button>
           </>
         ) : (
           <>
@@ -236,14 +231,14 @@ export default function AccountView() {
               No resume on file
             </h1>
             <p className="text-slate-600 mb-8">
-              We didn&apos;t find a resume for <strong>{email}</strong>. Upload one in about 30 seconds and
-              we&apos;ll match you to real openings.
+              We didn&apos;t find a resume for <strong>{email}</strong>. Upload one to create your
+              FreeResumePost profile.
             </p>
             <Link
               href="/upload"
-              className="inline-block bg-[#7FBC00] text-white text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-[#6da300]"
+              className="inline-block rounded-lg bg-indigo-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-800"
             >
-              Upload your resume &rarr;
+              Upload your resume
             </Link>
           </>
         )}

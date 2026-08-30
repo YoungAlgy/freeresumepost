@@ -1,56 +1,48 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { cache } from 'react'
 import { supabase } from '@/lib/supabase'
 import ProfileEditForm from './edit-form'
+import {
+  FREE_RESUME_POST_UPLOAD_SOURCE,
+  isPublishableFreeResumePostProfile,
+} from '@/lib/profile-provenance'
 
-import { safeJsonLd } from '@/lib/safe-jsonld'
 const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,120}$/
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+const NONCE_RE = /^[0-9a-f]{64}$/i
 
 type Props = {
   params: Promise<{ slug: string }>
-  searchParams: Promise<{ t?: string; id?: string }>
+  searchParams: Promise<{
+    t?: string | string[]
+    id?: string | string[]
+    resume?: string | string[]
+  }>
 }
 
 export const dynamic = 'force-dynamic'
 
 type Candidate = {
-  id: string
   slug: string
   first_name: string
-  last_name: string
   last_initial: string | null
-  email: string
-  phone: string | null
   credential: string | null
   specialty: string | null
   city: string | null
   state: string | null
   years_experience: number | null
-  remote_only: boolean
-  contact_via_email: boolean
-  contact_via_sms: boolean
-  is_public: boolean
+}
+
+type PublicCandidateRow = Candidate & {
   source: string | null
-  created_at: string
+  is_public: boolean
+  status: string | null
+  deleted_at: string | null
 }
 
-export type CandidateMatch = {
-  job_id: string
-  job_slug: string
-  job_title: string
-  job_city: string | null
-  job_state: string | null
-  job_specialty: string | null
-  job_remote_hybrid: 'remote' | 'hybrid' | 'onsite' | null
-  job_employment_type: string | null
-  salary_min: number | null
-  salary_max: number | null
-  score: number
-  reasons: Record<string, unknown> | null
-}
-
-async function getPublicCandidate(slug: string): Promise<Candidate | null> {
+const getPublicCandidate = cache(async (slug: string): Promise<Candidate | null> => {
   if (!SLUG_RE.test(slug)) return null
   const { data } = await supabase
     // public_candidates_directory (2026-08-13): anon has no grant on the base
@@ -62,21 +54,30 @@ async function getPublicCandidate(slug: string): Promise<Candidate | null> {
     // consume_candidate_edit_rpc.
     .from('public_candidates_directory')
     .select(
-      'id, slug, first_name, last_initial, credential, specialty, city, state, years_experience, remote_only, contact_via_email, contact_via_sms, is_public, source, created_at'
+      'slug, first_name, last_initial, credential, specialty, city, state, years_experience, source, is_public, status, deleted_at'
     )
     .eq('slug', slug)
+    .eq('source', FREE_RESUME_POST_UPLOAD_SOURCE)
     .eq('is_public', true)
     .eq('status', 'active')
     .is('deleted_at', null)
     .maybeSingle()
-  return (data as unknown as Candidate) ?? null
-}
+  const row = data as unknown as PublicCandidateRow | null
+  if (!row || !isPublishableFreeResumePostProfile(row)) return null
+  return {
+    slug: row.slug,
+    first_name: row.first_name,
+    last_initial: row.last_initial,
+    credential: row.credential,
+    specialty: row.specialty,
+    city: row.city,
+    state: row.state,
+    years_experience: row.years_experience,
+  }
+})
 
-// Fields ProfileEditForm (edit-form.tsx) actually reads. Deliberately
-// narrower than `Candidate` above (which also carries last_initial/source/
-// created_at for the public directory view) -- id/slug/first_name/
-// last_name/email/phone/credential/specialty/city/state/years_experience/
-// remote_only/contact_via_email/contact_via_sms/is_public only.
+// Fields ProfileEditForm actually reads. Keep this explicit before the data
+// crosses the Server Component boundary into the client form.
 export type EditableCandidate = {
   id: string
   slug: string
@@ -89,23 +90,30 @@ export type EditableCandidate = {
   city: string | null
   state: string | null
   years_experience: number | null
-  remote_only: boolean
-  contact_via_email: boolean
-  contact_via_sms: boolean
   is_public: boolean
+  has_resume: boolean
 }
+
+type EditableCandidateRpc = EditableCandidate & { source: string }
 
 async function getEditableCandidate(
   candidateId: string,
   nonce: string
-): Promise<{ candidate: EditableCandidate; matches: CandidateMatch[] } | null> {
+): Promise<{ candidate: EditableCandidate } | null> {
+  if (!UUID_RE.test(candidateId) || !NONCE_RE.test(nonce)) return null
   const { data, error } = await supabase.rpc('consume_candidate_edit_rpc', {
     p_candidate_id: candidateId,
     p_nonce: nonce,
   })
   if (error) return null
-  const r = data as { success: boolean; candidate?: EditableCandidate; matches?: CandidateMatch[] }
-  if (!r.success || !r.candidate) return null
+  const r = data as { success: boolean; candidate?: EditableCandidateRpc }
+  if (
+    !r.success ||
+    !r.candidate ||
+    r.candidate.source !== FREE_RESUME_POST_UPLOAD_SOURCE
+  ) {
+    return null
+  }
   // Defense-in-depth: even though consume_candidate_edit_rpc now returns a
   // narrow jsonb_build_object() (2026-08-20 migration), build an explicit
   // safe object here too before it crosses into a Client Component
@@ -127,42 +135,44 @@ async function getEditableCandidate(
     city: c.city ?? null,
     state: c.state ?? null,
     years_experience: c.years_experience ?? null,
-    remote_only: c.remote_only,
-    contact_via_email: c.contact_via_email,
-    contact_via_sms: c.contact_via_sms,
     is_public: c.is_public,
+    has_resume: c.has_resume === true,
   }
-  return { candidate: safeCandidate, matches: r.matches ?? [] }
+  return { candidate: safeCandidate }
+}
+
+function firstParam(value: string | string[] | undefined): string | undefined {
+  return Array.isArray(value) ? value[0] : value
+}
+
+function publicName(firstName: string, lastInitial: string | null): string {
+  const initial = lastInitial?.trim()
+  return initial ? `${firstName} ${initial}.` : firstName
 }
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { slug } = await params
-  const { t } = await searchParams
+  const query = await searchParams
+  const t = firstParam(query.t)
+  const id = firstParam(query.id)
   // Edit-mode links (?t=…&id=…, emailed to the candidate) must NEVER be
   // indexed — that view unlocks the candidate's private PII (email/phone) +
-  // job matches. generateMetadata otherwise computes the PUBLIC profile's
+  // private profile data. generateMetadata otherwise computes the public profile's
   // indexable metadata even for a ?t URL, so set noindex authoritatively here
   // (robots.txt disallow + canonical also guard, but this is the real signal).
-  if (t) {
+  if (t || id) {
     return { title: 'Edit your profile', robots: { index: false, follow: false } }
   }
   const c = await getPublicCandidate(slug)
   if (!c) {
     return { title: 'Profile', robots: { index: false, follow: false } }
   }
-  // 2026-06-02: ALL public candidate profiles are noindex'd. The candidate
-  // directory is a monetizable asset, not free indexed content — we're pulling
-  // it out of Google while the gated/paid-access model is designed (profiles are
-  // also dropped from the sitemap). Edit-mode (?t=) is already noindex,nofollow
-  // above. The page still renders (direct links + the owner's edit view work);
-  // it's just out of the public index. Reversible: restore the old thin-only
-  // gate (`index:false` only when no specialty AND no credential).
   const loc = [c.city, c.state].filter(Boolean).join(', ')
-  const lastInitial = c.last_initial ?? ''
-  const title = `${c.first_name} ${lastInitial}.${c.credential ? ', ' + c.credential : ''}, ${c.specialty ?? 'Healthcare'}`
+  const name = publicName(c.first_name, c.last_initial)
+  const title = `${name}${c.credential ? `, ${c.credential}` : ''} | Healthcare resume profile`
   return {
     title,
-    description: `${title} profile on freeresumepost.co. ${loc ? 'Based in ' + loc + '. ' : ''}Open to healthcare job opportunities.`,
+    description: `${name}'s limited healthcare resume profile.${loc ? ` Based in ${loc}.` : ''}`,
     alternates: { canonical: `https://www.freeresumepost.co/profile/${slug}` },
     robots: { index: false, follow: true },
     openGraph: { title, type: 'profile', url: `https://www.freeresumepost.co/profile/${slug}` },
@@ -171,20 +181,29 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 
 export default async function ProfilePage({ params, searchParams }: Props) {
   const { slug } = await params
-  const { t, id } = await searchParams
+  const query = await searchParams
+  const t = firstParam(query.t)
+  const id = firstParam(query.id)
+  const resumeMissing = firstParam(query.resume) === 'missing'
 
-  // Edit mode — a valid token unlocks the private profile + the candidate's
-  // top job matches. Falls through to public view if token invalid.
-  if (t && id) {
-    const result = await getEditableCandidate(id, t)
-    if (result && result.candidate.slug === slug) {
-      return <EditMode candidate={result.candidate} nonce={t} matches={result.matches} />
+  // Treat a partial edit query as invalid too. Falling through to a public
+  // page with half of a private link makes recovery unclear and can leak token
+  // fragments into logs and analytics.
+  if (t || id) {
+    if (t && id) {
+      const result = await getEditableCandidate(id, t)
+      if (result && result.candidate.slug === slug) {
+        return (
+          <EditMode
+            candidate={result.candidate}
+            nonce={t}
+            resumeMissing={resumeMissing}
+          />
+        )
+      }
     }
-    // L122 fix: an edit link was provided but it didn't open the editor (expired,
-    // already used, or slug-mismatched). Don't silently fall through to the public
-    // read-only view (or a bare 404 for a private profile) with no explanation —
-    // show a clear "this link didn't work" state that points at the real recovery
-    // page (/candidate/login, which resends a fresh link).
+    // An edit link was provided but it did not open the owner view. Do not
+    // silently fall through to a public profile or a bare 404.
     return <EditLinkInvalid />
   }
 
@@ -192,47 +211,17 @@ export default async function ProfilePage({ params, searchParams }: Props) {
   if (!c) notFound()
 
   const loc = [c.city, c.state].filter(Boolean).join(', ')
-
-  // knowsAbout array — Schema.org Person property that boosts AI-overview
-  // surfacing (SGE pulls candidate.knowsAbout fields into "professionals
-  // who specialize in X" answers). Build from specialty + credential since
-  // those are the highest-signal terms we have. Filtered to non-null
-  // strings + de-duped.
-  const knowsAbout = [c.specialty, c.credential]
-    .filter((s): s is string => typeof s === 'string' && s.trim().length > 0)
-    .filter((s, i, arr) => arr.indexOf(s) === i)
-
-  const personJsonLd: Record<string, unknown> = {
-    '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: `${c.first_name} ${c.last_initial ?? ''}.`,
-    jobTitle: c.specialty || c.credential || 'Healthcare professional',
-    ...(knowsAbout.length > 0 ? { knowsAbout } : {}),
-    address: loc
-      ? {
-          '@type': 'PostalAddress',
-          addressLocality: c.city || undefined,
-          addressRegion: c.state || undefined,
-          addressCountry: 'US',
-        }
-      : undefined,
-    url: `https://www.freeresumepost.co/profile/${c.slug}`,
-  }
+  const name = publicName(c.first_name, c.last_initial)
 
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeJsonLd(personJsonLd) }}
-      />
       <main className="min-h-screen bg-white text-slate-900">
         <div className="max-w-3xl mx-auto px-6 py-12 md:py-16">
           <div className="rounded-3xl border border-slate-200 p-8 md:p-10 shadow-sm">
-            <p className="text-xs font-semibold tracking-wider text-[#003D5C] uppercase mb-3">
-              Open to opportunities
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-indigo-700">
+              Shared healthcare profile
             </p>
             <h1 className="text-3xl md:text-4xl font-semibold leading-tight tracking-tight mb-2">
-              {c.first_name} {c.last_initial ?? ''}.
+              {name}
               {c.credential && (
                 <span className="text-slate-500 font-normal">, {c.credential}</span>
               )}
@@ -243,42 +232,24 @@ export default async function ProfilePage({ params, searchParams }: Props) {
             {loc && <p className="text-slate-500">{loc}</p>}
 
             <div className="mt-6 flex flex-wrap gap-2">
-              {c.remote_only && (
-                <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200">
-                  Remote-only
-                </span>
-              )}
               {c.years_experience !== null && c.years_experience !== undefined && (
                 <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
                   {c.years_experience}+ yrs experience
                 </span>
               )}
-              {c.contact_via_email && (
-                <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#003D5C]/10 text-[#003D5C] border border-[#003D5C]/20">
-                  Email contact OK
-                </span>
-              )}
             </div>
 
-            <div className="mt-8 pt-6 border-t border-slate-200 text-sm text-slate-500">
-              Contact this candidate via{' '}
-              <a
-                href="https://freejobpost.co/post-job"
-                className="underline hover:text-[#003D5C]"
-              >
-                freejobpost.co
-              </a>{' '}
-              by posting a matching role, and they&apos;ll see it in their dashboard.
+            <div className="mt-8 border-t border-slate-200 pt-6 text-sm text-slate-500">
+              This limited profile was shared by the person shown. Their email, phone number,
+              full last name, and resume file are hidden.
             </div>
           </div>
         </div>
       </main>
-    </>
   )
 }
 
-// L122: shown when a ?t=&id= edit link is present but invalid/expired/used —
-// a clear recovery state instead of a silent fall-through to public/404.
+// Recovery state for an invalid, expired, partial, or wrong-profile edit link.
 function EditLinkInvalid() {
   return (
     <main className="min-h-screen bg-white text-slate-900">
@@ -288,19 +259,17 @@ function EditLinkInvalid() {
             This edit link didn&apos;t work
           </h1>
           <p className="text-slate-600 mb-2">
-            It may have expired or already been used. Your profile is still live.
-            This just means this particular link can&apos;t open the editor.
+            It may have expired or been copied incorrectly. Your profile is unchanged.
           </p>
           <p className="text-slate-600 mb-6">
-            Check your email for the most recent edit link we sent you. If you
-            can&apos;t find it, we&apos;ll send a fresh one.
+            Sign in with your email to open the profile and create a fresh secure link.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link
               href="/candidate/login"
-              className="px-4 py-2.5 rounded-xl bg-[#003D5C] text-white text-sm font-semibold hover:bg-[#002A40]"
+              className="rounded-xl bg-indigo-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-800"
             >
-              Get a fresh edit link →
+              Sign in to my profile
             </Link>
             <Link
               href="/"
@@ -319,11 +288,17 @@ function EditLinkInvalid() {
 function EditMode({
   candidate,
   nonce,
-  matches,
+  resumeMissing,
 }: {
   candidate: EditableCandidate
   nonce: string
-  matches: CandidateMatch[]
+  resumeMissing: boolean
 }) {
-  return <ProfileEditForm candidate={candidate} nonce={nonce} matches={matches} />
+  return (
+    <ProfileEditForm
+      candidate={candidate}
+      nonce={nonce}
+      initialResumeMissing={resumeMissing}
+    />
+  )
 }

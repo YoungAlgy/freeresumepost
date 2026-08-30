@@ -1,6 +1,7 @@
-// Client-side resume text extraction + regex field detection.
-// Runs entirely in the browser — PDF/DOCX bytes never leave the user's machine.
-// The only thing we POST server-side is the extracted text + structured fields.
+// Client-side resume text extraction + field detection. The browser uses the
+// result to prefill the review form. Extracted raw text is not sent or stored.
+
+import { inspectResumeFile } from './resume-file'
 
 export type ParsedResume = {
   rawText: string
@@ -15,17 +16,9 @@ export type ParsedResume = {
   yearsExperience: number | null
 }
 
-// Physician + PA credentials moved to the separate MASC Medical brand in the
-// 2026-08-19/20 Ava/MASC split (see specialty-slugs.ts, role-buckets.ts,
-// resume-guides.ts, and the homepage/how-it-works FAQ's explicit role list,
-// none of which include MD/DO/PA anymore). Never surfaced as a detected
-// credential — a physician or PA resume shouldn't autofill "MD" or "PA-C"
-// into the credential field on a nurse-and-allied-health-only intake site —
-// but still excluded from name-token candidates below (combined into
-// NAME_EXCLUSION_TOKENS) so e.g. "Jane Smith, MD" doesn't misparse "MD" as
-// a surname. Found live: a self-uploaded MD/Internal Medicine candidate was
-// sitting in production, auto-tagged by this list and actively matched
-// against physician job postings by the daily marketplace-match cron.
+// These provider credentials are outside this nursing and allied-health tool.
+// They still stay in the name-token exclusion set so a suffix like "MD" is
+// never misread as the person's last name.
 const OUT_OF_SCOPE_CREDENTIAL_TOKENS = ['MD', 'DO', 'PA-C', 'PA']
 
 const CREDENTIAL_TOKENS = [
@@ -103,12 +96,10 @@ const STATE_CODES = [
 ]
 
 export async function extractTextFromFile(file: File): Promise<string> {
-  const name = file.name.toLowerCase()
+  const inspected = inspectResumeFile(file)
+  if (!inspected.ok) throw new Error(inspected.error)
   const ab = await file.arrayBuffer()
-  if (name.endsWith('.pdf')) return extractPdfText(ab)
-  if (name.endsWith('.docx')) return extractDocxText(ab)
-  if (name.endsWith('.txt')) return new TextDecoder().decode(ab)
-  throw new Error('Unsupported file type. Use PDF, DOCX, or TXT.')
+  return inspected.value.extension === 'pdf' ? extractPdfText(ab) : extractDocxText(ab)
 }
 
 // Same extraction, but starting from a URL instead of a fresh file picked in
@@ -124,8 +115,7 @@ export async function extractTextFromUrl(url: string): Promise<string> {
   const path = new URL(url).pathname.toLowerCase()
   if (path.endsWith('.pdf')) return extractPdfText(ab)
   if (path.endsWith('.docx')) return extractDocxText(ab)
-  if (path.endsWith('.txt')) return new TextDecoder().decode(ab)
-  throw new Error('Unsupported file type on record. Use PDF, DOCX, or TXT.')
+  throw new Error('Unsupported file type on record. Use PDF or DOCX.')
 }
 
 async function extractPdfText(ab: ArrayBuffer): Promise<string> {
