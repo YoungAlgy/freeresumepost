@@ -1,5 +1,6 @@
 import type { NextConfig } from 'next'
 import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare'
+import { PHASE_DEVELOPMENT_SERVER } from 'next/constants'
 
 const nextConfig: NextConfig = {
   trailingSlash: false,
@@ -90,6 +91,16 @@ const nextConfig: NextConfig = {
   },
 }
 
-initOpenNextCloudflareForDev()
+const createNextConfig = (phase: string): NextConfig => {
+  // Wrangler's local platform proxy belongs to the development server. If it
+  // starts during `next build`, Wrangler inspects the custom entry before
+  // OpenNext generates `.open-next/worker.js` and falsely reports the bound
+  // DOQueueHandler as missing.
+  if (phase === PHASE_DEVELOPMENT_SERVER) {
+    void initOpenNextCloudflareForDev()
+  }
 
-export default nextConfig
+  return nextConfig
+}
+
+export default createNextConfig

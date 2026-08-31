@@ -104,6 +104,9 @@ describe('FreeResumePost server security contract', () => {
     }
 
     expect(nextConfig).toContain("serverActions: { bodySizeLimit: '6mb' }")
+    expect(nextConfig).toContain("PHASE_DEVELOPMENT_SERVER")
+    expect(nextConfig).toContain("phase === PHASE_DEVELOPMENT_SERVER")
+    expect(nextConfig).not.toMatch(/\ninitOpenNextCloudflareForDev\(\)\n/)
     expect(packageJson.scripts['cf:build']).toBe('opennextjs-cloudflare build')
     expect(packageJson.scripts['cf:hash']).toBe('node scripts/hash-open-next.mjs')
     expect(packageJson.scripts['cf:preview']).toBe(
