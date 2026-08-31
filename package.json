@@ -11,9 +11,14 @@
     "test:watch": "vitest",
     "cf:build": "opennextjs-cloudflare build",
     "cf:hash": "node scripts/hash-open-next.mjs",
-    "cf:preview": "opennextjs-cloudflare preview",
-    "cf:upload": "opennextjs-cloudflare upload --strict --keep-vars",
-    "cf:deploy": "wrangler versions deploy"
+    "cf:preview": "node scripts/preview-sanitized-release.mjs",
+    "cf:upload": "node scripts/upload-sanitized-release.mjs",
+    "cf:stage": "node scripts/manage-cloudflare-traffic.mjs stage",
+    "cf:unstage": "node scripts/manage-cloudflare-traffic.mjs unstage",
+    "cf:promote": "node scripts/manage-cloudflare-traffic.mjs promote",
+    "cf:rollback": "node scripts/manage-cloudflare-traffic.mjs rollback",
+    "release:build": "node scripts/build-sanitized-release.mjs",
+    "release:bindings": "node scripts/check-cloudflare-bindings.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.102.1",
@@ -29,8 +34,10 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "es-module-lexer": "2.3.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.2",
+    "json5": "2.2.3",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.5",

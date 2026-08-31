@@ -33,7 +33,10 @@ yarn-error.log*
 
 # Cloudflare (OpenNext adapter build output + wrangler local cache)
 .open-next/
+.open-next.release-candidate/
 .wrangler/
+.release-build/
+.freeresumepost-candidate.json
 
 # typescript
 *.tsbuildinfo

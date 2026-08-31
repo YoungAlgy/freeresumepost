@@ -106,12 +106,29 @@ describe('FreeResumePost server security contract', () => {
     expect(nextConfig).toContain("serverActions: { bodySizeLimit: '6mb' }")
     expect(packageJson.scripts['cf:build']).toBe('opennextjs-cloudflare build')
     expect(packageJson.scripts['cf:hash']).toBe('node scripts/hash-open-next.mjs')
-    expect(packageJson.scripts['cf:preview']).toBe('opennextjs-cloudflare preview')
-    expect(packageJson.scripts['cf:upload']).toBe(
-      'opennextjs-cloudflare upload --strict --keep-vars',
+    expect(packageJson.scripts['cf:preview']).toBe(
+      'node scripts/preview-sanitized-release.mjs',
     )
-    expect(packageJson.scripts['cf:deploy']).toBe('wrangler versions deploy')
-    expect(packageJson.scripts['cf:upload']).not.toContain('build &&')
-    expect(packageJson.scripts['cf:deploy']).not.toContain('build &&')
+    expect(packageJson.scripts['cf:upload']).toBe(
+      'node scripts/upload-sanitized-release.mjs',
+    )
+    expect(packageJson.scripts['cf:deploy']).toBeUndefined()
+    expect(packageJson.scripts['cf:stage']).toBe(
+      'node scripts/manage-cloudflare-traffic.mjs stage',
+    )
+    expect(packageJson.scripts['cf:unstage']).toBe(
+      'node scripts/manage-cloudflare-traffic.mjs unstage',
+    )
+    expect(packageJson.scripts['cf:promote']).toBe(
+      'node scripts/manage-cloudflare-traffic.mjs promote',
+    )
+    expect(packageJson.scripts['cf:rollback']).toBe(
+      'node scripts/manage-cloudflare-traffic.mjs rollback',
+    )
+    const releaseUpload = source('scripts/upload-sanitized-release.mjs')
+    expect(releaseUpload).toContain("'upload', '--strict', '--keep-vars'")
+    expect(releaseUpload).not.toContain("'build'")
+    expect(releaseUpload).toContain('validateDeploymentSnapshotUnchanged(')
+    expect(releaseUpload).toContain('writeCandidateRecord(record')
   })
 })
