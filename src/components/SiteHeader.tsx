@@ -7,7 +7,7 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
         <Link href="/" className="flex min-w-0 items-center gap-2" aria-label="FreeResumePost home">
           <Logo size={32} className="shrink-0" />
-          <span className="truncate text-base font-bold tracking-tight text-slate-950 sm:text-lg">
+          <span className="truncate text-base font-black tracking-[-0.03em] text-[#17324D] sm:text-lg">
             FreeResumePost
           </span>
         </Link>

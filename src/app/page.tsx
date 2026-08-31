@@ -7,6 +7,8 @@ export const metadata: Metadata = {
     'Upload, review, and save a nursing or allied health resume profile. Your profile stays private unless you choose to share a limited public link.',
   alternates: { canonical: 'https://www.freeresumepost.co' },
   openGraph: {
+    siteName: 'FreeResumePost',
+    locale: 'en_US',
     title: 'Post Your Healthcare Resume Free | FreeResumePost',
     description:
       'A simple resume profile for nurses and allied health professionals. Private by default.',
@@ -130,6 +132,29 @@ export default function Home() {
               Your email, phone number, last name, and resume file stay hidden.
             </p>
           </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="job-tool" className="border-b border-slate-200 bg-white">
+        <div className="mx-auto grid max-w-5xl gap-6 px-5 py-14 sm:px-6 sm:py-16 md:grid-cols-[1fr_auto] md:items-center">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#276749]">
+              Ready to search
+            </p>
+            <h2 id="job-tool" className="mt-2 text-3xl font-bold tracking-tight text-slate-950">
+              Browse healthcare jobs posted by employers.
+            </h2>
+            <p className="mt-3 max-w-2xl leading-7 text-slate-600">
+              FreeJobPost lists nursing and allied health roles posted directly by employers.
+              Your FreeResumePost profile is kept separate and is never sent automatically.
+            </p>
+          </div>
+          <a
+            href="https://freejobpost.co/jobs"
+            className="inline-flex min-h-12 w-full items-center justify-center rounded-xl border border-[#276749] px-5 py-3 font-semibold text-[#276749] transition-colors hover:bg-[#F0FDF4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#276749] focus-visible:ring-offset-2 md:w-auto"
+          >
+            Browse FreeJobPost
+          </a>
         </div>
       </section>
 

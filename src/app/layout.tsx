@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import { HealthcareToolsNav } from '@/components/HealthcareToolsNav'
 import { SiteHeader } from '@/components/SiteHeader'
 import { buildOrganizationGraph } from '@/lib/organization-schema'
 import { safeJsonLd } from '@/lib/safe-jsonld'
@@ -15,12 +16,19 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
+  applicationName: 'FreeResumePost',
   title: {
     template: '%s | FreeResumePost',
     default: 'Post Your Healthcare Resume Free | FreeResumePost',
   },
   description:
     'A simple resume-posting tool for nurses and allied health professionals. Private by default.',
+  keywords: [
+    'post healthcare resume free',
+    'nursing resume profile',
+    'allied health resume',
+    'private resume profile',
+  ],
   metadataBase: new URL('https://www.freeresumepost.co'),
   openGraph: {
     siteName: 'FreeResumePost',
@@ -76,6 +84,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to main content
         </a>
+        <HealthcareToolsNav current="resumes" />
         <SiteHeader />
         <div id="main-content">{children}</div>
         <footer className="border-t border-slate-200 bg-white">
@@ -90,6 +99,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/candidate/login" className="hover:text-indigo-700">
                 Open profile
               </Link>
+              <a href="https://freejobpost.co/jobs" className="hover:text-indigo-700">
+                Browse jobs
+              </a>
               <Link href="/terms" className="hover:text-indigo-700">
                 Terms
               </Link>
@@ -99,7 +111,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </nav>
             <div className="text-xs md:text-right">
               <p>&copy; {new Date().getFullYear()} FreeResumePost.</p>
-              <p>For nursing and allied health professionals.</p>
+              <p>
+                Find direct-employer healthcare jobs on{' '}
+                <a href="https://freejobpost.co/jobs" className="font-semibold underline">
+                  FreeJobPost
+                </a>
+                .
+              </p>
             </div>
           </div>
         </footer>

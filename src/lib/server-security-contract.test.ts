@@ -50,6 +50,23 @@ describe('FreeResumePost server security contract', () => {
     expect(browserForm).not.toContain('signInWithOtp')
   })
 
+  it('records the shared Auth sender as a standalone release blocker', () => {
+    const otpAction = source('src/app/candidate/login/actions.ts')
+    const release = source('docs/releases/2026-08-29-standalone-release.md')
+    const envExample = source('.env.example')
+
+    expect(otpAction).toContain('sb.auth.signInWithOtp')
+    expect(release).toContain(
+      'BLOCKED: candidate OTP sender identity is not owned by FreeResumePost yet.',
+    )
+    expect(release).toContain('src/app/candidate/login/actions.ts')
+    expect(release).toContain('Supabase Auth owns the sender name')
+    expect(release).toContain('shared Supabase Edge Function named `resume-edit-link`')
+    expect(release).toContain('sender is still on `avahealth.co`')
+    expect(release).toContain('Capture a real received OTP email before release.')
+    expect(envExample).not.toContain('FREERESUMEPOST_FROM_EMAIL')
+  })
+
   it('separates the rolling grants from the post-cutover lockdown', () => {
     const boundary = source(
       'supabase/migrations/20260828010000_freeresumepost_standalone_boundary.sql',

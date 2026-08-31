@@ -10,6 +10,19 @@ This release makes FreeResumePost a standalone resume upload and profile tool. I
 
 The database and frontend must roll out as one coordinated release. The boundary database change is backward compatible with the currently deployed frontend. The frontend is not backward compatible with the old database because it calls new source-scoped RPCs. A second database migration locks submission and storage down only after the replacement Worker passes its production watch.
 
+## Transactional brand gate
+
+**BLOCKED: candidate OTP sender identity is not owned by FreeResumePost yet.**
+
+- `src/app/candidate/login/actions.ts` calls `createServiceRoleClient().auth.signInWithOtp(...)` after the source-scoped profile check.
+- That call uses the shared Supabase Auth project configured by `NEXT_PUBLIC_SUPABASE_URL`. Supabase Auth owns the sender name, from address, subject, and six-digit-code template for this path. Those settings are project-wide and are not defined in this repository.
+- `src/app/candidate/login/OtpLoginForm.tsx` verifies the code through the same shared Auth project. There is no FreeResumePost-owned OTP Edge Function or transactional sender binding under `supabase/functions` in this repository.
+- `FREERESUMEPOST_SUPPORT_EMAIL` is only the server-rendered support contact. It does not control Auth email delivery.
+- The legacy recovery-email path is the shared Supabase Edge Function named `resume-edit-link`. Its source and sender binding are not checked into this repository. The last audited runbook state says its sender is still on `avahealth.co`, so its live version, source, template, and binding ownership must be captured read-only before it is used in a standalone release.
+- Do not solve this by changing the shared Supabase Auth template to FreeResumePost without checking every other app that uses the project. That can move the brand leak into the CRM or another product.
+
+Release requires a reviewed product-owned OTP sender and template path, or a proven shared template and sender that presents no Ava recruiting identity. The sending domain and reply path must be active and monitored. Capture a real received OTP email before release. No sender value, secret, or template ownership is currently established in this repository.
+
 ## Database migration allowlist
 
 The release has two migration stages. Apply the boundary migration before the frontend:

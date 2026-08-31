@@ -13,10 +13,18 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        // Next.js generates the modern icon routes, while some browsers still
+        // Metadata, sitemap entries, profile links, and structured data all
+        // use www. Normalize the apex host to that one canonical origin.
+        source: '/:path*',
+        has: [{ type: 'host', value: 'freeresumepost.co' }],
+        destination: 'https://www.freeresumepost.co/:path*',
+        permanent: true,
+      },
+      {
+        // Next serves src/app/icon.svg at /icon.svg, while some browsers still
         // request /favicon.ico directly.
         source: '/favicon.ico',
-        destination: '/icon',
+        destination: '/icon.svg',
         permanent: true,
       },
     ]

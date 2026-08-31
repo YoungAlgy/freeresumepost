@@ -4,6 +4,11 @@
 
 Users add a PDF or DOCX resume. The file is read in the browser first so the user can review the extracted details. The resume file and approved profile data upload only after the user taps Save.
 
+## Connected job tool
+
+- [Browse nursing and allied health jobs](https://freejobpost.co/jobs): FreeJobPost lists current roles posted directly by employers
+- FreeJobPost and FreeResumePost are connected navigation tools. Moving between the sites does not transfer a resume, submit an application, or create an automatic match.
+
 ## Main pages
 
 - [Home](https://www.freeresumepost.co): Product overview

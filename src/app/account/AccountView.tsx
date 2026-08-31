@@ -37,19 +37,16 @@ export default function AccountView() {
   const [candidate, setCandidate] = useState<Candidate | null>(null)
   const [editLoading, setEditLoading] = useState(false)
   const [editError, setEditError] = useState<string | null>(null)
+  const [resumeLoading, setResumeLoading] = useState(false)
+  const [resumeError, setResumeError] = useState<string | null>(null)
   const [loadError, setLoadError] = useState(false)
   const [reloadKey, setReloadKey] = useState(0)
-  // resume_url from the scoped owner RPC is a bare private-bucket storage path
-  // for self-uploads, not a fetchable URL — this holds the real signed URL
-  // once resolved, and the "View your current resume" link only renders once
-  // it's set (never the raw candidate.resume_url).
-  const [resumeViewUrl, setResumeViewUrl] = useState<string | null>(null)
 
   useEffect(() => {
     let active = true
     async function load() {
       setLoadError(false)
-      setResumeViewUrl(null)
+      setResumeError(null)
       const { data: { session } } = await supabaseBrowser.auth.getSession()
       if (!session) {
         router.replace('/candidate/login')
@@ -69,14 +66,6 @@ export default function AccountView() {
       setCandidate(c)
       setLoading(false)
 
-      if (c?.resume_url) {
-        try {
-          const url = await resolveResumeUrl(session.access_token, c.resume_url)
-          if (active) setResumeViewUrl(url)
-        } catch (e) {
-          console.error('resolveResumeUrl failed:', e instanceof Error ? e.message : 'unknown')
-        }
-      }
     }
     load()
     return () => {
@@ -116,6 +105,27 @@ export default function AccountView() {
     router.push(
       `/profile/${encodeURIComponent(result.candidate_slug)}?t=${encodeURIComponent(result.nonce)}&id=${encodeURIComponent(result.candidate_id)}`,
     )
+  }
+
+  async function openResume() {
+    if (resumeLoading || !candidate?.resume_url) return
+    setResumeLoading(true)
+    setResumeError(null)
+
+    try {
+      const { data: { session } } = await supabaseBrowser.auth.getSession()
+      if (!session) {
+        router.replace('/candidate/login')
+        return
+      }
+      const url = await resolveResumeUrl(session.access_token, candidate.resume_url)
+      window.location.assign(url)
+    } catch (error) {
+      console.error('resolveResumeUrl failed:', error instanceof Error ? error.message : 'unknown')
+      setResumeError('Could not open your resume. Try again.')
+    } finally {
+      setResumeLoading(false)
+    }
   }
 
   async function signOut() {
@@ -193,16 +203,17 @@ export default function AccountView() {
                   </dd>
                 </div>
               </dl>
-              {resumeViewUrl && (
-                <a
-                  href={resumeViewUrl}
-                  target="_blank"
-                  rel="noopener"
-                  className="mt-4 inline-block text-sm font-medium text-indigo-700 underline hover:text-indigo-800"
+              {candidate.resume_url && (
+                <button
+                  type="button"
+                  onClick={openResume}
+                  disabled={resumeLoading}
+                  className="mt-4 min-h-11 text-sm font-medium text-indigo-700 underline hover:text-indigo-800 disabled:opacity-60"
                 >
-                  View your current resume &rarr;
-                </a>
+                  {resumeLoading ? 'Opening resume...' : 'View your current resume'}
+                </button>
               )}
+              {resumeError && <p className="mt-2 text-sm text-red-700" role="alert">{resumeError}</p>}
             </div>
 
             <Link
