@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useTransition } from 'react'
+import { useEffect, useRef, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -17,6 +17,11 @@ import {
 import TurnstileWidget from '@/components/TurnstileWidget'
 import { US_STATES as STATES } from '@/lib/us-states'
 import { inspectResumeFile } from '@/lib/resume-file'
+import {
+  isTurnstileReady,
+  turnstileResultStatus,
+  type TurnstileStatus,
+} from '@/lib/form-verification'
 
 type Phase = 'drop' | 'parsing' | 'review' | 'submitting' | 'done'
 
@@ -31,12 +36,19 @@ export default function UploadForm() {
   const [parseErr, setParseErr] = useState<string | null>(null)
   const [fileName, setFileName] = useState<string>('')
   const [parsed, setParsed] = useState<ParsedResume | null>(null)
-  const [, startTransition] = useTransition()
+  const [pending, startTransition] = useTransition()
+  const submittingRef = useRef(false)
+  const mountedRef = useRef(true)
+  const parseRequestRef = useRef(0)
   // Cloudflare Turnstile token — see TurnstileWidget.tsx. null until challenge passes.
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
   // Incrementing key forces TurnstileWidget to remount after a failed submit
   // so the user gets a fresh challenge (Turnstile tokens are single-use).
   const [turnstileKey, setTurnstileKey] = useState(0)
+  const turnstileConfigured = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY)
+  const [turnstileStatus, setTurnstileStatus] = useState<TurnstileStatus>(
+    turnstileConfigured ? 'pending' : 'ready',
+  )
 
   // Fields shown in review step (prefilled from parsed, user-editable)
   const [form, setForm] = useState<SubmitCandidateInput>({
@@ -52,7 +64,16 @@ export default function UploadForm() {
     is_public: false,
   })
 
+  useEffect(() => {
+    mountedRef.current = true
+    return () => {
+      mountedRef.current = false
+      parseRequestRef.current += 1
+    }
+  }, [])
+
   async function processFile(file: File) {
+    const requestId = ++parseRequestRef.current
     setParseErr(null)
     chosenFileRef.current = null
     setFileName('')
@@ -69,6 +90,7 @@ export default function UploadForm() {
     setPhase('parsing')
     try {
       const text = await extractTextFromFile(file)
+      if (!mountedRef.current || requestId !== parseRequestRef.current) return
       if (!text || text.length < 50) {
         setParseErr(
           'We couldn\'t read any text from that file. If it\'s a scanned image, try exporting a searchable PDF first.'
@@ -92,6 +114,7 @@ export default function UploadForm() {
       }))
       setPhase('review')
     } catch (err) {
+      if (!mountedRef.current || requestId !== parseRequestRef.current) return
       setParseErr(err instanceof Error ? err.message : 'Unable to parse this file.')
       setPhase('drop')
     }
@@ -110,8 +133,7 @@ export default function UploadForm() {
   }
 
   function canSubmit(): boolean {
-    const botCheckReady =
-      !process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || turnstileToken !== null
+    const botCheckReady = isTurnstileReady(turnstileConfigured, turnstileToken)
     return (
       fileName.length > 0 &&
       botCheckReady &&
@@ -122,55 +144,86 @@ export default function UploadForm() {
     )
   }
 
+  function retryTurnstile() {
+    setTurnstileToken(null)
+    setTurnstileStatus('pending')
+    setTurnstileKey((key) => key + 1)
+  }
+
   function onSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!canSubmit()) return
+    if (pending || submittingRef.current || !canSubmit()) return
+    submittingRef.current = true
     setPhase('submitting')
     startTransition(async () => {
-      let res: SubmitCandidateResult
       try {
-        res = await submitCandidate(form, turnstileToken ?? '')
-      } catch (error) {
-        console.error(
-          'resume profile submission threw:',
-          error instanceof Error ? error.message : 'unknown',
-        )
-        setParseErr(
-          'We could not confirm the save. Sign in to check your account before trying again.',
-        )
-        setPhase('review')
-        setTurnstileToken(null)
-        setTurnstileKey((key) => key + 1)
-        return
-      }
-      if (res.success) {
-        let resumeAttached = false
-        const file = chosenFileRef.current
-        if (file) {
-          try {
-            const upload = new FormData()
-            upload.set('candidate_id', res.candidate_id)
-            upload.set('nonce', res.nonce)
-            upload.set('file', file)
-            const attached = await uploadAndAttachResume(upload)
-            resumeAttached = attached.success
-            if (!attached.success) console.error('resume file save failed:', attached.error)
-          } catch (err) {
-            console.error(
-              'resume file upload threw:',
-              err instanceof Error ? err.message : 'unknown',
-            )
+        let res: SubmitCandidateResult
+        try {
+          res = await submitCandidate(form, turnstileToken ?? '')
+          if (!mountedRef.current) return
+          // A partial or malformed response cannot confirm a save or provide
+          // the owner credentials needed for the attachment step.
+          if (!res || typeof res !== 'object' ||
+            (res.success !== true && res.success !== false) ||
+            (res.success === false && (typeof res.error !== 'string' || !res.error.trim())) ||
+            (res.success === true && (
+              typeof res.candidate_id !== 'string' || !res.candidate_id.trim() ||
+              typeof res.nonce !== 'string' || !res.nonce.trim() ||
+              typeof res.edit_url !== 'string' || !res.edit_url.trim()
+            ))) {
+            throw new Error('Profile save response was incomplete.')
           }
+        } catch (error) {
+          console.error(
+            'resume profile submission threw:',
+            error instanceof Error ? error.message : 'unknown',
+          )
+          if (!mountedRef.current) return
+          setParseErr(
+            'We could not confirm the save. Sign in to check your account before trying again.',
+          )
+          setPhase('review')
+          retryTurnstile()
+          return
         }
-        setPhase('done')
-        router.push(resumeAttached ? res.edit_url : `${res.edit_url}&resume=missing`)
-      } else {
-        setParseErr(res.error)
-        setPhase('review')
-        // Token is single-use. Clear it and remount the widget so the user
-        // solves a fresh challenge before retrying.
-        setTurnstileToken(null)
-        setTurnstileKey((k) => k + 1)
+        if (!mountedRef.current) return
+        if (res.success === true) {
+          let resumeAttached = false
+          const file = chosenFileRef.current
+          if (file) {
+            try {
+              const upload = new FormData()
+              upload.set('candidate_id', res.candidate_id)
+              upload.set('nonce', res.nonce)
+              upload.set('file', file)
+              const attached = await uploadAndAttachResume(upload)
+              if (!mountedRef.current) return
+              resumeAttached = attached?.success === true
+              if (!resumeAttached) console.error('resume file save was not confirmed')
+            } catch (err) {
+              if (!mountedRef.current) return
+              console.error(
+                'resume file upload threw:',
+                err instanceof Error ? err.message : 'unknown',
+              )
+            }
+          }
+          if (!mountedRef.current) return
+          setPhase('done')
+          router.push(resumeAttached ? res.edit_url : `${res.edit_url}&resume=missing`)
+        } else {
+          console.error(
+            'resume profile submission failed:',
+            res.error,
+          )
+          setParseErr(res.error)
+          setPhase('review')
+          // Token is single-use. Clear it and remount the widget so the user
+          // solves a fresh challenge before retrying.
+          retryTurnstile()
+        }
+      } finally {
+        submittingRef.current = false
       }
     })
   }
@@ -254,7 +307,7 @@ export default function UploadForm() {
     return (
       <div className="rounded-2xl border border-slate-200 p-12 text-center bg-slate-50">
         <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-teal-600 border-t-transparent" />
-        <p className="font-semibold text-slate-900">Reading {fileName}…</p>
+        <p className="break-all font-semibold text-slate-900">Reading {fileName}…</p>
         <p className="text-sm text-slate-500 mt-1">This runs locally. No uploads yet.</p>
       </div>
     )
@@ -280,7 +333,7 @@ export default function UploadForm() {
           <div>
             <p className="font-semibold text-slate-900">
               Extracted {parsed ? parsed.rawText.length.toLocaleString() : 0} characters
-              from <span className="font-mono text-sm">{fileName}</span>
+              from <span className="break-all font-mono text-sm">{fileName}</span>
             </p>
             <p className="text-sm text-slate-500">
               Review and edit what we found. You&apos;re in control of every field.
@@ -435,11 +488,42 @@ export default function UploadForm() {
 
       <TurnstileWidget
         key={turnstileKey}
-        onSuccess={setTurnstileToken}
-        onError={() => setTurnstileToken(null)}
-        onExpired={() => setTurnstileToken(null)}
+        onSuccess={(token) => {
+          const status = turnstileResultStatus(turnstileConfigured, token)
+          setTurnstileStatus(status)
+          setTurnstileToken(status === 'ready' ? token : null)
+        }}
+        onError={() => {
+          setTurnstileToken(null)
+          setTurnstileStatus('failed')
+        }}
+        onExpired={() => {
+          setTurnstileToken(null)
+          setTurnstileStatus('expired')
+        }}
         action="upload-resume"
       />
+      {turnstileConfigured && turnstileStatus !== 'ready' && (
+        <div
+          role={turnstileStatus === 'pending' ? 'status' : 'alert'}
+          aria-live="polite"
+          className="text-sm text-slate-600"
+        >
+          {turnstileStatus === 'pending' && 'Checking verification before you save.'}
+          {turnstileStatus === 'failed' && 'Verification did not load. Try again before saving.'}
+          {turnstileStatus === 'expired' && 'Verification expired. Try again before saving.'}
+          {(turnstileStatus === 'failed' || turnstileStatus === 'expired') && (
+            <button
+              type="button"
+              onClick={retryTurnstile}
+              disabled={pending}
+              className="mt-2 inline-flex min-h-11 max-w-full items-center text-left font-semibold underline disabled:cursor-not-allowed disabled:opacity-50 sm:ml-2 sm:mt-0"
+            >
+              Retry verification
+            </button>
+          )}
+        </div>
+      )}
 
       {parseErr && (
         <div role="alert" className="rounded-xl border border-red-300 bg-red-50 p-4 text-red-800 font-medium text-sm">
@@ -457,13 +541,14 @@ export default function UploadForm() {
             chosenFileRef.current = null
             if (fileInputRef.current) fileInputRef.current.value = ''
           }}
+          disabled={pending}
           className="text-sm text-slate-500 hover:text-slate-900 underline"
         >
           ← Use a different file
         </button>
         <button
           type="submit"
-          disabled={!canSubmit()}
+          disabled={pending || !canSubmit()}
           className="inline-flex w-full items-center justify-center rounded-xl bg-indigo-700 px-6 py-3 font-semibold text-white shadow-sm transition-colors hover:bg-indigo-800 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
         >
           Save my profile

@@ -19,12 +19,12 @@ export const metadata: Metadata = {
   applicationName: 'FreeResumePost',
   title: {
     template: '%s | FreeResumePost',
-    default: 'Post Your Healthcare Resume Free | FreeResumePost',
+    default: 'Your Healthcare Resume, Private by Default | FreeResumePost',
   },
   description:
-    'A simple resume-posting tool for nurses and allied health professionals. Private by default.',
+    'A private resume profile tool for nurses and allied health professionals.',
   keywords: [
-    'post healthcare resume free',
+    'private healthcare resume profile',
     'nursing resume profile',
     'allied health resume',
     'private resume profile',
@@ -35,15 +35,15 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://www.freeresumepost.co',
-    title: 'Post Your Healthcare Resume Free | FreeResumePost',
+    title: 'Your Healthcare Resume, Private by Default | FreeResumePost',
     description:
-      'A simple resume-posting tool for nurses and allied health professionals. Private by default.',
+      'A private resume profile tool for nurses and allied health professionals.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Post Your Healthcare Resume Free | FreeResumePost',
+    title: 'Your Healthcare Resume, Private by Default | FreeResumePost',
     description:
-      'A simple resume-posting tool for nurses and allied health professionals. Private by default.',
+      'A private resume profile tool for nurses and allied health professionals.',
   },
   robots: {
     index: true,

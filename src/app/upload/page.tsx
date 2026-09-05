@@ -2,23 +2,23 @@ import type { Metadata } from 'next'
 import UploadForm from './upload-form'
 
 export const metadata: Metadata = {
-  title: 'Upload your nursing or allied health resume',
+  title: 'Create your private nursing or allied health resume profile',
   description:
     'Upload a PDF or DOCX resume. Review the details before your private FreeResumePost profile is saved.',
   alternates: { canonical: 'https://www.freeresumepost.co/upload' },
   openGraph: {
-    title: 'Upload Your Healthcare Resume | FreeResumePost',
+    title: 'Create Your Private Healthcare Resume Profile | FreeResumePost',
     description:
-      'Post a nursing or allied health resume profile. Private by default and free to use.',
+      'Create a nursing or allied health resume profile. Private by default and free to use.',
     url: 'https://www.freeresumepost.co/upload',
     type: 'website',
     images: ['/opengraph-image'],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Upload Your Healthcare Resume | FreeResumePost',
+    title: 'Create Your Private Healthcare Resume Profile | FreeResumePost',
     description:
-      'Post a nursing or allied health resume profile. Private by default and free to use.',
+      'Create a nursing or allied health resume profile. Private by default and free to use.',
     images: ['/opengraph-image'],
   },
 }

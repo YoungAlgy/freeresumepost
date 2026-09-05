@@ -44,7 +44,11 @@ export function validateSignedResumeUrl(
   }
 }
 
-export async function resolveResumeUrl(accessToken: string, resumeUrl: string): Promise<string> {
+export async function resolveResumeUrl(
+  accessToken: string,
+  resumeUrl: string,
+  signal?: AbortSignal,
+): Promise<string> {
   if (!isFreeResumeStoragePath(resumeUrl)) {
     throw new Error('The stored resume path is invalid. Replace the resume from your profile.')
   }
@@ -57,6 +61,7 @@ export async function resolveResumeUrl(accessToken: string, resumeUrl: string): 
 
   const res = await fetch(`${supabaseUrl}/functions/v1/get-resume-url`, {
     method: 'POST',
+    ...(signal ? { signal } : {}),
     headers: {
       'Content-Type': 'application/json',
       apikey: supabaseAnonKey,

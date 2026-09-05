@@ -2,14 +2,14 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: { absolute: 'Post Your Nursing or Allied Health Resume Free | FreeResumePost' },
+  title: { absolute: 'Your Healthcare Resume, Private by Default | FreeResumePost' },
   description:
-    'Upload, review, and save a nursing or allied health resume profile. Your profile stays private unless you choose to share a limited public link.',
+    'Create a private nursing or allied health resume profile. Review every detail before you save, then choose if you want a limited public link.',
   alternates: { canonical: 'https://www.freeresumepost.co' },
   openGraph: {
     siteName: 'FreeResumePost',
     locale: 'en_US',
-    title: 'Post Your Healthcare Resume Free | FreeResumePost',
+    title: 'Your Healthcare Resume, Private by Default | FreeResumePost',
     description:
       'A simple resume profile for nurses and allied health professionals. Private by default.',
     url: 'https://www.freeresumepost.co',
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Post Your Healthcare Resume Free | FreeResumePost',
+    title: 'Your Healthcare Resume, Private by Default | FreeResumePost',
     description:
       'A simple resume profile for nurses and allied health professionals. Private by default.',
     images: ['/opengraph-image'],
@@ -27,20 +27,12 @@ export const metadata: Metadata = {
 
 const STEPS = [
   {
-    label: 'Choose your file',
-    detail: 'Add a PDF or DOCX resume up to 5 MB.',
+    label: 'Choose and read your file',
+    detail: 'Add a PDF or DOCX resume up to 5 MB. We read it in your browser first.',
   },
   {
-    label: 'Review the details',
-    detail: 'We read the file in your browser and fill the form for you.',
-  },
-  {
-    label: 'Set your privacy',
-    detail: 'Keep the profile private or turn on a limited public link.',
-  },
-  {
-    label: 'Save your profile',
-    detail: 'Your file uploads after you review the details and tap Save.',
+    label: 'Review, choose privacy, and save',
+    detail: 'Check the details we find, choose a limited public link only if you want one, then tap Save.',
   },
 ]
 
@@ -57,11 +49,11 @@ export default function Home() {
             Nursing and allied health resumes
           </p>
           <h1 className="mx-auto max-w-4xl text-4xl font-bold leading-[1.05] tracking-[-0.04em] text-slate-950 sm:text-6xl">
-            Post your healthcare resume in minutes.
+            Your healthcare resume. Private by default.
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
-            Upload your resume, check the details we find, and save one profile you can update.
-            Public sharing is optional.
+            For nurses and allied health professionals. Upload a PDF or DOCX, review every detail,
+            and save one profile you can update.
           </p>
           <div className="mt-8">
             <Link
@@ -72,7 +64,7 @@ export default function Home() {
             </Link>
           </div>
           <p className="mt-4 text-sm text-slate-500">
-            Already posted?{' '}
+            Already have a profile?{' '}
             <Link href="/candidate/login" className="font-semibold text-indigo-700 hover:underline">
               Open your profile
             </Link>
@@ -86,10 +78,10 @@ export default function Home() {
             One short flow
           </p>
           <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950">
-            Your resume stays in your hands.
+            Review it before anything saves.
           </h2>
           <p className="mt-3 leading-7 text-slate-600">
-            Nothing is saved while we read your file. You see and edit every field before the
+            The file is read in your browser first. You see and edit every field before your
             profile is created.
           </p>
         </div>
@@ -109,33 +101,13 @@ export default function Home() {
             </li>
           ))}
         </ol>
+        <p className="mt-5 max-w-3xl text-sm leading-6 text-slate-600">
+          Your profile starts private. If you turn on a limited public link, your email, phone
+          number, full last name, and resume file stay hidden.
+        </p>
       </section>
 
-      <section className="border-y border-slate-200 bg-slate-50">
-        <div className="mx-auto grid max-w-5xl gap-8 px-5 py-14 sm:px-6 md:grid-cols-[1.1fr_0.9fr] md:items-center sm:py-20">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-indigo-700">
-              Built for healthcare
-            </p>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950">
-              Focused on nurses and allied health.
-            </h2>
-            <p className="mt-4 leading-7 text-slate-600">
-              FreeResumePost is for RNs, LPNs, CNAs, therapists, imaging techs, lab
-              professionals, medical assistants, and other allied health workers.
-            </p>
-          </div>
-          <div className="rounded-2xl border border-indigo-100 bg-white p-6 shadow-sm">
-            <p className="font-semibold text-slate-950">Private by default</p>
-            <p className="mt-2 text-sm leading-6 text-slate-600">
-              Your public link starts off. If you turn it on, it shows limited work details.
-              Your email, phone number, last name, and resume file stay hidden.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section aria-labelledby="job-tool" className="border-b border-slate-200 bg-white">
+      <section aria-labelledby="job-tool" className="border-y border-slate-200 bg-slate-50">
         <div className="mx-auto grid max-w-5xl gap-6 px-5 py-14 sm:px-6 sm:py-16 md:grid-cols-[1fr_auto] md:items-center">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#276749]">
@@ -146,7 +118,8 @@ export default function Home() {
             </h2>
             <p className="mt-3 max-w-2xl leading-7 text-slate-600">
               FreeJobPost lists nursing and allied health roles posted directly by employers.
-              Your FreeResumePost profile is kept separate and is never sent automatically.
+              Your FreeResumePost profile stays separate. Visiting jobs does not send your resume
+              or submit an application.
             </p>
           </div>
           <a
@@ -156,21 +129,6 @@ export default function Home() {
             Browse FreeJobPost
           </a>
         </div>
-      </section>
-
-      <section className="mx-auto max-w-3xl px-5 py-16 text-center sm:px-6 sm:py-24">
-        <h2 className="text-3xl font-bold tracking-tight text-slate-950">
-          Ready to post your resume?
-        </h2>
-        <p className="mx-auto mt-3 max-w-xl leading-7 text-slate-600">
-          Start with your file. You will review everything before it saves.
-        </p>
-        <Link
-          href="/upload"
-          className="mt-7 inline-flex min-h-12 items-center justify-center rounded-xl bg-indigo-700 px-6 py-3 font-semibold text-white transition-colors hover:bg-indigo-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2"
-        >
-          Upload my resume
-        </Link>
       </section>
     </main>
   )

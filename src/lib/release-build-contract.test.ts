@@ -31,7 +31,7 @@ import {
 } from '../../scripts/manage-cloudflare-traffic.mjs'
 
 function source(path: string): string {
-  return readFileSync(resolve(process.cwd(), path), 'utf8')
+  return readFileSync(resolve(process.cwd(), path), 'utf8').replace(/\r\n/g, '\n')
 }
 
 describe('FreeResumePost sanitized release contract', () => {

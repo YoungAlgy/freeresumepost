@@ -1,7 +1,10 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { metadata as homeMetadata } from '../app/page'
+import { SiteHeader } from '../components/SiteHeader'
 
 function source(path: string): string {
   return readFileSync(resolve(process.cwd(), path), 'utf8')
@@ -25,6 +28,7 @@ describe('FreeResumePost public brand boundary', () => {
     for (const path of globalSurfaces) {
       const contents = source(path)
       expect(contents, path).not.toMatch(/Ava Health|avahealth\.co/i)
+      expect(contents, path).not.toMatch(/\bBeacon\b/i)
       expect(contents, path).not.toMatch(
         /provider staffing|placement fee|matching engine|our recruiters|recruiter matching|\brecruiters?\b|48,696|aggregated jobs|syndicate everywhere/i,
       )
@@ -50,6 +54,22 @@ describe('FreeResumePost public brand boundary', () => {
     expect(source('src/lib/organization-schema.ts')).not.toContain('freejobpost.co')
   })
 
+  it('keeps the mobile header wordmark and entry controls on one line', () => {
+    const header = source('src/components/SiteHeader.tsx')
+    const rendered = renderToStaticMarkup(createElement(SiteHeader))
+
+    expect(rendered).toContain('FreeResumePost')
+    expect(rendered).toContain('href="/candidate/login"')
+    expect(rendered).toContain('Sign in')
+    expect(rendered).toContain('href="/upload"')
+    expect(rendered).toContain('Upload')
+    expect(header).toContain('gap-2 px-3')
+    expect(header).toContain('whitespace-nowrap text-sm')
+    expect(header).toContain('flex shrink-0 items-center gap-2')
+    expect(header).toMatch(/min-h-11[^\n]*whitespace-nowrap/)
+    expect(header).not.toContain('truncate text-base')
+  })
+
   it('pins the standalone resume product metadata and public positioning', () => {
     const layout = source('src/app/layout.tsx')
     const home = source('src/app/page.tsx')
@@ -69,7 +89,32 @@ describe('FreeResumePost public brand boundary', () => {
       type: 'website',
       url: 'https://www.freeresumepost.co',
     })
-    expect(home).toContain('Your FreeResumePost profile is kept separate')
+    expect(home).toContain('Your healthcare resume. Private by default.')
+    expect(home).toContain('Your FreeResumePost profile stays separate.')
+    expect(home).toContain('Visiting jobs does not send your resume')
+    expect(home).toContain(
+      'Your profile starts private. If you turn on a limited public link, your email, phone',
+    )
+    expect(home).toContain('number, full last name, and resume file stay hidden.')
+    expect(home).toContain("label: 'Choose and read your file'")
+    expect(home).toContain("label: 'Review, choose privacy, and save'")
+    expect(home).not.toContain("label: 'Choose your privacy'")
+    expect(home.indexOf("label: 'Choose and read your file'")).toBeLessThan(
+      home.indexOf("label: 'Review, choose privacy, and save'"),
+    )
+    expect(home).toContain('href="/upload"')
+    expect(home).toContain('href="/candidate/login"')
+    expect(home).toContain('href="https://freejobpost.co/jobs"')
+    expect((home.match(/<h1\b/g) ?? [])).toHaveLength(1)
+    expect(source('src/app/candidate/login/page.tsx')).toContain(
+      'This opens a FreeResumePost profile only.',
+    )
+    expect(source('src/app/candidate/login/page.tsx')).toContain('Your resume account')
+    expect(source('src/app/candidate/login/page.tsx')).not.toMatch(/30 seconds|No account or password to create/)
+    const socialCard = source('src/app/opengraph-image.tsx')
+    expect(socialCard).toContain('Your healthcare resume.')
+    expect(socialCard).toContain('Private by default.')
+    expect(socialCard).not.toContain('Post your resume.')
     expect(manifest).toContain("name: 'FreeResumePost'")
     expect(manifest).toContain("short_name: 'FreeResumePost'")
     expect(manifest).toContain("src: '/icon.svg'")

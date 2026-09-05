@@ -6,7 +6,7 @@ import { ImageResponse } from 'next/og'
 // "TypeError: Cannot read properties of undefined (reading 'default')" on
 // every request (confirmed live, both of this app's OG routes). The default
 // (Node-compat) runtime renders fine.
-export const alt = 'Post your healthcare resume | FreeResumePost'
+export const alt = 'Your healthcare resume, private by default | FreeResumePost'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 // 2026-08-13 audit: 100% static content (no params, no DB query) with no
@@ -59,7 +59,7 @@ export default async function OG() {
               marginBottom: 12,
             }}
           >
-            Post your resume.
+            Your healthcare resume.
           </div>
           <div
             style={{
@@ -70,7 +70,7 @@ export default async function OG() {
               color: '#0D9488',
             }}
           >
-            Keep it current.
+            Private by default.
           </div>
 
           <div
@@ -82,7 +82,7 @@ export default async function OG() {
               maxWidth: 900,
             }}
           >
-            Private by default. Public sharing is optional.
+            Review the details before you save.
           </div>
         </div>
 

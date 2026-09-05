@@ -44,11 +44,11 @@ export default function HowItWorksPage() {
           How it works
         </p>
         <h1 className="mt-2 text-4xl font-bold leading-tight tracking-[-0.03em] sm:text-5xl">
-          One resume. One profile you control.
+          Your resume. Your private profile.
         </h1>
         <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-          FreeResumePost gives nurses and allied health professionals a quick way to post and
-          maintain their resume details.
+          FreeResumePost gives nurses and allied health professionals a quick way to create and
+          maintain one resume profile.
         </p>
 
         <ol className="mt-10 space-y-4">

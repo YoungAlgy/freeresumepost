@@ -1,21 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabaseBrowser } from '@/lib/supabase-browser'
+import { verifyCandidateOtp } from '@/lib/candidate-otp'
 import { requestCandidateOtp } from './actions'
-
-// Translate verification errors into copy a candidate can act on instead of
-// showing raw Supabase Auth messages.
-function friendlyAuthError(raw: string): string {
-  if (/rate limit|too many requests/i.test(raw)) {
-    return 'Too many attempts. Wait a minute and try again.'
-  }
-  if (/token|code/i.test(raw) && /invalid|expired/i.test(raw)) {
-    return "That code is incorrect or expired. Double-check your email for the latest one, or resend."
-  }
-  return "Something went wrong sending your code. Please try again in a moment."
-}
 
 // Candidate sign-in by 6-digit email code (Supabase OTP), on the same shared
 // auth pool the recruiter CRM uses. Replaces the old emailed magic edit-link as
@@ -30,49 +19,73 @@ export default function OtpLoginForm() {
   const [step, setStep] = useState<'email' | 'code'>('email')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const mountedRef = useRef(true)
+  const requestPendingRef = useRef(false)
+
+  useEffect(() => {
+    mountedRef.current = true
+    return () => {
+      mountedRef.current = false
+    }
+  }, [])
 
   const cleanEmail = email.trim().toLowerCase()
 
   async function requestCode(): Promise<boolean> {
     try {
       const result = await requestCandidateOtp(cleanEmail)
-      if (!result.accepted) {
-        setError(result.error)
+      if (!mountedRef.current) return false
+      if (result.accepted !== true) {
+        setError(result.accepted === false && typeof result.error === 'string' && result.error.trim()
+          ? result.error
+          : 'We could not confirm the code request. Check your email before trying again.')
         return false
       }
       return true
     } catch {
+      if (!mountedRef.current) return false
       setError('Something went wrong sending your code. Please try again in a moment.')
       return false
     } finally {
-      setLoading(false)
+      requestPendingRef.current = false
+      if (mountedRef.current) setLoading(false)
     }
   }
 
   async function sendCode(e: React.FormEvent) {
     e.preventDefault()
-    if (loading || !cleanEmail) return
+    if (requestPendingRef.current || loading || !cleanEmail) return
+    requestPendingRef.current = true
     setLoading(true)
     setError('')
-    if (await requestCode()) setStep('code')
+    if (await requestCode() && mountedRef.current) setStep('code')
   }
 
   async function verify(e: React.FormEvent) {
     e.preventDefault()
-    if (loading || code.length !== 6) return
+    if (requestPendingRef.current || loading || code.length !== 6) return
+    requestPendingRef.current = true
     setLoading(true)
     setError('')
-    const { error } = await supabaseBrowser.auth.verifyOtp({
-      email: cleanEmail,
-      token: code,
-      type: 'email',
-    })
-    if (error) {
-      setError(friendlyAuthError(error.message))
-      setLoading(false)
-      return
+    try {
+      const result = await verifyCandidateOtp(
+        (params) => supabaseBrowser.auth.verifyOtp(params),
+        {
+          email: cleanEmail,
+          token: code,
+          type: 'email',
+        },
+      )
+      if (!mountedRef.current) return
+      if (!result.ok) {
+        setError(result.error)
+        return
+      }
+      router.push('/account')
+    } finally {
+      requestPendingRef.current = false
+      if (mountedRef.current) setLoading(false)
     }
-    router.push('/account')
   }
 
   if (step === 'code') {
@@ -80,7 +93,7 @@ export default function OtpLoginForm() {
       <form onSubmit={verify} className="rounded-lg border border-slate-200 bg-slate-50 p-5 mb-6">
         <h2 className="font-semibold text-slate-900 mb-1">Enter your code</h2>
         <p className="text-sm text-slate-700 mb-4">
-          If <strong>{cleanEmail}</strong> belongs to an active FreeResumePost profile, we sent a
+          If <strong className="break-all">{cleanEmail}</strong> belongs to an active FreeResumePost profile, we sent a
           6-digit code. It expires shortly. Check spam if you don&apos;t see it.
         </p>
         <input
@@ -88,6 +101,7 @@ export default function OtpLoginForm() {
           autoComplete="one-time-code"
           maxLength={6}
           required
+          disabled={loading}
           value={code}
           onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
           placeholder="123456"
@@ -97,30 +111,32 @@ export default function OtpLoginForm() {
         <button
           type="submit"
           disabled={loading || code.length !== 6}
-          className="w-full rounded-lg bg-indigo-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-800 disabled:opacity-60"
+          className="min-h-11 w-full rounded-lg bg-indigo-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-800 disabled:opacity-60"
         >
           {loading ? 'Verifying…' : 'Verify & sign in'}
         </button>
-        {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
-        <div className="flex items-center justify-center gap-3 mt-4 text-sm">
+        {error && <p className="text-sm text-red-600 mt-2" role="alert">{error}</p>}
+        <div className="flex flex-wrap items-center justify-center gap-x-3 mt-4 text-sm">
           <button
             type="button"
             disabled={loading}
-            className="text-slate-600 hover:text-indigo-700 disabled:opacity-60"
+            className="min-h-11 text-slate-600 hover:text-indigo-700 disabled:opacity-60"
             onClick={async () => {
-              if (loading) return
+              if (requestPendingRef.current || loading) return
+              requestPendingRef.current = true
               setLoading(true)
               setError('')
-              if (await requestCode()) setCode('')
+              if (await requestCode() && mountedRef.current) setCode('')
             }}
           >
             Resend code
           </button>
-          <span className="text-slate-300">|</span>
           <button
             type="button"
-            className="text-slate-600 hover:text-indigo-700"
+            disabled={loading}
+            className="min-h-11 text-slate-600 hover:text-indigo-700 disabled:opacity-60"
             onClick={() => {
+              if (requestPendingRef.current || loading) return
               setStep('email')
               setCode('')
               setError('')
@@ -143,21 +159,22 @@ export default function OtpLoginForm() {
         <input
           type="email"
           required
+          disabled={loading}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
           aria-label="Email address"
-          className="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600"
+          className="min-h-11 min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-60"
         />
         <button
           type="submit"
           disabled={loading}
-          className="whitespace-nowrap rounded-lg bg-indigo-700 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-800 disabled:opacity-60"
+          className="min-h-11 whitespace-nowrap rounded-lg bg-indigo-700 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-800 disabled:opacity-60"
         >
           {loading ? 'Sending…' : 'Send code'}
         </button>
       </div>
-      {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
+      {error && <p className="text-sm text-red-600 mt-2" role="alert">{error}</p>}
     </form>
   )
 }

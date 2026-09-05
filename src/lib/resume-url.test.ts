@@ -105,4 +105,20 @@ describe('FreeResumePost resume URL boundary', () => {
       },
     )
   })
+
+  it('passes optional cancellation through to the private URL read', async () => {
+    process.env.NEXT_PUBLIC_SUPABASE_URL = supabaseUrl
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'anon-key'
+    const controller = new AbortController()
+    const fetchMock = vi.fn((_url: string, options: RequestInit) => new Promise<Response>((_, reject) => {
+      options.signal?.addEventListener('abort', () => reject(new Error('cancelled')), { once: true })
+    }))
+    vi.stubGlobal('fetch', fetchMock)
+    const request = resolveResumeUrl('access-token', storagePath, controller.signal)
+    const failed = expect(request).rejects.toThrow('cancelled')
+    controller.abort()
+    await failed
+    expect(fetchMock).toHaveBeenCalledOnce()
+    expect(fetchMock.mock.calls[0][1].signal).toBe(controller.signal)
+  })
 })
